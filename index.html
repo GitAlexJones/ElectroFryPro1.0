@@ -7,164 +7,78 @@
     
     <!-- Modern Professional Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
-            --primary: #0F4C81;     /* Deep Marine Blue */
-            --secondary: #4A90E2;   /* Bright Blue */
-            --success: #27AE60;     /* Emerald Green */
-            --danger: #E74C3C;      /* Alizarin Red */
-            --background: #F4F7F9;  /* Light Gray/Blue */
-            --surface: #FFFFFF;     /* White Card */
-            --text-main: #2C3E50;   /* Dark Slate */
-            --text-muted: #7F8C8D;  /* Gray */
-            --border: #E0E6ED;      /* Light Border */
+            --primary: #0F4C81; --secondary: #4A90E2; --success: #27AE60; --danger: #E74C3C;
+            --background: #F4F7F9; --surface: #FFFFFF; --text-main: #2C3E50; --text-muted: #7F8C8D; --border: #E0E6ED;
         }
 
         body {
-            background-color: var(--background);
-            color: var(--text-main);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-            margin: 0;
-            padding: 0;
-            padding-top: 60px; /* Space for fixed header */
-            padding-bottom: 80px; /* Space for fixed bottom nav */
-            -webkit-font-smoothing: antialiased;
+            background-color: var(--background); color: var(--text-main);
+            font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5;
+            margin: 0; padding: 0; padding-top: 60px; padding-bottom: 80px; -webkit-font-smoothing: antialiased;
         }
 
-        /* Typography */
         h1, h2, h3, h4, h5 { color: var(--primary); margin: 0 0 10px 0; font-weight: 600; }
         h3 { font-size: 1.1rem; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-bottom: 16px; }
         p { margin: 0 0 10px 0; }
         
-        /* Layout Containers */
         .container { padding: 10px; max-width: 800px; margin: 0 auto; }
         
-        .card {
-            background-color: var(--surface);
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            padding: 20px;
-            margin-bottom: 15px;
-            border: 1px solid var(--border);
-        }
+        .card { background-color: var(--surface); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .row { display: flex; gap: 12px; margin-bottom: 15px; } .col { flex: 1; }
 
-        .row { display: flex; gap: 12px; margin-bottom: 15px; }
-        .col { flex: 1; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* Form Elements */
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* 16px font size prevents iOS auto-zoom on inputs */
         input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            background-color: #F8FAFC;
-            border: 1px solid #CBD5E1;
-            border-radius: 6px;
-            font-family: 'Inter', sans-serif;
-            font-size: 16px; 
-            color: var(--text-main);
-            box-sizing: border-box;
-            transition: border-color 0.2s;
+            width: 100%; padding: 12px; background-color: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 6px;
+            font-family: 'Inter', sans-serif; font-size: 16px; color: var(--text-main); box-sizing: border-box; transition: border-color 0.2s;
         }
-        
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--secondary);
-            background-color: #FFF;
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
-        }
-
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--secondary); background-color: #FFF; box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2); }
         textarea { height: 120px; resize: vertical; font-family: monospace; font-size: 12px; }
 
-        /* Buttons */
         .btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 6px;
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
-            font-weight: 600;
-            text-align: center;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.1s;
+            display: block; width: 100%; padding: 14px; border: none; border-radius: 6px;
+            font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; text-align: center; cursor: pointer; transition: opacity 0.2s, transform 0.1s;
         }
         .btn:active { transform: scale(0.98); }
         .btn-primary { background-color: var(--primary); color: white; }
         .btn-secondary { background-color: var(--secondary); color: white; }
         .btn-success { background-color: var(--success); color: white; }
-        .btn-outline { background-color: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline { background-color: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 10px; font-size: 13px; }
 
-        /* Tables */
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 13px; }
         th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
         th { background-color: #F8FAFC; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
 
-        /* Top Header */
-        .top-header {
-            position: fixed; top: 0; left: 0; width: 100%;
-            background-color: var(--primary); color: white;
-            padding: 15px; box-sizing: border-box;
-            z-index: 1000; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .header-title { font-weight: 700; font-size: 16px; margin: 0; color: white;}
+        .top-header { position: fixed; top: 0; left: 0; width: 100%; background-color: var(--primary); color: white; padding: 15px; box-sizing: border-box; z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header-title { font-weight: 700; font-size: 16px; margin: 0; }
         .header-badge { background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 11px; }
 
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background-color: var(--surface); border-top: 1px solid var(--border);
-            display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000;
-            padding-bottom: calc(10px + env(safe-area-inset-bottom)); /* iPhone notch support */
-        }
-        .nav-item {
-            text-align: center; color: var(--text-muted); cursor: pointer; flex: 1;
-            font-size: 11px; font-weight: 600; padding: 5px;
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+        .nav-item { text-align: center; color: var(--text-muted); cursor: pointer; flex: 1; font-size: 11px; font-weight: 600; padding: 5px; }
         .nav-item.active { color: var(--primary); }
         .nav-icon { display: block; font-size: 20px; margin-bottom: 3px; }
 
-        /* Utilities */
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        .tab-content { display: none; } .tab-content.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Splash Screen */
-        #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--primary); z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 20px; box-sizing: border-box; text-align: center; color: white;
-        }
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--primary); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; text-align: center; color: white; }
         .splash-card { background: white; color: var(--text-main); padding: 30px; border-radius: 12px; max-width: 400px; width: 100%; text-align: left;}
 
         /* Bio-Dex Scanner */
-        #biodex-box {
-            background-color: #EBF5FF; border-left: 4px solid var(--secondary);
-            padding: 15px; margin-bottom: 15px; border-radius: 0 6px 6px 0; display: none;
-        }
-        .biodex-title { font-size: 11px; color: var(--primary); font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
+        #biodex-box { background-color: #EBF5FF; border-left: 4px solid var(--secondary); padding: 15px; margin-bottom: 15px; border-radius: 0 6px 6px 0; display: none; }
         .biodex-sci { font-size: 14px; font-style: italic; color: var(--text-main); margin-bottom: 5px; font-weight: 500; }
-        .biodex-traits { font-size: 13px; color: #475569; }
+        
+        /* Photo Modal */
+        #photo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; }
+        #photo-modal img { max-width: 100%; max-height: 80vh; border-radius: 8px; border: 4px solid white; }
+        .close-btn { background: var(--danger); color: white; padding: 10px 20px; margin-top: 20px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; }
 
-        /* Calculator Grid */
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .calc-grid .btn { padding: 15px 0; font-size: 18px; border-radius: 8px; background: #F1F5F9; color: var(--text-main); }
         .calc-grid .btn-op { background: var(--secondary); color: white; }
@@ -174,6 +88,12 @@
 </head>
 <body>
 
+    <!-- PHOTO VIEW MODAL -->
+    <div id="photo-modal">
+        <img id="modal-img" src="" alt="Specimen Photo">
+        <button class="close-btn" onclick="closePhoto()">Close Image</button>
+    </div>
+
     <!-- SPLASH SCREEN -->
     <div id="splash-screen">
         <h1 style="color: white; margin-bottom: 30px; font-size: 28px;">ElectroFish Pro</h1>
@@ -181,7 +101,7 @@
             <h3 style="margin-top:0;">NMFS Protocol Edition</h3>
             <ul style="padding-left: 20px; margin-bottom: 25px; font-size: 14px;">
                 <li>Comprehensive PNW Species Database</li>
-                <li>Reach & Machine Effort Tracking</li>
+                <li>In-App Photo Documentation</li>
                 <li>Automated Depletion Curves</li>
                 <li>Device-Secure Export Engine</li>
             </ul>
@@ -202,14 +122,9 @@
         <div id="tab-site" class="tab-content active">
             <div class="card">
                 <h3>Environmental Data</h3>
-                <button class="btn btn-secondary" onclick="getLocationAndWeather()" style="margin-bottom: 15px;">
-                    📡 Acquire GPS & Weather
-                </button>
-                <div id="env-data" style="font-size: 13px; color: var(--text-muted); background: #F8FAFC; padding: 10px; border-radius: 6px;">
-                    Awaiting sensor input...
-                </div>
+                <button class="btn btn-secondary" onclick="getLocationAndWeather()" style="margin-bottom: 15px;">📡 Acquire GPS & Weather</button>
+                <div id="env-data" style="font-size: 13px; color: var(--text-muted); background: #F8FAFC; padding: 10px; border-radius: 6px;">Awaiting sensor input...</div>
             </div>
-
             <div class="card">
                 <h3>Reach Parameters</h3>
                 <div class="row">
@@ -218,7 +133,7 @@
                 </div>
                 <div class="row">
                     <div class="col"><label>Water Temp (°C)</label><input type="number" step="0.1" id="waterTemp"></div>
-                    <div class="col"><label>Conductivity (µS/cm)</label><input type="number" id="conductivity"></div>
+                    <div class="col"><label>Cond (µS/cm)</label><input type="number" id="conductivity"></div>
                 </div>
             </div>
         </div>
@@ -247,11 +162,10 @@
                         <!-- Populated by JS -->
                     </select>
 
-                    <!-- BIO-DEX ID SCANNER -->
                     <div id="biodex-box">
-                        <div class="biodex-title">Field Identification</div>
+                        <div style="font-size:11px; color:var(--primary); font-weight:bold; margin-bottom:5px;">FIELD IDENTIFICATION</div>
                         <div id="biodex-sci" class="biodex-sci"></div>
-                        <div id="biodex-traits" class="biodex-traits"></div>
+                        <div id="biodex-traits" style="font-size:13px; color:#475569;"></div>
                     </div>
 
                     <div class="row">
@@ -264,7 +178,7 @@
                         <div class="col"><label>Photo Doc</label><input type="file" id="photo" accept="image/*" capture="environment" style="padding: 9px;"></div>
                     </div>
                     
-                    <button type="button" class="btn btn-primary" onclick="saveCatch()" style="margin-top: 10px;">Log Specimen</button>
+                    <button type="button" class="btn btn-primary" id="logBtn" onclick="saveCatch()" style="margin-top: 10px;">Log Specimen</button>
                 </form>
             </div>
         </div>
@@ -273,24 +187,17 @@
         <div id="tab-stats" class="tab-content">
             <div class="card">
                 <h3>Depletion Curve</h3>
-                <canvas id="depletionChart" width="400" height="250"></canvas>
+                <div style="background: white; border: 1px solid var(--border); border-radius: 6px; padding: 5px; margin-bottom: 10px;">
+                    <canvas id="depletionChart" width="400" height="250" style="background-color: white;"></canvas>
+                </div>
+                <button class="btn btn-outline" onclick="downloadChartImage()">💾 Download Chart (.JPG)</button>
             </div>
             
-            <div class="card">
-                <h3>Species Composition</h3>
-                <div class="table-responsive">
-                    <table>
-                        <thead><tr><th>Taxa</th><th>Count</th></tr></thead>
-                        <tbody id="countBody"><tr><td colspan="2" style="text-align:center;">No data collected yet.</td></tr></tbody>
-                    </table>
-                </div>
-            </div>
-
             <div class="card">
                 <h3>Survey Raw Log</h3>
                 <div class="table-responsive">
                     <table id="logTable">
-                        <thead><tr><th>Sweep</th><th>Taxa</th><th>L(mm)</th><th>Cond</th></tr></thead>
+                        <thead><tr><th>Sweep</th><th>Taxa</th><th>L(mm)</th><th>Photo</th></tr></thead>
                         <tbody id="logBody"></tbody>
                     </table>
                 </div>
@@ -299,6 +206,23 @@
 
         <!-- 4. GEAR / REFERENCE TAB -->
         <div id="tab-gear" class="tab-content">
+            <!-- CONVERSION DROPDOWNS (NEW) -->
+            <div class="card">
+                <h3>Comprehensive Conversions</h3>
+                <div class="row" style="margin-bottom: 0;">
+                    <div class="col">
+                        <label>Length (mm → Inches)</label>
+                        <select id="lenConv" onchange="calcLen()"></select>
+                        <div id="lenResult" style="margin-top:8px; font-weight:bold; color:var(--primary); font-size:16px;">--</div>
+                    </div>
+                    <div class="col">
+                        <label>Temp (°C → °F)</label>
+                        <select id="tempConv" onchange="calcTemp()"></select>
+                        <div id="tempResult" style="margin-top:8px; font-weight:bold; color:var(--danger); font-size:16px;">--</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <h3>Field Calculator</h3>
                 <input type="text" id="calcDisplay" disabled style="font-size: 20px; text-align: right; background: #fff; margin-bottom:15px; color:#333;">
@@ -311,45 +235,24 @@
                 </div>
             </div>
 
-            <div class="card">
-                <h3>Conversion References</h3>
-                <div class="row">
-                    <div class="col">
-                        <h4 style="font-size:12px; color:var(--text-muted);">LENGTH (Inches = mm ÷ 25.4)</h4>
-                        <table>
-                            <tr><th>mm</th><th>in</th></tr>
-                            <tr><td>50</td><td>2.0</td></tr>
-                            <tr><td>100</td><td>3.9</td></tr>
-                            <tr><td>200</td><td>7.9</td></tr>
-                            <tr><td>300</td><td>11.8</td></tr>
-                        </table>
-                    </div>
-                    <div class="col">
-                        <h4 style="font-size:12px; color:var(--text-muted);">TEMP (°F = °C × 1.8 + 32)</h4>
-                        <table>
-                            <tr><th>°C</th><th>°F</th></tr>
-                            <tr><td>4</td><td>39.2</td></tr>
-                            <tr><td>8</td><td>46.4</td></tr>
-                            <tr><td>12</td><td>53.6</td></tr>
-                            <tr><td>16</td><td>60.8</td></tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
+            <!-- ELECTROFISHING THEORY (EXPANDED) -->
             <div class="card" style="background-color: #F8FAFC;">
-                <h3>Electrofishing Theory</h3>
+                <h3>Depletion Theory & Formulas</h3>
+                
                 <h5 style="margin-top:10px;">1. Ohm's Law (V = I × R)</h5>
-                <p style="font-size: 12px; color: var(--text-muted);">Voltage (V) = Current (I) × Resistance (R). Water conductivity determines resistance. Low conductivity = high resistance (requires higher voltage). High conductivity = low resistance (requires lower voltage).</p>
+                <p style="font-size: 12px; color: var(--text-muted);">Voltage (V) = Current (I) × Resistance (R). Water conductivity determines resistance. Low conductivity = high resistance (needs higher voltage). High conductivity = low resistance (needs lower voltage).</p>
                 
                 <h5 style="margin-top:15px;">2. Power Transfer Theory</h5>
-                <p style="font-size: 12px; color: var(--text-muted);">Peak efficiency occurs when water conductivity matches the fish's internal conductivity (~100-150 µS/cm). In highly conductive water, electricity flows around the fish. In resistive water, it struggles to enter the fish.</p>
+                <p style="font-size: 12px; color: var(--text-muted);">Peak efficiency occurs when water conductivity matches the fish's internal conductivity (~100-150 µS/cm). In highly conductive water, electricity flows around the fish. In highly resistive water, it struggles to enter the fish.</p>
 
-                <h5 style="margin-top:15px;">3. Duty Cycle</h5>
-                <p style="font-size: 12px; color: var(--text-muted);">Duty Cycle % = (Pulse Width in ms) × (Frequency in Hz) / 10. Higher duty cycles deliver more total power but increase the risk of muscular hemorrhaging or spinal injury.</p>
+                <h5 style="margin-top:15px;">3. Catchability Coefficient (q)</h5>
+                <p style="font-size: 12px; color: var(--text-muted);"><strong>Formula: q = C / (N × E)</strong><br>The proportion of the total population (N) caught by one unit of effort (E). Depletion surveys mathematically assume 'q' remains constant across all sweeps (the remaining fish do not become harder to catch).</p>
 
-                <h5 style="margin-top:15px;">4. C.P.U.E.</h5>
-                <p style="font-size: 12px; color: var(--text-muted);">Catch Per Unit Effort = (Total Fish Caught) / (Total Shock Seconds). A standard metric used to estimate relative population abundance across different reaches.</p>
+                <h5 style="margin-top:15px;">4. Seber-Le Cren (2-Pass Estimate)</h5>
+                <p style="font-size: 12px; color: var(--text-muted);"><strong>Formula: N = C₁² / (C₁ - C₂)</strong><br>When conducting exactly two sweeps, this formula calculates the true estimated population (N). C₁ is the number of fish caught in pass 1. For this mathematical model to work, C₁ must be strictly greater than C₂.</p>
+
+                <h5 style="margin-top:15px;">5. Leslie Graphical Method</h5>
+                <p style="font-size: 12px; color: var(--text-muted);">A linear regression graphical method. Catch Per Unit Effort (CPUE) is plotted on the Y-axis against Cumulative Catch on the X-axis. Where the line of best fit crosses the X-axis (where CPUE theoretically reaches 0), that X-intercept represents your estimated total population size.</p>
             </div>
         </div>
 
@@ -357,16 +260,15 @@
         <div id="tab-save" class="tab-content">
             <div class="card" style="text-align: center; padding: 30px 20px;">
                 <h3>Database Export</h3>
-                <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Download your field data for CPUE analysis and reporting. Compatible with Excel and Word.</p>
-                
+                <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Download your field data for CPUE analysis and reporting.</p>
                 <button class="btn btn-success" onclick="exportCSV()" style="margin-bottom: 15px;">📊 Download Excel (.CSV)</button>
                 <button class="btn btn-primary" onclick="exportDOC()">📄 Download Word (.DOC)</button>
             </div>
 
             <div class="card" style="border-left: 4px solid var(--danger);">
                 <h3 style="color: var(--danger);">Raw Data Fallback</h3>
-                <p style="font-size: 12px; color: var(--text-muted);">If your mobile browser security blocks file downloads, generate an export above, then copy the raw text below.</p>
-                <textarea id="rawDataBox" readonly placeholder="Raw data will populate here after clicking an export button..."></textarea>
+                <p style="font-size: 12px; color: var(--text-muted);">If your mobile browser security blocks file downloads, click an export button above, then copy the raw text below.</p>
+                <textarea id="rawDataBox" readonly placeholder="Raw data will populate here..."></textarea>
                 <button class="btn btn-outline" onclick="copyRawData()">Copy to Clipboard</button>
             </div>
         </div>
@@ -384,7 +286,6 @@
 
     <!-- APP LOGIC -->
     <script>
-        // --- COMPREHENSIVE PNW SPECIES DATABASE ---
         const speciesDB =[
             { group: "Salmonidae (Trout, Salmon, Char)", items:[
                 { name: "Chinook Salmon", sci: "Oncorhynchus tshawytscha", traits: "Black mouth/gums. Spots on BOTH lobes of tail." },
@@ -398,73 +299,43 @@
                 { name: "Bull Trout", sci: "Salvelinus confluentus", traits: "No black on dorsal. Pale yellow/pink spots on olive back." },
                 { name: "Brook Trout", sci: "Salvelinus fontinalis", traits: "Worm-like vermiculations on back. White leading fin edges." },
                 { name: "Brown Trout", sci: "Salmo trutta", traits: "Large dark/red spots with halos. Few spots on tail." },
-                { name: "Mountain Whitefish", sci: "Prosopium williamsoni", traits: "Large scales, subterminal mouth. Adipose fin." },
-                { name: "Pygmy Whitefish", sci: "Prosopium coulterii", traits: "Small (<8 in), blunt snout, <70 lateral scales." }
+                { name: "Mountain Whitefish", sci: "Prosopium williamsoni", traits: "Large scales, subterminal mouth. Adipose fin." }
             ]},
-            { group: "Cyprinidae (Minnows, Chubs, Daces)", items:[
+            { group: "Cyprinidae (Minnows, Chubs)", items:[
                 { name: "Northern Pikeminnow", sci: "Ptychocheilus oregonensis", traits: "Large mouth past front of eye. Forked tail." },
                 { name: "Peamouth", sci: "Mylocheilus caurinus", traits: "Small mouth, reddish corners. Deeply forked tail." },
                 { name: "Redside Shiner", sci: "Richardsonius balteatus", traits: "Deep body. Long anal fin (10-22 rays). Crimson band." },
                 { name: "Speckled Dace", sci: "Rhinichthys osculus", traits: "Small subterminal mouth. Speckled dark pattern." },
                 { name: "Longnose Dace", sci: "Rhinichthys cataractae", traits: "Fleshy snout projects past mouth. Fast riffles." },
-                { name: "Leopard Dace", sci: "Rhinichthys falcatus", traits: "Prominent dark spots. Columbia/Fraser systems." },
                 { name: "Chiselmouth", sci: "Acrocheilus alutaceus", traits: "Lower jaw has hard cartilaginous cutting edge." },
-                { name: "Tui Chub", sci: "Siphateles bicolor", traits: "Robust body, large scales, deep caudal peduncle." },
-                { name: "Oregon Chub", sci: "Oregonichthys crameri", traits: "Willamette endemic. Large scales, small mouth." },
                 { name: "Common Carp", sci: "Cyprinus carpio", traits: "Two barbels per side. Heavy serrated dorsal/anal spines." }
             ]},
-            { group: "Catostomidae (Suckers)", items:[
+            { group: "Catostomidae & Cottidae (Suckers, Sculpins)", items:[
                 { name: "Largescale Sucker", sci: "Catostomus macrocheilus", traits: "Fleshy subterminal mouth. <80 lateral scales." },
                 { name: "Bridgelip Sucker", sci: "Catostomus columbianus", traits: "Deeply incised lower lip. >90 lateral scales." },
-                { name: "Mountain Sucker", sci: "Catostomus platyrhynchus", traits: "Cartilaginous scraping edge on lower jaw." },
-                { name: "Longnose Sucker", sci: "Catostomus catostomus", traits: "Long snout past mouth. >95 lateral scales." }
-            ]},
-            { group: "Cottidae (Sculpins)", items:[
                 { name: "Prickly Sculpin", sci: "Cottus asper", traits: "Rough prickles all over. Dark spot rear of 1st dorsal." },
                 { name: "Reticulate Sculpin", sci: "Cottus perplexus", traits: "Gap between dorsal fins. Reticulated pattern." },
-                { name: "Torrent Sculpin", sci: "Cottus rhotheus", traits: "Broad head. Two dark saddles under 2nd dorsal." },
-                { name: "Coastrange Sculpin", sci: "Cottus aleuticus", traits: "No gap between dorsal fins. Single chin pore." },
-                { name: "Paiute Sculpin", sci: "Cottus beldingii", traits: "No palatine teeth. Typically one median chin pore." },
-                { name: "Mottled Sculpin", sci: "Cottus bairdii", traits: "Highly mottled, incomplete lateral line." },
-                { name: "Pacific Staghorn", sci: "Leptocottus armatus", traits: "Antler-like preopercular spine. Estuarine." }
+                { name: "Torrent Sculpin", sci: "Cottus rhotheus", traits: "Broad head. Two dark saddles under 2nd dorsal." }
             ]},
-            { group: "Petromyzontidae (Lampreys)", items:[
-                { name: "Pacific Lamprey", sci: "Entosphenus tridentatus", traits: "3 supraoral teeth. Large (up to 30 in). Parasitic." },
-                { name: "Western Brook Lamprey", sci: "Lampetra richardsoni", traits: "Non-parasitic. Blunt teeth, <7 inches." },
-                { name: "River Lamprey", sci: "Lampetra ayresii", traits: "2 supraoral teeth. Sharp teeth, 7-12 inches." }
-            ]},
-            { group: "Centrarchidae & Percidae", items:[
+            { group: "Centrarchidae & Others", items:[
                 { name: "Largemouth Bass", sci: "Micropterus salmoides", traits: "Jaw extends past eye. Deep horizontal stripe." },
                 { name: "Smallmouth Bass", sci: "Micropterus dolomieu", traits: "Jaw does NOT extend past eye. Vertical bars." },
                 { name: "Bluegill", sci: "Lepomis macrochirus", traits: "Solid black opercular flap. Spot at rear dorsal." },
-                { name: "Pumpkinseed", sci: "Lepomis gibbosus", traits: "Red/orange spot on opercular flap edge." },
-                { name: "Black Crappie", sci: "Pomoxis nigromaculatus", traits: "Irregular black speckling. 7-8 dorsal spines." },
-                { name: "Yellow Perch", sci: "Perca flavescens", traits: "Yellow with 6-8 vertical black bars." },
-                { name: "Walleye", sci: "Sander vitreus", traits: "Glassy eyes. Canine teeth. White tip on lower tail." }
-            ]},
-            { group: "Ictaluridae (Catfish)", items:[
-                { name: "Channel Catfish", sci: "Ictalurus punctatus", traits: "Deeply forked tail. Spots on sides." },
-                { name: "Brown Bullhead", sci: "Ameiurus nebulosus", traits: "Square tail. Mottled. Dark chin barbels." },
-                { name: "Yellow Bullhead", sci: "Ameiurus natalis", traits: "White or yellow chin barbels. Rounded tail." }
-            ]},
-            { group: "Estuarine & Other", items:[
-                { name: "White Sturgeon", sci: "Acipenser transmontanus", traits: "Barbels closer to snout tip than mouth." },
-                { name: "Green Sturgeon", sci: "Acipenser medirostris", traits: "Barbels closer to mouth than snout. Olive." },
-                { name: "Threespine Stickleback", sci: "Gasterosteus aculeatus", traits: "Three sharp isolated spines in front of dorsal." },
-                { name: "Starry Flounder", sci: "Platichthys stellatus", traits: "Alternating black/orange bands on fins." },
-                { name: "Shiner Perch", sci: "Cymatogaster aggregata", traits: "Three vertical yellow bars on sides." },
+                { name: "Pacific Lamprey", sci: "Entosphenus tridentatus", traits: "3 supraoral teeth. Large (up to 30 in). Parasitic." },
+                { name: "Western Brook Lamprey", sci: "Lampetra richardsoni", traits: "Non-parasitic. Blunt teeth, <7 inches." },
                 { name: "Unknown Specimen", sci: "Indeterminatus", traits: "Unable to ID in field. Retained for lab." }
             ]}
         ];
 
         let catchData =[]; let siteLat = "UNK", siteLon = "UNK", airTemp = "UNK", weatherCode = "UNK"; let chartInstance = null;
 
-        // Startup: Populate Dropdown
+        // Startup
         function startGame() {
             document.getElementById('splash-screen').style.display = 'none';
             document.getElementById('app-body').style.display = 'block';
             document.getElementById('nav-bar').style.display = 'flex';
             
+            // Populate Species
             const speciesSelect = document.getElementById('species');
             speciesDB.forEach(group => {
                 const optGroup = document.createElement('optgroup');
@@ -476,10 +347,31 @@
                 });
                 speciesSelect.appendChild(optGroup);
             });
+
+            // Populate Conversion Dropdowns
+            let lenHTML = '<option disabled selected>Select mm...</option>';
+            for(let i=10; i<=1000; i+=10) lenHTML += `<option value="${i}">${i} mm</option>`;
+            document.getElementById('lenConv').innerHTML = lenHTML;
+
+            let tempHTML = '<option disabled selected>Select °C...</option>';
+            for(let i=-5; i<=35; i+=1) tempHTML += `<option value="${i}">${i} °C</option>`;
+            document.getElementById('tempConv').innerHTML = tempHTML;
+
             initChart();
         }
 
-        // Bio-Dex Update
+        // Conversions
+        function calcLen() {
+            let mm = document.getElementById('lenConv').value;
+            let inches = (mm / 25.4).toFixed(2);
+            document.getElementById('lenResult').innerText = `${mm} mm = ${inches} in`;
+        }
+        function calcTemp() {
+            let c = document.getElementById('tempConv').value;
+            let f = ((c * 1.8) + 32).toFixed(1);
+            document.getElementById('tempResult').innerText = `${c} °C = ${f} °F`;
+        }
+
         function updateBioDex() {
             const select = document.getElementById('species');
             const selectedOpt = select.options[select.selectedIndex];
@@ -490,21 +382,18 @@
             }
         }
 
-        // Tab Switching
         function switchTab(tabId, el) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
-            el.classList.add('active');
-            window.scrollTo(0,0);
-            if(tabId === 'stats') { updateChart(); updateSpeciesCount(); }
+            el.classList.add('active'); window.scrollTo(0,0);
+            if(tabId === 'stats') updateChart();
         }
 
         // GPS & Weather 
         function getLocationAndWeather() {
             const envDiv = document.getElementById('env-data'); 
             envDiv.innerHTML = "Acquiring satellite signal...<br><small>(Ensure browser location permissions are active)</small>";
-            
             async function fetchWeather(lat, lon) {
                 try {
                     const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
@@ -512,77 +401,82 @@
                     airTemp = weather.current_weather.temperature; weatherCode = weather.current_weather.windspeed;
                     envDiv.innerHTML = `<strong>Coordinates:</strong> ${lat}, ${lon}<br><strong>Environment:</strong> Air Temp ${airTemp}°C, Wind ${weatherCode} km/h`; 
                 } catch (err) { envDiv.innerHTML = `<strong>Coordinates:</strong> ${lat}, ${lon}<br><strong>Environment:</strong> Weather API unreachable.`; }
-                document.getElementById('header-status').innerText = "GPS Locked";
-                document.getElementById('header-status').style.background = "rgba(39, 174, 96, 0.8)";
+                document.getElementById('header-status').innerText = "GPS Locked"; document.getElementById('header-status').style.background = "rgba(39, 174, 96, 0.8)";
             }
-
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (pos) => { siteLat = pos.coords.latitude.toFixed(5); siteLon = pos.coords.longitude.toFixed(5); fetchWeather(siteLat, siteLon); }, 
-                    (err) => {
-                        envDiv.innerHTML = "<span style='color:var(--danger)'>GPS Blocked. Utilizing fallback coordinates for demonstration.</span>";
-                        siteLat = "45.5231"; siteLon = "-122.6765"; setTimeout(() => fetchWeather(siteLat, siteLon), 1500);
-                    },
+                    (err) => { envDiv.innerHTML = "<span style='color:var(--danger)'>GPS Blocked. Utilizing fallback coordinates.</span>"; siteLat = "45.5231"; siteLon = "-122.6765"; setTimeout(() => fetchWeather(siteLat, siteLon), 1500); },
                     { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
                 );
             } else { envDiv.innerHTML = "Hardware radar unavailable on this device."; }
         }
 
-        // Log Catch Data
-        function saveCatch() {
-            const reachLen = document.getElementById('reachLen').value || "UNK"; const blockNets = document.getElementById('blockNets').value;
-            const waterTemp = document.getElementById('waterTemp').value || "UNK"; const cond = document.getElementById('conductivity').value || "UNK";
-            const pass = document.getElementById('passNum').value; const shockSecs = document.getElementById('shockSecs').value || "UNK";
-            const volts = document.getElementById('volts').value || "UNK"; const freq = document.getElementById('freq').value || "UNK"; const duty = document.getElementById('duty').value || "UNK";
-            
+        // Log Catch Data with Image Processing
+        async function saveCatch() {
+            const pass = document.getElementById('passNum').value;
             const speciesSelect = document.getElementById('species'); const speciesOpt = speciesSelect.options[speciesSelect.selectedIndex];
-            const speciesName = speciesOpt.value; const speciesSci = speciesOpt.dataset.sci || "UNK";
-            const length = document.getElementById('length').value; const weight = document.getElementById('weight').value || "---";
-            const condition = document.getElementById('condition').value; const photoInput = document.getElementById('photo').files.length > 0 ? "Y" : "N";
-
+            const speciesName = speciesOpt.value; const length = document.getElementById('length').value;
+            
             if(!pass || !speciesName || !length) { alert("Data entry error: Please input Sweep #, Species, and Length."); return; }
 
+            const btn = document.getElementById('logBtn'); btn.innerText = "Processing..."; btn.style.backgroundColor = "var(--text-muted)";
+
+            // Handle Image Upload to Base64
+            const photoInput = document.getElementById('photo');
+            let photoDataUrl = "N";
+            let photoThumbHTML = "No Photo";
+
+            if (photoInput.files.length > 0) {
+                photoDataUrl = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(photoInput.files[0]);
+                });
+                // Create clickable thumbnail for UI
+                photoThumbHTML = `<img src="${photoDataUrl}" style="height:35px; width:35px; object-fit:cover; border-radius:4px; border:2px solid var(--primary); cursor:pointer;" onclick="openPhoto('${photoDataUrl}')">`;
+            }
+
             const record = { 
-                time: new Date().toLocaleTimeString(), reachLen, blockNets, waterTemp, cond, pass, shockSecs, volts, freq, duty,
-                species: speciesName, sci: speciesSci, length, weight, condition, photo: photoInput
+                time: new Date().toLocaleTimeString(), reachLen: document.getElementById('reachLen').value || "UNK", blockNets: document.getElementById('blockNets').value,
+                waterTemp: document.getElementById('waterTemp').value || "UNK", cond: document.getElementById('conductivity').value || "UNK", pass, shockSecs: document.getElementById('shockSecs').value || "UNK",
+                volts: document.getElementById('volts').value || "UNK", freq: document.getElementById('freq').value || "UNK", duty: document.getElementById('duty').value || "UNK",
+                species: speciesName, sci: speciesOpt.dataset.sci || "UNK", length, weight: document.getElementById('weight').value || "---", condition: document.getElementById('condition').value,
+                photoStatus: photoInput.files.length > 0 ? "Image Captured" : "No Photo"
             };
             catchData.push(record);
             
-            // Add to live log table
+            // Add to UI log table
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${pass}</td><td><strong>${speciesName}</strong></td><td>${length}</td><td>${condition}</td>`;
+            tr.innerHTML = `<td>${pass}</td><td><strong>${speciesName}</strong></td><td>${length}</td><td>${photoThumbHTML}</td>`;
             document.getElementById('logBody').prepend(tr);
 
-            // Reset inputs for next fish
+            // Reset inputs
             document.getElementById('length').value = ''; document.getElementById('weight').value = ''; document.getElementById('photo').value = '';
             document.getElementById('condition').value = 'Vigorous'; document.getElementById('biodex-box').style.display = 'none'; speciesSelect.selectedIndex = 0;
             
-            // Visual success feedback
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.style.backgroundColor = "var(--success)";
-            btn.innerText = "Logged Successfully!";
-            setTimeout(() => { btn.style.backgroundColor = "var(--primary)"; btn.innerText = originalText; }, 1000);
+            // Success State
+            btn.style.backgroundColor = "var(--success)"; btn.innerText = "Logged Successfully!";
+            setTimeout(() => { btn.style.backgroundColor = "var(--primary)"; btn.innerText = "Log Specimen"; }, 1000);
         }
 
-        // Professional Charting (Smooth Curve)
+        // Photo Modal Viewer
+        function openPhoto(base64Url) {
+            document.getElementById('modal-img').src = base64Url;
+            document.getElementById('photo-modal').style.display = 'flex';
+        }
+        function closePhoto() {
+            document.getElementById('photo-modal').style.display = 'none';
+            document.getElementById('modal-img').src = "";
+        }
+
+        // Professional Charting
         function initChart() {
-            Chart.defaults.font.family = "'Inter', sans-serif";
-            Chart.defaults.color = '#7F8C8D';
+            Chart.defaults.font.family = "'Inter', sans-serif"; Chart.defaults.color = '#7F8C8D';
             const ctx = document.getElementById('depletionChart').getContext('2d');
             chartInstance = new Chart(ctx, {
                 type: 'line',
-                data: { labels: [], datasets:[{ 
-                    label: 'Fish Caught per Sweep', 
-                    data: [], 
-                    borderColor: '#0F4C81', 
-                    backgroundColor: 'rgba(15, 76, 129, 0.1)', 
-                    borderWidth: 3, 
-                    fill: true, 
-                    tension: 0.4, 
-                    pointRadius: 5, 
-                    pointBackgroundColor: '#4A90E2' 
-                }] },
+                data: { labels: [], datasets:[{ label: 'Fish Caught per Sweep', data: [], borderColor: '#0F4C81', backgroundColor: 'rgba(15, 76, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.4, pointRadius: 5, pointBackgroundColor: '#4A90E2' }] },
                 options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: {} }, plugins: { legend: { display: false } } }
             });
         }
@@ -593,13 +487,22 @@
             chartInstance.data.labels = sortedPasses.map(p => `Sweep ${p}`); chartInstance.data.datasets[0].data = counts; chartInstance.update();
         }
 
-        // Species Composition Count
-        function updateSpeciesCount() {
-            const countBody = document.getElementById('countBody'); countBody.innerHTML = '';
-            if (catchData.length === 0) { countBody.innerHTML = '<tr><td colspan="2" style="text-align:center;">No data collected yet.</td></tr>'; return; }
-            let counts = {}; catchData.forEach(d => { counts[d.species] = (counts[d.species] || 0) + 1; });
-            const sortedSpecies = Object.keys(counts).sort((a,b) => counts[b] - counts[a]);
-            sortedSpecies.forEach(sp => { const tr = document.createElement('tr'); tr.innerHTML = `<td>${sp}</td><td><strong>${counts[sp]}</strong></td>`; countBody.appendChild(tr); });
+        // Chart Downloader
+        function downloadChartImage() {
+            if(catchData.length === 0) return alert("Log some data first to generate a curve!");
+            const canvas = document.getElementById('depletionChart');
+            
+            // Create a temporary canvas to fill a white background (so it's not transparent)
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width; tempCanvas.height = canvas.height;
+            const ctx = tempCanvas.getContext('2d');
+            ctx.fillStyle = 'white'; ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            ctx.drawImage(canvas, 0, 0);
+
+            const link = document.createElement('a');
+            link.download = 'Depletion_Curve.jpg';
+            link.href = tempCanvas.toDataURL('image/jpeg', 1.0);
+            link.click();
         }
 
         // Field Calculator
@@ -608,19 +511,16 @@
         function calcClear() { calcVal = ""; document.getElementById('calcDisplay').value = ""; }
         function calcEval() { try { calcVal = eval(calcVal).toString(); document.getElementById('calcDisplay').value = calcVal; } catch { document.getElementById('calcDisplay').value = "Error"; calcVal=""; } }
 
-        // --- DEVICE-SECURE EXPORT LOGIC ---
+        // --- EXPORT LOGIC ---
         function exportCSV() {
             if(catchData.length === 0) return alert("No database records to export.");
-            let csv = "Time,Lat,Lon,AirTempC,WaterTempC,Cond_uS,Reach_m,BlockNets,Sweep,ShockSecs,Volts,FreqHz,Duty%,Common_Name,Scientific_Name,Length_mm,Weight_g,Condition,Photo\n";
-            catchData.forEach(d => { csv += `${d.time},${siteLat},${siteLon},${airTemp},${d.waterTemp},${d.cond},${d.reachLen},${d.blockNets},${d.pass},${d.shockSecs},${d.volts},${d.freq},${d.duty},${d.species},${d.sci},${d.length},${d.weight},${d.condition},${d.photo}\n`; });
+            let csv = "Time,Lat,Lon,AirTempC,WaterTempC,Cond_uS,Reach_m,BlockNets,Sweep,ShockSecs,Volts,FreqHz,Duty%,Common_Name,Scientific_Name,Length_mm,Weight_g,Condition,Photo_Status\n";
+            catchData.forEach(d => { csv += `${d.time},${siteLat},${siteLon},${airTemp},${d.waterTemp},${d.cond},${d.reachLen},${d.blockNets},${d.pass},${d.shockSecs},${d.volts},${d.freq},${d.duty},${d.species},${d.sci},${d.length},${d.weight},${d.condition},${d.photoStatus}\n`; });
             
-            // 1. Fill Fallback Box
             document.getElementById('rawDataBox').value = csv;
             
-            // 2. Data URI Download Attempt
             const uri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-            const a = document.createElement('a');
-            a.href = uri; a.download = 'Electro_Depletion_Log.csv';
+            const a = document.createElement('a'); a.href = uri; a.download = 'Electro_Depletion_Log.csv';
             document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
 
@@ -633,25 +533,21 @@
                 <p><strong>Reach Length:</strong> ${d0.reachLen} m | <strong>Block Nets:</strong> ${d0.blockNets}</p>
                 <p><strong>Water Temp:</strong> ${d0.waterTemp} °C | <strong>Conductivity:</strong> ${d0.cond} µS/cm</p><hr>
                 <table>
-                <tr><th>Sweep</th><th>Effort (s)</th><th>Settings (V/Hz)</th><th>Common Name</th><th>Scientific Name</th><th>L (mm)</th><th>W (g)</th><th>Condition</th></tr>`;
+                <tr><th>Sweep</th><th>Effort (s)</th><th>Settings (V/Hz)</th><th>Common Name</th><th>Scientific Name</th><th>L (mm)</th><th>W (g)</th><th>Condition</th><th>Photo</th></tr>`;
             
-            // Generate rows for DOC and Fallback text simultaneously
-            let fallbackText = `ELECTROFISHING REACH REPORT\nDate: ${new Date().toLocaleDateString()}\nGPS: ${siteLat}, ${siteLon}\nReach: ${d0.reachLen}m | Block Nets: ${d0.blockNets}\nTemp: ${d0.waterTemp}C | Cond: ${d0.cond}uS/cm\n\nSWEEP | SEC | V/Hz | SPECIES | SCIENTIFIC | L(mm) | W(g) | COND\n`;
+            let fallbackText = `ELECTROFISHING REACH REPORT\nDate: ${new Date().toLocaleDateString()}\nGPS: ${siteLat}, ${siteLon}\nReach: ${d0.reachLen}m | Block Nets: ${d0.blockNets}\nTemp: ${d0.waterTemp}C | Cond: ${d0.cond}uS/cm\n\nSWEEP | SEC | V/Hz | SPECIES | SCIENTIFIC | L(mm) | W(g) | COND | PHOTO\n`;
             fallbackText += "-----------------------------------------------------------------------\n";
 
             catchData.forEach(d => { 
-                html += `<tr><td>${d.pass}</td><td>${d.shockSecs}</td><td>${d.volts}V/${d.freq}Hz</td><td>${d.species}</td><td><i>${d.sci}</i></td><td>${d.length}</td><td>${d.weight}</td><td>${d.condition}</td></tr>`; 
-                fallbackText += `${d.pass} | ${d.shockSecs} | ${d.volts}V/${d.freq}Hz | ${d.species} | ${d.sci} | ${d.length} | ${d.weight} | ${d.condition}\n`;
+                html += `<tr><td>${d.pass}</td><td>${d.shockSecs}</td><td>${d.volts}V/${d.freq}Hz</td><td>${d.species}</td><td><i>${d.sci}</i></td><td>${d.length}</td><td>${d.weight}</td><td>${d.condition}</td><td>${d.photoStatus}</td></tr>`; 
+                fallbackText += `${d.pass} | ${d.shockSecs} | ${d.volts}V/${d.freq}Hz | ${d.species} | ${d.sci} | ${d.length} | ${d.weight} | ${d.condition} | ${d.photoStatus}\n`;
             });
             html += "</table><br><p><i>Generated by ElectroFish Pro</i></p></body></html>";
 
-            // 1. Fill Fallback Box
             document.getElementById('rawDataBox').value = fallbackText;
 
-            // 2. Data URI Download Attempt
             const uri = 'data:application/msword;charset=utf-8,' + encodeURIComponent(html);
-            const a = document.createElement('a');
-            a.href = uri; a.download = 'Electro_Reach_Report.doc'; 
+            const a = document.createElement('a'); a.href = uri; a.download = 'Electro_Reach_Report.doc'; 
             document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
 
@@ -659,11 +555,7 @@
             const rawBox = document.getElementById('rawDataBox');
             if(!rawBox.value) { alert("Please generate an export first."); return; }
             rawBox.select(); rawBox.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(rawBox.value).then(() => {
-                alert("Data copied to clipboard! You can now paste this into an email or notes app.");
-            }).catch(() => {
-                alert("Copy failed. Please manually highlight the text box and copy.");
-            });
+            navigator.clipboard.writeText(rawBox.value).then(() => { alert("Data copied to clipboard! Paste this into an email or notes app."); }).catch(() => { alert("Copy failed. Please manually highlight the text box and copy."); });
         }
     </script>
 </body>
