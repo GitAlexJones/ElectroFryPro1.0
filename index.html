@@ -4,138 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ElectroFish Pro | NMFS Standard</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
-        :root {
-            --primary: #0F4C81; --secondary: #4A90E2; --success: #27AE60; --danger: #E74C3C;
-            --background: #F4F7F9; --surface: #FFFFFF; --text-main: #2C3E50; --text-muted: #7F8C8D; --border: #E0E6ED;
-        }
-
-        body {
-            background-color: var(--background); color: var(--text-main);
-            font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5;
-            margin: 0; padding: 0; padding-top: 60px; padding-bottom: 80px; -webkit-font-smoothing: antialiased;
-        }
-
+        :root { --primary: #0F4C81; --secondary: #4A90E2; --success: #27AE60; --danger: #E74C3C; --bg: #F4F7F9; --surf: #FFFFFF; --text: #2C3E50; --muted: #7F8C8D; --border: #E0E6ED; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; margin: 0; padding: 60px 0 80px 0; -webkit-font-smoothing: antialiased; }
         h1, h2, h3, h4, h5 { color: var(--primary); margin: 0 0 10px 0; font-weight: 600; }
         h3 { font-size: 1.1rem; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-bottom: 16px; }
         p { margin: 0 0 10px 0; }
-        
         .container { padding: 10px; max-width: 800px; margin: 0 auto; }
-        
-        .card { background-color: var(--surface); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .card { background: var(--surf); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
         .row { display: flex; gap: 12px; margin-bottom: 15px; } .col { flex: 1; }
-
-        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-
-        input, select, textarea {
-            width: 100%; padding: 12px; background-color: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 6px;
-            font-family: 'Inter', sans-serif; font-size: 16px; color: var(--text-main); box-sizing: border-box; transition: border-color 0.2s;
-        }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--secondary); background-color: #FFF; box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2); }
-        textarea { height: 100px; resize: vertical; font-size: 14px; }
-        .code-textarea { height: 120px; font-family: monospace; font-size: 12px; }
-
-        .btn {
-            display: block; width: 100%; padding: 14px; border: none; border-radius: 6px;
-            font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; text-align: center; cursor: pointer; transition: opacity 0.2s, transform 0.1s;
-        }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        input, select, textarea { width: 100%; padding: 12px; background: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 16px; color: var(--text); box-sizing: border-box; transition: border-color 0.2s; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--secondary); background: #FFF; box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2); }
+        textarea { height: 100px; resize: vertical; font-size: 14px; } .code-textarea { height: 120px; font-family: monospace; font-size: 12px; }
+        .btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; text-align: center; cursor: pointer; transition: opacity 0.2s, transform 0.1s; }
         .btn:active { transform: scale(0.98); }
-        .btn-primary { background-color: var(--primary); color: white; }
-        .btn-secondary { background-color: var(--secondary); color: white; }
-        .btn-success { background-color: var(--success); color: white; }
-        .btn-outline { background-color: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 10px; font-size: 13px; }
-
+        .btn-primary { background: var(--primary); color: white; } .btn-secondary { background: var(--secondary); color: white; }
+        .btn-success { background: var(--success); color: white; } .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 10px; font-size: 13px; }
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 13px; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
-        th { background-color: #F8FAFC; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
-
-        .top-header { position: fixed; top: 0; left: 0; width: 100%; background-color: var(--primary); color: white; padding: 15px; box-sizing: border-box; z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header-title { font-weight: 700; font-size: 16px; margin: 0; }
-        .header-badge { background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 11px; }
-
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
-        .nav-item { text-align: center; color: var(--text-muted); cursor: pointer; flex: 1; font-size: 11px; font-weight: 600; padding: 5px; }
-        .nav-item.active { color: var(--primary); }
-        .nav-icon { display: block; font-size: 20px; margin-bottom: 3px; }
-
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); } th { background: #F8FAFC; font-weight: 600; color: var(--muted); text-transform: uppercase; }
+        .top-header { position: fixed; top: 0; left: 0; width: 100%; background: var(--primary); color: white; padding: 15px; box-sizing: border-box; z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header-title { font-weight: 700; font-size: 16px; margin: 0; } .header-badge { background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 11px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--surf); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+        .nav-item { text-align: center; color: var(--muted); cursor: pointer; flex: 1; font-size: 11px; font-weight: 600; padding: 5px; } .nav-item.active { color: var(--primary); } .nav-icon { display: block; font-size: 20px; margin-bottom: 3px; }
         .tab-content { display: none; } .tab-content.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--primary); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; text-align: center; color: white; }
-        .splash-card { background: white; color: var(--text-main); padding: 30px; border-radius: 12px; max-width: 400px; width: 100%; text-align: left;}
-
-        #biodex-box { background-color: #EBF5FF; border-left: 4px solid var(--secondary); padding: 15px; margin-bottom: 15px; border-radius: 0 6px 6px 0; display: none; }
-        .biodex-sci { font-size: 14px; font-style: italic; color: var(--text-main); margin-bottom: 5px; font-weight: 500; }
-        
-        #photo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; }
-        #photo-modal img { max-width: 100%; max-height: 80vh; border-radius: 8px; border: 4px solid white; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; text-align: center; color: white; }
+        .modal-overlay.dark { background: rgba(0,0,0,0.9); } .modal-overlay.blur { background: rgba(15, 76, 129, 0.95); }
+        .modal-card { background: white; color: var(--text); padding: 30px; border-radius: 12px; max-width: 450px; width: 100%; text-align: left; max-height: 80vh; overflow-y: auto; }
+        #biodex-box { background: #EBF5FF; border-left: 4px solid var(--secondary); padding: 15px; margin-bottom: 15px; border-radius: 0 6px 6px 0; display: none; }
+        .biodex-sci { font-size: 14px; font-style: italic; color: var(--text); margin-bottom: 5px; font-weight: 500; }
+        #photo-modal img { max-width: 100%; max-height: 70vh; border-radius: 8px; border: 4px solid white; }
         .close-btn { background: var(--danger); color: white; padding: 10px 20px; margin-top: 20px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; }
-
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .calc-grid .btn { padding: 15px 0; font-size: 18px; border-radius: 8px; background: #F1F5F9; color: var(--text-main); }
-        .calc-grid .btn-op { background: var(--secondary); color: white; }
-        .calc-grid .btn-clear { background: var(--danger); color: white; }
-        .calc-grid .btn-eq { background: var(--success); color: white; grid-column: span 4; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; } .calc-grid .btn { padding: 15px 0; font-size: 18px; border-radius: 8px; background: #F1F5F9; color: var(--text); }
+        .calc-grid .btn-op { background: var(--secondary); color: white; } .calc-grid .btn-clear { background: var(--danger); color: white; } .calc-grid .btn-eq { background: var(--success); color: white; grid-column: span 4; }
+        .app-footer { text-align: center; padding: 30px 10px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); margin-top: 20px; } .app-footer a { color: var(--secondary); text-decoration: none; font-weight: 600; }
     </style>
 </head>
 <body>
 
-    <!-- PHOTO VIEW MODAL -->
-    <div id="photo-modal">
+    <!-- MODALS -->
+    <div id="photo-modal" class="modal-overlay dark" style="display: none;">
         <img id="modal-img" src="" alt="Specimen Photo">
-        <button class="close-btn" onclick="closePhoto()">Close Image</button>
+        <button class="close-btn" onclick="document.getElementById('photo-modal').style.display='none'">Close Image</button>
     </div>
 
-    <!-- SPLASH SCREEN -->
-    <div id="splash-screen">
+    <div id="terms-modal" class="modal-overlay blur" style="display: none;">
+        <div class="modal-card">
+            <h2 style="margin-top:0;">Terms of Use</h2>
+            <p style="font-size: 13px;"><strong>Educational Software:</strong> ElectroFish Pro is a beta software tool designed strictly for collegiate educational purposes and field biology training.</p>
+            <p style="font-size: 13px;"><strong>Data Retention:</strong> Data logged is stored locally in your browser's active cache. It is the user's responsibility to frequently export data. Closing the browser tab may result in data loss.</p>
+            <p style="font-size: 13px;"><strong>Safety Warning:</strong> Electrofishing involves high voltage and inherent dangers. This app is a data collection tool, NOT a replacement for formal AFS safety training.</p>
+            <button class="btn btn-primary" style="margin-top: 20px;" onclick="document.getElementById('terms-modal').style.display='none'">I Understand & Agree</button>
+        </div>
+    </div>
+
+    <div id="splash-screen" class="modal-overlay">
         <h1 style="color: white; margin-bottom: 30px; font-size: 28px;">ElectroFish Pro</h1>
-        <div class="splash-card">
+        <div class="modal-card">
             <h3 style="margin-top:0;">NMFS Protocol Edition</h3>
             <ul style="padding-left: 20px; margin-bottom: 25px; font-size: 14px;">
                 <li>Comprehensive PNW Species Database</li>
                 <li>In-App Photo Documentation</li>
                 <li>Automated Depletion Curves</li>
                 <li>Professional Report Generator</li>
+                <li>Built-in Student Field Manual</li>
             </ul>
             <button class="btn btn-primary" onclick="startGame()">Initialize Protocol</button>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px;">
+                <a href="#" onclick="document.getElementById('terms-modal').style.display='flex'; return false;" style="color: var(--primary);">View Terms of Use</a>
+            </div>
         </div>
     </div>
 
-    <!-- TOP HEADER -->
-    <div class="top-header">
-        <div class="header-title">ElectroFish Pro</div>
-        <div class="header-badge" id="header-status">Standby</div>
-    </div>
+    <!-- HEADER -->
+    <div class="top-header"><div class="header-title">ElectroFish Pro</div><div class="header-badge" id="header-status">Standby</div></div>
 
-    <!-- MAIN APP CONTAINER -->
+    <!-- TABS -->
     <div id="app-body" class="container" style="display: none;">
 
-        <!-- 1. SITE DEPLOY TAB -->
+        <!-- 1. SITE -->
         <div id="tab-site" class="tab-content active">
             <div class="card">
                 <h3>Survey Metadata</h3>
-                <label>Waterbody / Stream Name</label>
-                <input type="text" id="streamName" placeholder="e.g. Bear Creek, Reach 2" style="margin-bottom: 12px;">
-                <label>Crew Members (Lead, Shock, Netters)</label>
-                <input type="text" id="crewNames" placeholder="e.g. Dr. Smith, J. Doe, S. Lee">
+                <label>Waterbody / Stream Name</label><input type="text" id="streamName" placeholder="e.g. Bear Creek, Reach 2" style="margin-bottom: 12px;">
+                <label>Crew Members</label><input type="text" id="crewNames" placeholder="e.g. Dr. Smith, J. Doe">
             </div>
-
             <div class="card">
                 <h3>Environmental Data</h3>
                 <button class="btn btn-secondary" onclick="getLocationAndWeather()" style="margin-bottom: 15px;">📡 Acquire GPS & Weather</button>
-                <div id="env-data" style="font-size: 13px; color: var(--text-muted); background: #F8FAFC; padding: 10px; border-radius: 6px;">Awaiting sensor input...</div>
+                <div id="env-data" style="font-size: 13px; color: var(--muted); background: #F8FAFC; padding: 10px; border-radius: 6px;">Awaiting sensor input...</div>
             </div>
-
             <div class="card">
                 <h3>Reach Parameters</h3>
                 <div class="row">
                     <div class="col"><label>Reach Length (m)</label><input type="number" id="reachLen" placeholder="e.g. 50"></div>
-                    <div class="col"><label>Block Nets</label><select id="blockNets"><option value="Upper & Lower">Upper & Lower</option><option value="Upper Only">Upper Only</option><option value="Lower Only">Lower Only</option><option value="None">None</option></select></div>
+                    <div class="col"><label>Block Nets</label><select id="blockNets"><option>Upper & Lower</option><option>Upper Only</option><option>Lower Only</option><option>None</option></select></div>
                 </div>
                 <div class="row">
                     <div class="col"><label>Water Temp (°C)</label><input type="number" step="0.1" id="waterTemp"></div>
@@ -144,96 +111,51 @@
             </div>
         </div>
 
-        <!-- 2. ELECTRO-LOG TAB -->
+        <!-- 2. LOG -->
         <div id="tab-entry" class="tab-content">
             <div class="card">
                 <h3>Machine Effort</h3>
-                <div class="row" style="margin-bottom: 5px;">
-                    <div class="col"><label>Equipment Model</label><input type="text" id="equipModel" placeholder="e.g. LR-24" style="margin-bottom:12px;"></div>
-                </div>
-                <div class="row">
-                    <div class="col"><label>Sweep (Pass)</label><input type="number" id="passNum" value="1" min="1"></div>
-                    <div class="col"><label>Shock Seconds</label><input type="number" id="shockSecs" placeholder="Time"></div>
-                </div>
-                <div class="row">
-                    <div class="col"><label>Voltage (V)</label><input type="number" id="volts"></div>
-                    <div class="col"><label>Freq (Hz)</label><input type="number" id="freq"></div>
-                    <div class="col"><label>Duty (%)</label><input type="number" id="duty"></div>
-                </div>
+                <div class="row" style="margin-bottom: 5px;"><div class="col"><label>Equipment Model</label><input type="text" id="equipModel" placeholder="e.g. LR-24" style="margin-bottom:12px;"></div></div>
+                <div class="row"><div class="col"><label>Sweep (Pass)</label><input type="number" id="passNum" value="1" min="1"></div><div class="col"><label>Shock Seconds</label><input type="number" id="shockSecs" placeholder="Time"></div></div>
+                <div class="row"><div class="col"><label>Voltage (V)</label><input type="number" id="volts"></div><div class="col"><label>Freq (Hz)</label><input type="number" id="freq"></div><div class="col"><label>Duty (%)</label><input type="number" id="duty"></div></div>
             </div>
-
             <div class="card">
                 <h3>Specimen Log</h3>
                 <form id="catchForm">
                     <label>Species Identification</label>
-                    <select id="species" required onchange="updateBioDex()">
-                        <option value="" disabled selected>Select species...</option>
-                    </select>
-
-                    <div id="biodex-box">
-                        <div style="font-size:11px; color:var(--primary); font-weight:bold; margin-bottom:5px;">FIELD IDENTIFICATION</div>
-                        <div id="biodex-sci" class="biodex-sci"></div>
-                        <div id="biodex-traits" style="font-size:13px; color:#475569;"></div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col"><label>Length (mm)</label><input type="number" id="length" required></div>
-                        <div class="col"><label>Weight (g)</label><input type="number" step="0.1" id="weight"></div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col"><label>Condition</label><select id="condition"><option value="Vigorous">Vigorous</option><option value="Lethargic">Lethargic</option><option value="Mortality">Mortality</option></select></div>
-                        <div class="col"><label>Photo Doc</label><input type="file" id="photo" accept="image/*" capture="environment" style="padding: 9px;"></div>
-                    </div>
-                    
+                    <select id="species" required onchange="updateBioDex()"><option value="" disabled selected>Select species...</option></select>
+                    <div id="biodex-box"><div style="font-size:11px; color:var(--primary); font-weight:bold; margin-bottom:5px;">FIELD IDENTIFICATION</div><div id="biodex-sci" class="biodex-sci"></div><div id="biodex-traits" style="font-size:13px; color:#475569;"></div></div>
+                    <div class="row"><div class="col"><label>Length (mm)</label><input type="number" id="length" required></div><div class="col"><label>Weight (g)</label><input type="number" step="0.1" id="weight"></div></div>
+                    <div class="row"><div class="col"><label>Condition</label><select id="condition"><option>Vigorous</option><option>Lethargic</option><option>Mortality</option></select></div><div class="col"><label>Photo Doc</label><input type="file" id="photo" accept="image/*" capture="environment" style="padding: 9px;"></div></div>
                     <button type="button" class="btn btn-primary" id="logBtn" onclick="saveCatch()" style="margin-top: 10px;">Log Specimen</button>
                 </form>
             </div>
         </div>
 
-        <!-- 3. STATS TAB -->
+        <!-- 3. STATS -->
         <div id="tab-stats" class="tab-content">
             <div class="card">
                 <h3>Depletion Curve</h3>
-                <div style="background: white; border: 1px solid var(--border); border-radius: 6px; padding: 5px; margin-bottom: 10px;">
-                    <canvas id="depletionChart" width="400" height="250" style="background-color: white;"></canvas>
-                </div>
+                <div style="background: white; border: 1px solid var(--border); border-radius: 6px; padding: 5px; margin-bottom: 10px;"><canvas id="depletionChart" width="400" height="250" style="background-color: white;"></canvas></div>
                 <button class="btn btn-outline" onclick="downloadChartImage()">💾 Download Chart (.JPG)</button>
             </div>
-            
             <div class="card">
                 <h3>Survey Raw Log</h3>
-                <div class="table-responsive">
-                    <table id="logTable">
-                        <thead><tr><th>Sweep</th><th>Taxa</th><th>L(mm)</th><th>Photo</th></tr></thead>
-                        <tbody id="logBody"></tbody>
-                    </table>
-                </div>
+                <div class="table-responsive"><table id="logTable"><thead><tr><th>Sweep</th><th>Taxa</th><th>L(mm)</th><th>Photo</th></tr></thead><tbody id="logBody"></tbody></table></div>
             </div>
         </div>
 
-        <!-- 4. GEAR / REFERENCE TAB -->
+        <!-- 4. REF / GEAR -->
         <div id="tab-gear" class="tab-content">
-            <!-- CONVERSIONS -->
-            <div class="card">
-                <h3>Conversions</h3>
-                <div class="row" style="margin-bottom: 0;">
-                    <div class="col">
-                        <label>Length (mm → Inches)</label>
-                        <select id="lenConv" onchange="calcLen()"></select>
-                        <div id="lenResult" style="margin-top:8px; font-weight:bold; color:var(--primary); font-size:16px;">--</div>
-                    </div>
-                    <div class="col">
-                        <label>Temp (°C → °F)</label>
-                        <select id="tempConv" onchange="calcTemp()"></select>
-                        <div id="tempResult" style="margin-top:8px; font-weight:bold; color:var(--danger); font-size:16px;">--</div>
-                    </div>
-                </div>
+            <div class="card" style="border-left: 4px solid var(--danger); background: #fffaf9;">
+                <h3 style="color: var(--danger);">Backpack Safety</h3>
+                <h5 style="margin-top:10px; color: var(--danger);">1. Communication ("Power On")</h5>
+                <p style="font-size: 12px;">Operator loudly announces <strong>"POWER ON!"</strong> before pressing anode. Announce <strong>"POWER OFF!"</strong> when releasing. Never press if hands are in water.</p>
+                <h5 style="margin-top:15px; color: var(--danger);">2. Fall Procedures & Tilt Switch</h5>
+                <p style="font-size: 12px;">If anyone falls, release switch immediately. Modern packs have a 45-degree tilt-switch cutoff. Test before wading.</p>
             </div>
-
-            <!-- CALCULATOR -->
             <div class="card">
-                <h3>Field Calculator</h3>
+                <h3>Calculator</h3>
                 <input type="text" id="calcDisplay" disabled style="font-size: 20px; text-align: right; background: #fff; margin-bottom:15px; color:#333;">
                 <div class="calc-grid">
                     <button class="btn" onclick="calcIn('7')">7</button><button class="btn" onclick="calcIn('8')">8</button><button class="btn" onclick="calcIn('9')">9</button><button class="btn btn-op" onclick="calcIn('/')">÷</button>
@@ -243,47 +165,56 @@
                     <button class="btn btn-eq" onclick="calcEval()">=</button>
                 </div>
             </div>
-
-            <!-- THEORY -->
-            <div class="card" style="background-color: #F8FAFC;">
+            <div class="card">
+                <h3>Conversions</h3>
+                <div class="row" style="margin-bottom: 0;">
+                    <div class="col"><label>Length (mm → in)</label><select id="lenConv" onchange="calcLen()"></select><div id="lenResult" style="margin-top:8px; font-weight:bold; color:var(--primary); font-size:16px;">--</div></div>
+                    <div class="col"><label>Temp (°C → °F)</label><select id="tempConv" onchange="calcTemp()"></select><div id="tempResult" style="margin-top:8px; font-weight:bold; color:var(--danger); font-size:16px;">--</div></div>
+                </div>
+            </div>
+            <div class="card" style="background: #F8FAFC;">
                 <h3>Depletion Theory & Formulas</h3>
-                <h5 style="margin-top:10px;">1. Catchability Coefficient (q)</h5>
-                <p style="font-size: 12px; color: var(--text-muted);"><strong>q = C / (N × E)</strong><br>The proportion of the population caught by one unit of effort. Depletion surveys mathematically assume 'q' remains constant across sweeps (remaining fish do not become harder to catch).</p>
-
-                <h5 style="margin-top:15px;">2. Seber-Le Cren (2-Pass Method)</h5>
-                <p style="font-size: 12px; color: var(--text-muted);"><strong>N = C₁² / (C₁ - C₂)</strong><br>Calculates the estimated population (N) when exactly two sweeps are performed. C₁ is fish caught in pass 1. For this to work, C₁ must be strictly greater than C₂.</p>
-
-                <h5 style="margin-top:15px;">3. Leslie Graphical Method (3+ Passes)</h5>
-                <p style="font-size: 12px; color: var(--text-muted);">Catch Per Unit Effort (CPUE) is plotted on the Y-axis against Cumulative Catch on the X-axis. Where the linear regression line crosses the X-axis (CPUE = 0), that X-intercept is the estimated total population.</p>
+                <h5 style="margin-top:10px;">1. Catchability Coefficient (q)</h5><p style="font-size: 12px;"><strong>q = C / (N × E)</strong><br>Proportion of population caught by one unit of effort. Assumes 'q' remains constant across sweeps.</p>
+                <h5 style="margin-top:15px;">2. Seber-Le Cren (2-Pass Method)</h5><p style="font-size: 12px;"><strong>N = C₁² / (C₁ - C₂)</strong><br>Calculates estimated population (N) for two sweeps. C₁ must be strictly greater than C₂.</p>
+                <h5 style="margin-top:15px;">3. Leslie Graphical Method (3+ Passes)</h5><p style="font-size: 12px;">CPUE (Y-axis) plotted against Cumulative Catch (X-axis). Where regression line crosses X-axis (CPUE = 0) is the estimated total population.</p>
             </div>
         </div>
 
-        <!-- 5. EXPORT / REPORT TAB -->
+        <!-- 5. REPORT -->
         <div id="tab-save" class="tab-content">
-            
-            <div class="card" style="border-left: 4px solid var(--primary);">
-                <h3>Field Report Notes</h3>
-                <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 15px;">Fill this out before downloading your Word document report.</p>
-                <label>Habitat & Condition Notes</label>
-                <textarea id="habitatNotes" placeholder="Describe flow, turbidity, cover type, weather changes..."></textarea>
-                <label style="margin-top: 10px;">General Comments / Anomalies</label>
-                <textarea id="surveyComments" placeholder="Describe gear malfunctions, block net blowouts, mortalities..."></textarea>
+            <div class="card" style="border-top: 4px solid var(--primary);">
+                <h3>Standardized Site Conditions</h3>
+                <div class="row">
+                    <div class="col"><label>Weather</label><select id="rptWeather"><option>Clear</option><option>Partly Cloudy</option><option>Overcast</option><option>Light Rain</option><option>Heavy Rain</option></select></div>
+                    <div class="col"><label>Water Clarity</label><select id="rptClarity"><option>Clear (High Vis)</option><option>Slightly Turbid</option><option>Turbid (Low Vis)</option><option>Tannic / Stained</option></select></div>
+                </div>
+                <div class="row">
+                    <div class="col"><label>Flow State</label><select id="rptFlow"><option>Low / Base</option><option selected>Normal / Moderate</option><option>High</option><option>Flood / Spate</option></select></div>
+                    <div class="col"><label>Substrate</label><select id="rptSubstrate"><option>Silt / Mud</option><option>Sand</option><option>Gravel</option><option selected>Cobble</option><option>Boulder</option><option>Bedrock</option></select></div>
+                </div>
+                <div class="row">
+                    <div class="col"><label>Net Integrity</label><select id="rptNets"><option>100% Secure</option><option>Minor Undercutting</option><option>Major Blowout</option><option>Not Used</option></select></div>
+                    <div class="col"><label>Capture Efficiency</label><select id="rptEfficiency"><option>Excellent</option><option selected>Good</option><option>Fair</option><option>Poor</option></select></div>
+                </div>
             </div>
-
+            <div class="card">
+                <h3>Additional Notes & Anomalies</h3>
+                <label>Habitat Notes (Woody Debris, Cover)</label><textarea id="habitatNotes" placeholder="Describe specific cover types..."></textarea>
+                <label style="margin-top: 10px;">General Comments / Incidents</label><textarea id="surveyComments" placeholder="Describe gear malfunctions, mortalities..."></textarea>
+            </div>
             <div class="card" style="text-align: center; padding: 20px;">
                 <h3>Generate Final Report</h3>
                 <button class="btn btn-primary" onclick="exportDOC()" style="margin-bottom: 15px;">📄 Download Formal Report (.DOC)</button>
                 <button class="btn btn-success" onclick="exportCSV()">📊 Download Raw Data (.CSV)</button>
             </div>
-
             <div class="card" style="border-left: 4px solid var(--danger);">
                 <h3 style="color: var(--danger);">Emergency Text Fallback</h3>
-                <p style="font-size: 12px; color: var(--text-muted);">If your mobile browser blocks the file downloads above, click an export button, then copy the raw text below.</p>
                 <textarea id="rawDataBox" class="code-textarea" readonly placeholder="Text fallback will populate here..."></textarea>
-                <button class="btn btn-outline" onclick="copyRawData()">Copy to Clipboard</button>
+                <button class="btn btn-outline" onclick="copyRawData()" style="margin-top: 10px;">Copy to Clipboard</button>
             </div>
         </div>
 
+        <div class="app-footer">Created by Michael Stocklin<br><a href="#" onclick="document.getElementById('terms-modal').style.display='flex'; return false;">Terms of Use & Disclaimer</a></div>
     </div>
 
     <!-- BOTTOM NAV -->
@@ -295,282 +226,139 @@
         <div class="nav-item" onclick="switchTab('save', this)"><span class="nav-icon">📄</span>Report</div>
     </div>
 
-    <!-- APP LOGIC -->
     <script>
         const speciesDB =[
-            { group: "Salmonidae (Trout, Salmon, Char)", items:[
-                { name: "Chinook Salmon", sci: "Oncorhynchus tshawytscha", traits: "Black mouth/gums. Spots on BOTH lobes of tail." },
-                { name: "Coho Salmon", sci: "Oncorhynchus kisutch", traits: "Black mouth, WHITE gums. Spots on UPPER tail lobe." },
-                { name: "Sockeye / Kokanee", sci: "Oncorhynchus nerka", traits: "No distinct back spots. Glassy eyes. 28-40 gill rakers." },
-                { name: "Chum Salmon", sci: "Oncorhynchus keta", traits: "No spots. Spawners have calico bands and canine teeth." },
-                { name: "Pink Salmon", sci: "Oncorhynchus gorbuscha", traits: "Large oval spots on back/tail. Tiny scales." },
-                { name: "Steelhead/Rainbow", sci: "Oncorhynchus mykiss", traits: "Radiating rows of black spots on tail. Pink lateral band." },
-                { name: "Coastal Cutthroat", sci: "Oncorhynchus clarkii clarkii", traits: "Red slash under jaw. Spots below lateral line." },
-                { name: "Westslope Cutthroat", sci: "O. clarkii lewisi", traits: "Red slash. Spots concentrated near tail/above line." },
-                { name: "Bull Trout", sci: "Salvelinus confluentus", traits: "No black on dorsal. Pale yellow/pink spots on olive back." },
-                { name: "Brook Trout", sci: "Salvelinus fontinalis", traits: "Worm-like vermiculations on back. White leading fin edges." },
-                { name: "Brown Trout", sci: "Salmo trutta", traits: "Large dark/red spots with halos. Few spots on tail." },
-                { name: "Mountain Whitefish", sci: "Prosopium williamsoni", traits: "Large scales, subterminal mouth. Adipose fin." }
-            ]},
-            { group: "Cyprinidae (Minnows, Chubs)", items:[
-                { name: "Northern Pikeminnow", sci: "Ptychocheilus oregonensis", traits: "Large mouth past front of eye. Forked tail." },
-                { name: "Peamouth", sci: "Mylocheilus caurinus", traits: "Small mouth, reddish corners. Deeply forked tail." },
-                { name: "Redside Shiner", sci: "Richardsonius balteatus", traits: "Deep body. Long anal fin (10-22 rays). Crimson band." },
-                { name: "Speckled Dace", sci: "Rhinichthys osculus", traits: "Small subterminal mouth. Speckled dark pattern." },
-                { name: "Longnose Dace", sci: "Rhinichthys cataractae", traits: "Fleshy snout projects past mouth. Fast riffles." },
-                { name: "Chiselmouth", sci: "Acrocheilus alutaceus", traits: "Lower jaw has hard cartilaginous cutting edge." },
-                { name: "Common Carp", sci: "Cyprinus carpio", traits: "Two barbels per side. Heavy serrated dorsal/anal spines." }
-            ]},
-            { group: "Catostomidae & Cottidae (Suckers, Sculpins)", items:[
-                { name: "Largescale Sucker", sci: "Catostomus macrocheilus", traits: "Fleshy subterminal mouth. <80 lateral scales." },
-                { name: "Bridgelip Sucker", sci: "Catostomus columbianus", traits: "Deeply incised lower lip. >90 lateral scales." },
-                { name: "Prickly Sculpin", sci: "Cottus asper", traits: "Rough prickles all over. Dark spot rear of 1st dorsal." },
-                { name: "Reticulate Sculpin", sci: "Cottus perplexus", traits: "Gap between dorsal fins. Reticulated pattern." },
-                { name: "Torrent Sculpin", sci: "Cottus rhotheus", traits: "Broad head. Two dark saddles under 2nd dorsal." }
-            ]},
-            { group: "Centrarchidae & Others", items:[
-                { name: "Largemouth Bass", sci: "Micropterus salmoides", traits: "Jaw extends past eye. Deep horizontal stripe." },
-                { name: "Smallmouth Bass", sci: "Micropterus dolomieu", traits: "Jaw does NOT extend past eye. Vertical bars." },
-                { name: "Bluegill", sci: "Lepomis macrochirus", traits: "Solid black opercular flap. Spot at rear dorsal." },
-                { name: "Pacific Lamprey", sci: "Entosphenus tridentatus", traits: "3 supraoral teeth. Large (up to 30 in). Parasitic." },
-                { name: "Western Brook Lamprey", sci: "Lampetra richardsoni", traits: "Non-parasitic. Blunt teeth, <7 inches." },
-                { name: "Unknown Specimen", sci: "Indeterminatus", traits: "Unable to ID in field. Retained for lab." }
-            ]}
+            { group: "Salmonidae", items:[{n:"Chinook Salmon", s:"Oncorhynchus tshawytscha", t:"Black mouth/gums. Spots on BOTH lobes of tail."}, {n:"Coho Salmon", s:"Oncorhynchus kisutch", t:"Black mouth, WHITE gums. Spots on UPPER tail lobe."}, {n:"Sockeye / Kokanee", s:"Oncorhynchus nerka", t:"No distinct back spots. Glassy eyes. 28-40 gill rakers."}, {n:"Chum Salmon", s:"Oncorhynchus keta", t:"No spots. Spawners have calico bands and canine teeth."}, {n:"Pink Salmon", s:"Oncorhynchus gorbuscha", t:"Large oval spots on back/tail. Tiny scales."}, {n:"Steelhead/Rainbow", s:"Oncorhynchus mykiss", t:"Radiating rows of black spots on tail. Pink lateral band."}, {n:"Coastal Cutthroat", s:"O. clarkii clarkii", t:"Red slash under jaw. Spots below lateral line."}, {n:"Bull Trout", s:"Salvelinus confluentus", t:"No black on dorsal. Pale yellow/pink spots on olive back."}, {n:"Brook Trout", s:"Salvelinus fontinalis", t:"Worm-like vermiculations on back. White leading fin edges."}, {n:"Brown Trout", s:"Salmo trutta", t:"Large dark/red spots with halos. Few spots on tail."}, {n:"Mountain Whitefish", s:"Prosopium williamsoni", t:"Large scales, subterminal mouth. Adipose fin."}] },
+            { group: "Cyprinidae", items:[{n:"Northern Pikeminnow", s:"Ptychocheilus oregonensis", t:"Large mouth past front of eye. Forked tail."}, {n:"Peamouth", s:"Mylocheilus caurinus", t:"Small mouth, reddish corners. Deeply forked tail."}, {n:"Redside Shiner", s:"Richardsonius balteatus", t:"Deep body. Long anal fin (10-22 rays). Crimson band."}, {n:"Speckled Dace", s:"Rhinichthys osculus", t:"Small subterminal mouth. Speckled dark pattern."}, {n:"Longnose Dace", s:"Rhinichthys cataractae", t:"Fleshy snout projects past mouth. Fast riffles."}, {n:"Common Carp", s:"Cyprinus carpio", t:"Two barbels per side. Heavy serrated dorsal/anal spines."}] },
+            { group: "Catostomidae & Cottidae", items:[{n:"Largescale Sucker", s:"Catostomus macrocheilus", t:"Fleshy subterminal mouth. <80 lateral scales."}, {n:"Bridgelip Sucker", s:"Catostomus columbianus", t:"Deeply incised lower lip. >90 lateral scales."}, {n:"Prickly Sculpin", s:"Cottus asper", t:"Rough prickles all over. Dark spot rear of 1st dorsal."}, {n:"Reticulate Sculpin", s:"Cottus perplexus", t:"Gap between dorsal fins. Reticulated pattern."}] },
+            { group: "Centrarchidae & Others", items:[{n:"Largemouth Bass", s:"Micropterus salmoides", t:"Jaw extends past eye. Deep horizontal stripe."}, {n:"Smallmouth Bass", s:"Micropterus dolomieu", t:"Jaw does NOT extend past eye. Vertical bars."}, {n:"Bluegill", s:"Lepomis macrochirus", t:"Solid black opercular flap. Spot at rear dorsal."}, {n:"Pacific Lamprey", s:"Entosphenus tridentatus", t:"3 supraoral teeth. Large (up to 30 in). Parasitic."}, {n:"Unknown Specimen", s:"Indeterminatus", t:"Unable to ID in field. Retained for lab."}] }
         ];
 
         let catchData =[]; let siteLat = "UNK", siteLon = "UNK", airTemp = "UNK", weatherCode = "UNK"; let chartInstance = null;
 
         function startGame() {
-            document.getElementById('splash-screen').style.display = 'none';
-            document.getElementById('app-body').style.display = 'block';
-            document.getElementById('nav-bar').style.display = 'flex';
-            
-            const speciesSelect = document.getElementById('species');
-            speciesDB.forEach(group => {
-                const optGroup = document.createElement('optgroup');
-                optGroup.label = group.group;
-                group.items.forEach(item => {
-                    const option = document.createElement('option');
-                    option.value = item.name; option.dataset.sci = item.sci; option.dataset.traits = item.traits; option.textContent = item.name;
-                    optGroup.appendChild(option);
-                });
-                speciesSelect.appendChild(optGroup);
+            document.getElementById('splash-screen').style.display = 'none'; document.getElementById('app-body').style.display = 'block'; document.getElementById('nav-bar').style.display = 'flex';
+            const sel = document.getElementById('species');
+            speciesDB.forEach(g => {
+                const grp = document.createElement('optgroup'); grp.label = g.group;
+                g.items.forEach(i => { const opt = document.createElement('option'); opt.value = i.n; opt.dataset.sci = i.s; opt.dataset.traits = i.t; opt.textContent = i.n; grp.appendChild(opt); });
+                sel.appendChild(grp);
             });
-
-            // Populate Conversions
-            let lenHTML = '<option disabled selected>Select mm...</option>';
-            for(let i=10; i<=1000; i+=10) lenHTML += `<option value="${i}">${i} mm</option>`;
-            document.getElementById('lenConv').innerHTML = lenHTML;
-
-            let tempHTML = '<option disabled selected>Select °C...</option>';
-            for(let i=-5; i<=35; i+=1) tempHTML += `<option value="${i}">${i} °C</option>`;
-            document.getElementById('tempConv').innerHTML = tempHTML;
-
+            let lenHTML = '<option disabled selected>Select mm...</option>'; for(let i=10; i<=1000; i+=10) lenHTML += `<option value="${i}">${i} mm</option>`; document.getElementById('lenConv').innerHTML = lenHTML;
+            let tmpHTML = '<option disabled selected>Select °C...</option>'; for(let i=-5; i<=35; i+=1) tmpHTML += `<option value="${i}">${i} °C</option>`; document.getElementById('tempConv').innerHTML = tmpHTML;
             initChart();
         }
 
-        function calcLen() {
-            let mm = document.getElementById('lenConv').value;
-            document.getElementById('lenResult').innerText = `${mm} mm = ${(mm / 25.4).toFixed(2)} in`;
-        }
-        function calcTemp() {
-            let c = document.getElementById('tempConv').value;
-            document.getElementById('tempResult').innerText = `${c} °C = ${((c * 1.8) + 32).toFixed(1)} °F`;
-        }
-
+        function calcLen() { let v = document.getElementById('lenConv').value; document.getElementById('lenResult').innerText = `${v} mm = ${(v / 25.4).toFixed(2)} in`; }
+        function calcTemp() { let v = document.getElementById('tempConv').value; document.getElementById('tempResult').innerText = `${v} °C = ${((v * 1.8) + 32).toFixed(1)} °F`; }
         function updateBioDex() {
-            const select = document.getElementById('species');
-            const selectedOpt = select.options[select.selectedIndex];
-            if(selectedOpt.value) {
-                document.getElementById('biodex-box').style.display = 'block';
-                document.getElementById('biodex-sci').innerText = selectedOpt.dataset.sci;
-                document.getElementById('biodex-traits').innerText = selectedOpt.dataset.traits;
-            }
+            const opt = document.getElementById('species').options[document.getElementById('species').selectedIndex];
+            if(opt.value) { document.getElementById('biodex-box').style.display = 'block'; document.getElementById('biodex-sci').innerText = opt.dataset.sci; document.getElementById('biodex-traits').innerText = opt.dataset.traits; }
         }
 
-        function switchTab(tabId, el) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
-            el.classList.add('active'); window.scrollTo(0,0);
-            if(tabId === 'stats') updateChart();
+        function switchTab(tId, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
+            document.getElementById('tab-' + tId).classList.add('active'); el.classList.add('active'); window.scrollTo(0,0);
+            if(tId === 'stats') updateChart();
         }
 
         function getLocationAndWeather() {
-            const envDiv = document.getElementById('env-data'); 
-            envDiv.innerHTML = "Acquiring satellite signal...<br><small>(Ensure browser location permissions are active)</small>";
-            async function fetchWeather(lat, lon) {
-                try {
-                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-                    const weather = await res.json();
-                    airTemp = weather.current_weather.temperature; weatherCode = weather.current_weather.windspeed;
-                    envDiv.innerHTML = `<strong>Coordinates:</strong> ${lat}, ${lon}<br><strong>Environment:</strong> Air Temp ${airTemp}°C, Wind ${weatherCode} km/h`; 
-                } catch (err) { envDiv.innerHTML = `<strong>Coordinates:</strong> ${lat}, ${lon}<br><strong>Environment:</strong> Weather API unreachable.`; }
+            const d = document.getElementById('env-data'); d.innerHTML = "Acquiring satellite signal...";
+            async function fetchW(lat, lon) {
+                try { const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`); const w = await r.json(); airTemp = w.current_weather.temperature; weatherCode = w.current_weather.windspeed; d.innerHTML = `<strong>GPS:</strong> ${lat}, ${lon}<br><strong>Env:</strong> Air ${airTemp}°C, Wind ${weatherCode} km/h`; } 
+                catch (e) { d.innerHTML = `<strong>GPS:</strong> ${lat}, ${lon}<br><strong>Env:</strong> API unreachable.`; }
                 document.getElementById('header-status').innerText = "GPS Locked"; document.getElementById('header-status').style.background = "rgba(39, 174, 96, 0.8)";
             }
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => { siteLat = pos.coords.latitude.toFixed(5); siteLon = pos.coords.longitude.toFixed(5); fetchWeather(siteLat, siteLon); }, 
-                    (err) => { envDiv.innerHTML = "<span style='color:var(--danger)'>GPS Blocked. Utilizing fallback coordinates.</span>"; siteLat = "45.5231"; siteLon = "-122.6765"; setTimeout(() => fetchWeather(siteLat, siteLon), 1500); },
-                    { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-                );
-            } else { envDiv.innerHTML = "Hardware radar unavailable on this device."; }
+                navigator.geolocation.getCurrentPosition((p) => { siteLat = p.coords.latitude.toFixed(5); siteLon = p.coords.longitude.toFixed(5); fetchW(siteLat, siteLon); }, 
+                (e) => { d.innerHTML = "<span style='color:var(--danger)'>GPS Blocked. Using fallback.</span>"; siteLat = "45.5231"; siteLon = "-122.6765"; setTimeout(() => fetchW(siteLat, siteLon), 1000); }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
+            } else { d.innerHTML = "Radar unavailable."; }
         }
 
         async function saveCatch() {
-            const pass = document.getElementById('passNum').value;
-            const speciesSelect = document.getElementById('species'); const speciesOpt = speciesSelect.options[speciesSelect.selectedIndex];
-            const speciesName = speciesOpt.value; const length = document.getElementById('length').value;
-            if(!pass || !speciesName || !length) { alert("Data entry error: Please input Sweep #, Species, and Length."); return; }
-
-            const btn = document.getElementById('logBtn'); btn.innerText = "Processing..."; btn.style.backgroundColor = "var(--text-muted)";
-
-            const photoInput = document.getElementById('photo');
-            let photoDataUrl = "N"; let photoThumbHTML = "No Photo";
-
-            if (photoInput.files.length > 0) {
-                photoDataUrl = await new Promise((resolve) => {
-                    const reader = new FileReader(); reader.onload = (e) => resolve(e.target.result); reader.readAsDataURL(photoInput.files[0]);
-                });
-                photoThumbHTML = `<img src="${photoDataUrl}" style="height:35px; width:35px; object-fit:cover; border-radius:4px; border:2px solid var(--primary); cursor:pointer;" onclick="openPhoto('${photoDataUrl}')">`;
+            const pass = document.getElementById('passNum').value; const spOpt = document.getElementById('species').options[document.getElementById('species').selectedIndex];
+            const spName = spOpt.value; const len = document.getElementById('length').value;
+            if(!pass || !spName || !len) return alert("Error: Input Sweep #, Species, and Length.");
+            const btn = document.getElementById('logBtn'); btn.innerText = "Processing..."; btn.style.backgroundColor = "var(--muted)";
+            
+            const pInput = document.getElementById('photo'); let pData = "N"; let pThumb = "No Photo";
+            if (pInput.files.length > 0) {
+                pData = await new Promise((res) => { const r = new FileReader(); r.onload = (e) => res(e.target.result); r.readAsDataURL(pInput.files[0]); });
+                pThumb = `<img src="${pData}" style="height:35px; width:35px; object-fit:cover; border-radius:4px; border:2px solid var(--primary); cursor:pointer;" onclick="openPhoto('${pData}')">`;
             }
 
-            const record = { 
-                time: new Date().toLocaleTimeString(), reachLen: document.getElementById('reachLen').value || "UNK", blockNets: document.getElementById('blockNets').value,
-                waterTemp: document.getElementById('waterTemp').value || "UNK", cond: document.getElementById('conductivity').value || "UNK", pass, shockSecs: document.getElementById('shockSecs').value || "UNK",
-                volts: document.getElementById('volts').value || "UNK", freq: document.getElementById('freq').value || "UNK", duty: document.getElementById('duty').value || "UNK",
-                species: speciesName, sci: speciesOpt.dataset.sci || "UNK", length, weight: document.getElementById('weight').value || "---", condition: document.getElementById('condition').value,
-                photoStatus: photoInput.files.length > 0 ? "Image Captured" : "No Photo"
+            const rec = { 
+                t: new Date().toLocaleTimeString(), rLen: document.getElementById('reachLen').value||"UNK", nets: document.getElementById('blockNets').value,
+                wTmp: document.getElementById('waterTemp').value||"UNK", cnd: document.getElementById('conductivity').value||"UNK", pass, sec: document.getElementById('shockSecs').value||"UNK",
+                v: document.getElementById('volts').value||"UNK", hz: document.getElementById('freq').value||"UNK", dty: document.getElementById('duty').value||"UNK",
+                sp: spName, sci: spOpt.dataset.sci||"UNK", len, wt: document.getElementById('weight').value||"---", cond: document.getElementById('condition').value, pStat: pInput.files.length>0?"Yes":"No"
             };
-            catchData.push(record);
+            catchData.push(rec);
             
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${pass}</td><td><strong>${speciesName}</strong></td><td>${length}</td><td>${photoThumbHTML}</td>`;
-            document.getElementById('logBody').prepend(tr);
-
-            document.getElementById('length').value = ''; document.getElementById('weight').value = ''; document.getElementById('photo').value = '';
-            document.getElementById('condition').value = 'Vigorous'; document.getElementById('biodex-box').style.display = 'none'; speciesSelect.selectedIndex = 0;
-            
-            btn.style.backgroundColor = "var(--success)"; btn.innerText = "Logged Successfully!";
-            setTimeout(() => { btn.style.backgroundColor = "var(--primary)"; btn.innerText = "Log Specimen"; }, 1000);
+            const tr = document.createElement('tr'); tr.innerHTML = `<td>${pass}</td><td><strong>${spName}</strong></td><td>${len}</td><td>${pThumb}</td>`; document.getElementById('logBody').prepend(tr);
+            document.getElementById('length').value = ''; document.getElementById('weight').value = ''; document.getElementById('photo').value = ''; document.getElementById('condition').value = 'Vigorous'; document.getElementById('biodex-box').style.display = 'none'; document.getElementById('species').selectedIndex = 0;
+            btn.style.backgroundColor = "var(--success)"; btn.innerText = "Logged Successfully!"; setTimeout(() => { btn.style.backgroundColor = "var(--primary)"; btn.innerText = "Log Specimen"; }, 1000);
         }
 
-        function openPhoto(base64Url) { document.getElementById('modal-img').src = base64Url; document.getElementById('photo-modal').style.display = 'flex'; }
-        function closePhoto() { document.getElementById('photo-modal').style.display = 'none'; document.getElementById('modal-img').src = ""; }
+        function openPhoto(u) { document.getElementById('modal-img').src = u; document.getElementById('photo-modal').style.display = 'flex'; }
 
         function initChart() {
             Chart.defaults.font.family = "'Inter', sans-serif"; Chart.defaults.color = '#7F8C8D';
             const ctx = document.getElementById('depletionChart').getContext('2d');
-            chartInstance = new Chart(ctx, {
-                type: 'line', data: { labels: [], datasets:[{ label: 'Fish Caught per Sweep', data: [], borderColor: '#0F4C81', backgroundColor: 'rgba(15, 76, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.4, pointRadius: 5, pointBackgroundColor: '#4A90E2' }] },
-                options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: {} }, plugins: { legend: { display: false } } }
-            });
+            chartInstance = new Chart(ctx, { type: 'line', data: { labels: [], datasets:[{ label: 'Fish / Sweep', data: [], borderColor: '#0F4C81', backgroundColor: 'rgba(15, 76, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.4, pointRadius: 5 }] }, options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }, plugins: { legend: { display: false } } } });
         }
         function updateChart() {
-            if(!chartInstance) return;
-            let passes = {}; catchData.forEach(d => { passes[d.pass] = (passes[d.pass] || 0) + 1; });
-            const sortedPasses = Object.keys(passes).sort((a,b)=>a-b); const counts = sortedPasses.map(p => passes[p]);
-            chartInstance.data.labels = sortedPasses.map(p => `Sweep ${p}`); chartInstance.data.datasets[0].data = counts; chartInstance.update();
+            if(!chartInstance) return; let p = {}; catchData.forEach(d => { p[d.pass] = (p[d.pass] || 0) + 1; });
+            const s = Object.keys(p).sort((a,b)=>a-b); chartInstance.data.labels = s.map(x => `Sweep ${x}`); chartInstance.data.datasets[0].data = s.map(x => p[x]); chartInstance.update();
         }
 
         function downloadChartImage() {
-            if(catchData.length === 0) return alert("Log some data first to generate a curve!");
-            const canvas = document.getElementById('depletionChart');
-            const tempCanvas = document.createElement('canvas'); tempCanvas.width = canvas.width; tempCanvas.height = canvas.height;
-            const ctx = tempCanvas.getContext('2d'); ctx.fillStyle = 'white'; ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height); ctx.drawImage(canvas, 0, 0);
-            const link = document.createElement('a'); link.download = 'Depletion_Curve.jpg'; link.href = tempCanvas.toDataURL('image/jpeg', 1.0); link.click();
+            if(catchData.length === 0) return alert("Log data first!");
+            const cvs = document.getElementById('depletionChart'); const tCvs = document.createElement('canvas'); tCvs.width = cvs.width; tCvs.height = cvs.height;
+            const ctx = tCvs.getContext('2d'); ctx.fillStyle = 'white'; ctx.fillRect(0, 0, tCvs.width, tCvs.height); ctx.drawImage(cvs, 0, 0);
+            const a = document.createElement('a'); a.download = 'Depletion_Curve.jpg'; a.href = tCvs.toDataURL('image/jpeg', 1.0); a.click();
         }
 
-        let calcVal = "";
-        function calcIn(val) { calcVal += val; document.getElementById('calcDisplay').value = calcVal; }
-        function calcClear() { calcVal = ""; document.getElementById('calcDisplay').value = ""; }
-        function calcEval() { try { calcVal = eval(calcVal).toString(); document.getElementById('calcDisplay').value = calcVal; } catch { document.getElementById('calcDisplay').value = "Error"; calcVal=""; } }
+        let cV = ""; function calcIn(v) { cV += v; document.getElementById('calcDisplay').value = cV; } function calcClear() { cV = ""; document.getElementById('calcDisplay').value = ""; } function calcEval() { try { cV = eval(cV).toString(); document.getElementById('calcDisplay').value = cV; } catch { document.getElementById('calcDisplay').value = "Err"; cV=""; } }
 
-        // --- EXPORT LOGIC (FIXED FOR EXCEL COMMAS) ---
         function exportCSV() {
-            if(catchData.length === 0) return alert("No database records to export.");
+            if(catchData.length === 0) return alert("No data to export.");
+            let csv = `"Time","Stream","Crew","Lat","Lon","AirTempC","WaterTempC","Cond_uS","Reach_m","BlockNets","Weather","Clarity","Flow","Substrate","Net_Int","Efficiency","Sweep","Secs","Model","Volts","Hz","Duty%","Common_Name","Scientific","Length_mm","Weight_g","Condition","Photo"\n`;
             
-            let csv = `"Time","Stream_Name","Crew","Lat","Lon","AirTempC","WaterTempC","Cond_uS","Reach_m","BlockNets","Sweep","ShockSecs","Equip_Model","Volts","FreqHz","Duty%","Common_Name","Scientific_Name","Length_mm","Weight_g","Condition","Photo_Status"\n`;
+            const strm = (document.getElementById('streamName').value||"Unk").replace(/"/g, '""'); const crw = (document.getElementById('crewNames').value||"Unk").replace(/"/g, '""'); const eq = (document.getElementById('equipModel').value||"Unk").replace(/"/g, '""');
+            const wth = document.getElementById('rptWeather').value; const clr = document.getElementById('rptClarity').value; const flw = document.getElementById('rptFlow').value; const sub = document.getElementById('rptSubstrate').value; const netI = document.getElementById('rptNets').value; const eff = document.getElementById('rptEfficiency').value;
             
-            // Clean inputs to avoid internal quote breaking
-            const stream = (document.getElementById('streamName').value || "Unnamed").replace(/"/g, '""'); 
-            const crew = (document.getElementById('crewNames').value || "Unnamed").replace(/"/g, '""');
-            const equip = (document.getElementById('equipModel').value || "Unknown").replace(/"/g, '""');
+            catchData.forEach(d => { csv += `"${d.t}","${strm}","${crw}","${siteLat}","${siteLon}","${airTemp}","${d.wTmp}","${d.cnd}","${d.rLen}","${d.nets}","${wth}","${clr}","${flw}","${sub}","${netI}","${eff}","${d.pass}","${d.sec}","${eq}","${d.v}","${d.hz}","${d.dty}","${d.sp}","${d.sci}","${d.len}","${d.wt}","${d.cond}","${d.pStat}"\n`; });
             
-            catchData.forEach(d => { 
-                csv += `"${d.time}","${stream}","${crew}","${siteLat}","${siteLon}","${airTemp}","${d.waterTemp}","${d.cond}","${d.reachLen}","${d.blockNets}","${d.pass}","${d.shockSecs}","${equip}","${d.volts}","${d.freq}","${d.duty}","${d.species}","${d.sci}","${d.length}","${d.weight}","${d.condition}","${d.photoStatus}"\n`; 
-            });
-            
-            document.getElementById('rawDataBox').value = csv;
-            const uri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-            const a = document.createElement('a'); a.href = uri; a.download = 'Electro_Raw_Data.csv';
-            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            document.getElementById('rawDataBox').value = csv; const u = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+            const a = document.createElement('a'); a.href = u; a.download = 'Electro_Raw_Data.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
 
         function exportDOC() {
-            if(catchData.length === 0) return alert("No database records to export.");
-            const d0 = catchData[0];
-            const stream = document.getElementById('streamName').value || "Unnamed Waterbody";
-            const crew = document.getElementById('crewNames').value || "Not specified";
-            const equip = document.getElementById('equipModel').value || "Not specified";
-            const habNotes = document.getElementById('habitatNotes').value || "None provided.";
-            const comments = document.getElementById('surveyComments').value || "None provided.";
+            if(catchData.length === 0) return alert("No data to export.");
+            const d0 = catchData[0]; const strm = document.getElementById('streamName').value||"Unnamed"; const crw = document.getElementById('crewNames').value||"N/A"; const eq = document.getElementById('equipModel').value||"N/A";
+            const hNts = document.getElementById('habitatNotes').value||"None"; const cNts = document.getElementById('surveyComments').value||"None";
+            const wth = document.getElementById('rptWeather').value; const clr = document.getElementById('rptClarity').value; const flw = document.getElementById('rptFlow').value; const sub = document.getElementById('rptSubstrate').value; const netI = document.getElementById('rptNets').value; const eff = document.getElementById('rptEfficiency').value;
 
-            let passes = {};
-            catchData.forEach(d => {
-                if(!passes[d.pass]) passes[d.pass] = { count: 0, secs: d.shockSecs, v: d.volts, hz: d.freq, duty: d.duty };
-                passes[d.pass].count++;
-            });
+            let p = {}; catchData.forEach(d => { if(!p[d.pass]) p[d.pass] = { c:0, s:d.sec, v:d.v, hz:d.hz }; p[d.pass].c++; });
+            let sH = ""; let sT = ""; Object.keys(p).sort((a,b)=>a-b).forEach(k => { sH += `<tr><td>Pass ${k}</td><td>${p[k].s} s</td><td>${p[k].v}V, ${p[k].hz}Hz</td><td><strong>${p[k].c}</strong></td></tr>`; sT += `Pass ${k} | ${p[k].s}s | ${p[k].v}V, ${p[k].hz}Hz | Caught: ${p[k].c}\n`; });
 
-            let summaryHTML = ""; let summaryText = "";
-            Object.keys(passes).sort((a,b)=>a-b).forEach(p => {
-                let info = passes[p];
-                summaryHTML += `<tr><td>Pass ${p}</td><td>${info.secs} s</td><td>${info.v}V, ${info.hz}Hz, ${info.duty}%</td><td><strong>${info.count}</strong></td></tr>`;
-                summaryText += `Pass ${p} | ${info.secs}s | ${info.v}V, ${info.hz}Hz | Caught: ${info.count}\n`;
-            });
-
-            let html = `<html><head><meta charset="UTF-8"><title>Depletion Survey Report</title><style>body {font-family: Arial, sans-serif;} table {border-collapse: collapse; width: 100%; margin-bottom: 20px;} th, td {border: 1px solid #ddd; padding: 8px; text-align: left;} th {background-color: #f2f2f2;} h2 {color: #0F4C81; border-bottom: 2px solid #0F4C81; padding-bottom: 5px;}</style></head><body>
-                <h1 style="text-align:center;">ELECTROFISHING DEPLETION SURVEY REPORT</h1>
-                <p><strong>Waterbody / Reach:</strong> ${stream}</p>
-                <p><strong>Date of Survey:</strong> ${new Date().toLocaleDateString()}</p>
-                <p><strong>Survey Crew:</strong> ${crew}</p>
-                
-                <h2>1. Site & Environmental Conditions</h2>
-                <p><strong>GPS Coordinates:</strong> ${siteLat}, ${siteLon} | <strong>Weather (Air):</strong> ${airTemp} °C</p>
-                <p><strong>Reach Length:</strong> ${d0.reachLen} m | <strong>Block Nets:</strong> ${d0.blockNets}</p>
-                <p><strong>Water Temp:</strong> ${d0.waterTemp} °C | <strong>Conductivity:</strong> ${d0.cond} µS/cm</p>
-
-                <h2>2. Field Notes & Observations</h2>
-                <p><strong>Habitat Description:</strong><br>${habNotes}</p>
-                <p><strong>General Comments / Anomalies:</strong><br>${comments}</p>
-
-                <h2>3. Survey Effort & Machine Settings</h2>
-                <p><strong>Equipment Used:</strong> ${equip}</p>
-                <table><tr><th>Sweep</th><th>Shock Time (Effort)</th><th>Machine Settings</th><th>Total Catch</th></tr>${summaryHTML}</table>
-
-                <h2>4. Comprehensive Specimen Log</h2>
-                <table><tr><th>Sweep</th><th>Common Name</th><th>Scientific Name</th><th>L (mm)</th><th>W (g)</th><th>Condition</th></tr>`;
+            let html = `<html><head><meta charset="UTF-8"><style>body{font-family:Arial;} table{border-collapse:collapse;width:100%;margin-bottom:20px;} th,td{border:1px solid #ddd;padding:8px;text-align:left;} th{background:#f2f2f2;} h2{color:#0F4C81;border-bottom:2px solid #0F4C81;}</style></head><body>
+                <h1 style="text-align:center;">DEPLETION SURVEY REPORT</h1><p><strong>Stream:</strong> ${strm}</p><p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p><p><strong>Crew:</strong> ${crw}</p>
+                <h2>1. Environment & Site</h2><p><strong>GPS:</strong> ${siteLat}, ${siteLon} | <strong>Weather:</strong> ${wth}, Air ${airTemp}°C</p><p><strong>Water:</strong> ${d0.wTmp}°C, Cond ${d0.cnd}µS/cm, ${clr}</p><p><strong>Reach:</strong> ${d0.rLen}m | <strong>Flow:</strong> ${flw} | <strong>Substrate:</strong> ${sub}</p><p><strong>Nets:</strong> ${d0.nets} (${netI}) | <strong>Efficiency:</strong> ${eff}</p>
+                <h2>2. Notes</h2><p><strong>Habitat:</strong><br>${hNts}</p><p><strong>Comments:</strong><br>${cNts}</p>
+                <h2>3. Effort</h2><p><strong>Gear:</strong> ${eq}</p><table><tr><th>Sweep</th><th>Effort</th><th>Settings</th><th>Catch</th></tr>${sH}</table>
+                <h2>4. Specimen Log</h2><table><tr><th>Pass</th><th>Species</th><th>Sci Name</th><th>L(mm)</th><th>W(g)</th><th>Cond</th></tr>`;
             
-            let fallbackText = `DEPLETION SURVEY REPORT\nStream: ${stream}\nDate: ${new Date().toLocaleDateString()}\nCrew: ${crew}\n\n[ ENVIRONMENT ]\nGPS: ${siteLat}, ${siteLon}\nReach: ${d0.reachLen}m | Nets: ${d0.blockNets}\nWater Temp: ${d0.waterTemp}C | Cond: ${d0.cond}uS/cm\n\n[ FIELD NOTES ]\nHabitat: ${habNotes}\nComments: ${comments}\n\n[ EFFORT SUMMARY ]\nEquip: ${equip}\n${summaryText}\n\n[ SPECIMEN LOG ]\nSWP | SPECIES | SCIENTIFIC | L(mm) | W(g) | COND\n`;
+            let ft = `REPORT: ${strm} | ${new Date().toLocaleDateString()}\nCrew: ${crw}\nEnv: ${wth}, Air ${airTemp}C, Water ${d0.wTmp}C, Cond ${d0.cnd}uS/cm\nSite: ${d0.rLen}m, Flow: ${flw}, Sub: ${sub}, Nets: ${d0.nets}\n\nEffort:\n${sT}\nLog:\n`;
             
-            catchData.forEach(d => { 
-                html += `<tr><td>${d.pass}</td><td>${d.species}</td><td><i>${d.sci}</i></td><td>${d.length}</td><td>${d.weight}</td><td>${d.condition}</td></tr>`; 
-                fallbackText += `${d.pass} | ${d.species} | ${d.sci} | ${d.length} | ${d.weight} | ${d.condition}\n`;
-            });
-            html += "</table><br><p><i>Generated by ElectroFish Pro (Collegiate Protocol)</i></p></body></html>";
-
-            document.getElementById('rawDataBox').value = fallbackText;
-            const uri = 'data:application/msword;charset=utf-8,' + encodeURIComponent(html);
-            const a = document.createElement('a'); a.href = uri; a.download = 'Depletion_Survey_Report.doc'; 
-            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            catchData.forEach(d => { html += `<tr><td>${d.pass}</td><td>${d.sp}</td><td><i>${d.sci}</i></td><td>${d.len}</td><td>${d.wt}</td><td>${d.cond}</td></tr>`; ft += `${d.pass}|${d.sp}|${d.len}mm|${d.wt}g|${d.cond}\n`; });
+            html += "</table></body></html>"; document.getElementById('rawDataBox').value = ft;
+            
+            const u = 'data:application/msword;charset=utf-8,' + encodeURIComponent(html); const a = document.createElement('a'); a.href = u; a.download = 'Report.doc'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
 
-        function copyRawData() {
-            const rawBox = document.getElementById('rawDataBox');
-            if(!rawBox.value) { alert("Please generate an export first."); return; }
-            rawBox.select(); rawBox.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(rawBox.value).then(() => { alert("Report text copied to clipboard!"); }).catch(() => { alert("Copy failed. Please copy manually."); });
-        }
+        function copyRawData() { const b = document.getElementById('rawDataBox'); if(!b.value) return alert("Generate export first."); b.select(); b.setSelectionRange(0, 99999); navigator.clipboard.writeText(b.value).then(() => alert("Copied!")).catch(() => alert("Copy failed.")); }
     </script>
 </body>
 </html>
