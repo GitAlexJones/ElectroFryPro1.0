@@ -486,14 +486,20 @@
         function calcClear() { calcVal = ""; document.getElementById('calcDisplay').value = ""; }
         function calcEval() { try { calcVal = eval(calcVal).toString(); document.getElementById('calcDisplay').value = calcVal; } catch { document.getElementById('calcDisplay').value = "Error"; calcVal=""; } }
 
-        // --- EXPORT LOGIC ---
+        // --- EXPORT LOGIC (FIXED FOR EXCEL COMMAS) ---
         function exportCSV() {
             if(catchData.length === 0) return alert("No database records to export.");
-            let csv = "Time,Stream_Name,Crew,Lat,Lon,AirTempC,WaterTempC,Cond_uS,Reach_m,BlockNets,Sweep,ShockSecs,Equip_Model,Volts,FreqHz,Duty%,Common_Name,Scientific_Name,Length_mm,Weight_g,Condition,Photo_Status\n";
-            const stream = document.getElementById('streamName').value || "Unnamed"; const crew = document.getElementById('crewNames').value || "Unnamed";
-            const equip = document.getElementById('equipModel').value || "Unknown";
             
-            catchData.forEach(d => { csv += `${d.time},${stream},${crew},${siteLat},${siteLon},${airTemp},${d.waterTemp},${d.cond},${d.reachLen},${d.blockNets},${d.pass},${d.shockSecs},${equip},${d.volts},${d.freq},${d.duty},${d.species},${d.sci},${d.length},${d.weight},${d.condition},${d.photoStatus}\n`; });
+            let csv = `"Time","Stream_Name","Crew","Lat","Lon","AirTempC","WaterTempC","Cond_uS","Reach_m","BlockNets","Sweep","ShockSecs","Equip_Model","Volts","FreqHz","Duty%","Common_Name","Scientific_Name","Length_mm","Weight_g","Condition","Photo_Status"\n`;
+            
+            // Clean inputs to avoid internal quote breaking
+            const stream = (document.getElementById('streamName').value || "Unnamed").replace(/"/g, '""'); 
+            const crew = (document.getElementById('crewNames').value || "Unnamed").replace(/"/g, '""');
+            const equip = (document.getElementById('equipModel').value || "Unknown").replace(/"/g, '""');
+            
+            catchData.forEach(d => { 
+                csv += `"${d.time}","${stream}","${crew}","${siteLat}","${siteLon}","${airTemp}","${d.waterTemp}","${d.cond}","${d.reachLen}","${d.blockNets}","${d.pass}","${d.shockSecs}","${equip}","${d.volts}","${d.freq}","${d.duty}","${d.species}","${d.sci}","${d.length}","${d.weight}","${d.condition}","${d.photoStatus}"\n`; 
+            });
             
             document.getElementById('rawDataBox').value = csv;
             const uri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
@@ -510,7 +516,6 @@
             const habNotes = document.getElementById('habitatNotes').value || "None provided.";
             const comments = document.getElementById('surveyComments').value || "None provided.";
 
-            // Pass Summary Calculations
             let passes = {};
             catchData.forEach(d => {
                 if(!passes[d.pass]) passes[d.pass] = { count: 0, secs: d.shockSecs, v: d.volts, hz: d.freq, duty: d.duty };
@@ -524,7 +529,6 @@
                 summaryText += `Pass ${p} | ${info.secs}s | ${info.v}V, ${info.hz}Hz | Caught: ${info.count}\n`;
             });
 
-            // Generate HTML for Word
             let html = `<html><head><meta charset="UTF-8"><title>Depletion Survey Report</title><style>body {font-family: Arial, sans-serif;} table {border-collapse: collapse; width: 100%; margin-bottom: 20px;} th, td {border: 1px solid #ddd; padding: 8px; text-align: left;} th {background-color: #f2f2f2;} h2 {color: #0F4C81; border-bottom: 2px solid #0F4C81; padding-bottom: 5px;}</style></head><body>
                 <h1 style="text-align:center;">ELECTROFISHING DEPLETION SURVEY REPORT</h1>
                 <p><strong>Waterbody / Reach:</strong> ${stream}</p>
@@ -547,7 +551,6 @@
                 <h2>4. Comprehensive Specimen Log</h2>
                 <table><tr><th>Sweep</th><th>Common Name</th><th>Scientific Name</th><th>L (mm)</th><th>W (g)</th><th>Condition</th></tr>`;
             
-            // Raw text fallback
             let fallbackText = `DEPLETION SURVEY REPORT\nStream: ${stream}\nDate: ${new Date().toLocaleDateString()}\nCrew: ${crew}\n\n[ ENVIRONMENT ]\nGPS: ${siteLat}, ${siteLon}\nReach: ${d0.reachLen}m | Nets: ${d0.blockNets}\nWater Temp: ${d0.waterTemp}C | Cond: ${d0.cond}uS/cm\n\n[ FIELD NOTES ]\nHabitat: ${habNotes}\nComments: ${comments}\n\n[ EFFORT SUMMARY ]\nEquip: ${equip}\n${summaryText}\n\n[ SPECIMEN LOG ]\nSWP | SPECIES | SCIENTIFIC | L(mm) | W(g) | COND\n`;
             
             catchData.forEach(d => { 
