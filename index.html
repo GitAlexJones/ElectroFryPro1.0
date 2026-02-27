@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ElectroFish Pro | NMFS Standard</title>
     
-    <!-- Modern Professional Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -37,7 +36,8 @@
             font-family: 'Inter', sans-serif; font-size: 16px; color: var(--text-main); box-sizing: border-box; transition: border-color 0.2s;
         }
         input:focus, select:focus, textarea:focus { outline: none; border-color: var(--secondary); background-color: #FFF; box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2); }
-        textarea { height: 120px; resize: vertical; font-family: monospace; font-size: 12px; }
+        textarea { height: 100px; resize: vertical; font-size: 14px; }
+        .code-textarea { height: 120px; font-family: monospace; font-size: 12px; }
 
         .btn {
             display: block; width: 100%; padding: 14px; border: none; border-radius: 6px;
@@ -66,15 +66,12 @@
         .tab-content { display: none; } .tab-content.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Splash Screen */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--primary); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; text-align: center; color: white; }
         .splash-card { background: white; color: var(--text-main); padding: 30px; border-radius: 12px; max-width: 400px; width: 100%; text-align: left;}
 
-        /* Bio-Dex Scanner */
         #biodex-box { background-color: #EBF5FF; border-left: 4px solid var(--secondary); padding: 15px; margin-bottom: 15px; border-radius: 0 6px 6px 0; display: none; }
         .biodex-sci { font-size: 14px; font-style: italic; color: var(--text-main); margin-bottom: 5px; font-weight: 500; }
         
-        /* Photo Modal */
         #photo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; }
         #photo-modal img { max-width: 100%; max-height: 80vh; border-radius: 8px; border: 4px solid white; }
         .close-btn { background: var(--danger); color: white; padding: 10px 20px; margin-top: 20px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; }
@@ -103,7 +100,7 @@
                 <li>Comprehensive PNW Species Database</li>
                 <li>In-App Photo Documentation</li>
                 <li>Automated Depletion Curves</li>
-                <li>Device-Secure Export Engine</li>
+                <li>Professional Report Generator</li>
             </ul>
             <button class="btn btn-primary" onclick="startGame()">Initialize Protocol</button>
         </div>
@@ -121,15 +118,24 @@
         <!-- 1. SITE DEPLOY TAB -->
         <div id="tab-site" class="tab-content active">
             <div class="card">
+                <h3>Survey Metadata</h3>
+                <label>Waterbody / Stream Name</label>
+                <input type="text" id="streamName" placeholder="e.g. Bear Creek, Reach 2" style="margin-bottom: 12px;">
+                <label>Crew Members (Lead, Shock, Netters)</label>
+                <input type="text" id="crewNames" placeholder="e.g. Dr. Smith, J. Doe, S. Lee">
+            </div>
+
+            <div class="card">
                 <h3>Environmental Data</h3>
                 <button class="btn btn-secondary" onclick="getLocationAndWeather()" style="margin-bottom: 15px;">📡 Acquire GPS & Weather</button>
                 <div id="env-data" style="font-size: 13px; color: var(--text-muted); background: #F8FAFC; padding: 10px; border-radius: 6px;">Awaiting sensor input...</div>
             </div>
+
             <div class="card">
                 <h3>Reach Parameters</h3>
                 <div class="row">
                     <div class="col"><label>Reach Length (m)</label><input type="number" id="reachLen" placeholder="e.g. 50"></div>
-                    <div class="col"><label>Block Nets</label><select id="blockNets"><option value="Deployed">Deployed</option><option value="None">None</option></select></div>
+                    <div class="col"><label>Block Nets</label><select id="blockNets"><option value="Upper & Lower">Upper & Lower</option><option value="Upper Only">Upper Only</option><option value="Lower Only">Lower Only</option><option value="None">None</option></select></div>
                 </div>
                 <div class="row">
                     <div class="col"><label>Water Temp (°C)</label><input type="number" step="0.1" id="waterTemp"></div>
@@ -142,6 +148,9 @@
         <div id="tab-entry" class="tab-content">
             <div class="card">
                 <h3>Machine Effort</h3>
+                <div class="row" style="margin-bottom: 5px;">
+                    <div class="col"><label>Equipment Model</label><input type="text" id="equipModel" placeholder="e.g. LR-24" style="margin-bottom:12px;"></div>
+                </div>
                 <div class="row">
                     <div class="col"><label>Sweep (Pass)</label><input type="number" id="passNum" value="1" min="1"></div>
                     <div class="col"><label>Shock Seconds</label><input type="number" id="shockSecs" placeholder="Time"></div>
@@ -159,7 +168,6 @@
                     <label>Species Identification</label>
                     <select id="species" required onchange="updateBioDex()">
                         <option value="" disabled selected>Select species...</option>
-                        <!-- Populated by JS -->
                     </select>
 
                     <div id="biodex-box">
@@ -206,9 +214,9 @@
 
         <!-- 4. GEAR / REFERENCE TAB -->
         <div id="tab-gear" class="tab-content">
-            <!-- CONVERSION DROPDOWNS (NEW) -->
+            <!-- CONVERSIONS -->
             <div class="card">
-                <h3>Comprehensive Conversions</h3>
+                <h3>Conversions</h3>
                 <div class="row" style="margin-bottom: 0;">
                     <div class="col">
                         <label>Length (mm → Inches)</label>
@@ -223,6 +231,7 @@
                 </div>
             </div>
 
+            <!-- CALCULATOR -->
             <div class="card">
                 <h3>Field Calculator</h3>
                 <input type="text" id="calcDisplay" disabled style="font-size: 20px; text-align: right; background: #fff; margin-bottom:15px; color:#333;">
@@ -235,40 +244,42 @@
                 </div>
             </div>
 
-            <!-- ELECTROFISHING THEORY (EXPANDED) -->
+            <!-- THEORY -->
             <div class="card" style="background-color: #F8FAFC;">
                 <h3>Depletion Theory & Formulas</h3>
-                
-                <h5 style="margin-top:10px;">1. Ohm's Law (V = I × R)</h5>
-                <p style="font-size: 12px; color: var(--text-muted);">Voltage (V) = Current (I) × Resistance (R). Water conductivity determines resistance. Low conductivity = high resistance (needs higher voltage). High conductivity = low resistance (needs lower voltage).</p>
-                
-                <h5 style="margin-top:15px;">2. Power Transfer Theory</h5>
-                <p style="font-size: 12px; color: var(--text-muted);">Peak efficiency occurs when water conductivity matches the fish's internal conductivity (~100-150 µS/cm). In highly conductive water, electricity flows around the fish. In highly resistive water, it struggles to enter the fish.</p>
+                <h5 style="margin-top:10px;">1. Catchability Coefficient (q)</h5>
+                <p style="font-size: 12px; color: var(--text-muted);"><strong>q = C / (N × E)</strong><br>The proportion of the population caught by one unit of effort. Depletion surveys mathematically assume 'q' remains constant across sweeps (remaining fish do not become harder to catch).</p>
 
-                <h5 style="margin-top:15px;">3. Catchability Coefficient (q)</h5>
-                <p style="font-size: 12px; color: var(--text-muted);"><strong>Formula: q = C / (N × E)</strong><br>The proportion of the total population (N) caught by one unit of effort (E). Depletion surveys mathematically assume 'q' remains constant across all sweeps (the remaining fish do not become harder to catch).</p>
+                <h5 style="margin-top:15px;">2. Seber-Le Cren (2-Pass Method)</h5>
+                <p style="font-size: 12px; color: var(--text-muted);"><strong>N = C₁² / (C₁ - C₂)</strong><br>Calculates the estimated population (N) when exactly two sweeps are performed. C₁ is fish caught in pass 1. For this to work, C₁ must be strictly greater than C₂.</p>
 
-                <h5 style="margin-top:15px;">4. Seber-Le Cren (2-Pass Estimate)</h5>
-                <p style="font-size: 12px; color: var(--text-muted);"><strong>Formula: N = C₁² / (C₁ - C₂)</strong><br>When conducting exactly two sweeps, this formula calculates the true estimated population (N). C₁ is the number of fish caught in pass 1. For this mathematical model to work, C₁ must be strictly greater than C₂.</p>
-
-                <h5 style="margin-top:15px;">5. Leslie Graphical Method</h5>
-                <p style="font-size: 12px; color: var(--text-muted);">A linear regression graphical method. Catch Per Unit Effort (CPUE) is plotted on the Y-axis against Cumulative Catch on the X-axis. Where the line of best fit crosses the X-axis (where CPUE theoretically reaches 0), that X-intercept represents your estimated total population size.</p>
+                <h5 style="margin-top:15px;">3. Leslie Graphical Method (3+ Passes)</h5>
+                <p style="font-size: 12px; color: var(--text-muted);">Catch Per Unit Effort (CPUE) is plotted on the Y-axis against Cumulative Catch on the X-axis. Where the linear regression line crosses the X-axis (CPUE = 0), that X-intercept is the estimated total population.</p>
             </div>
         </div>
 
-        <!-- 5. EXPORT TAB -->
+        <!-- 5. EXPORT / REPORT TAB -->
         <div id="tab-save" class="tab-content">
-            <div class="card" style="text-align: center; padding: 30px 20px;">
-                <h3>Database Export</h3>
-                <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Download your field data for CPUE analysis and reporting.</p>
-                <button class="btn btn-success" onclick="exportCSV()" style="margin-bottom: 15px;">📊 Download Excel (.CSV)</button>
-                <button class="btn btn-primary" onclick="exportDOC()">📄 Download Word (.DOC)</button>
+            
+            <div class="card" style="border-left: 4px solid var(--primary);">
+                <h3>Field Report Notes</h3>
+                <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 15px;">Fill this out before downloading your Word document report.</p>
+                <label>Habitat & Condition Notes</label>
+                <textarea id="habitatNotes" placeholder="Describe flow, turbidity, cover type, weather changes..."></textarea>
+                <label style="margin-top: 10px;">General Comments / Anomalies</label>
+                <textarea id="surveyComments" placeholder="Describe gear malfunctions, block net blowouts, mortalities..."></textarea>
+            </div>
+
+            <div class="card" style="text-align: center; padding: 20px;">
+                <h3>Generate Final Report</h3>
+                <button class="btn btn-primary" onclick="exportDOC()" style="margin-bottom: 15px;">📄 Download Formal Report (.DOC)</button>
+                <button class="btn btn-success" onclick="exportCSV()">📊 Download Raw Data (.CSV)</button>
             </div>
 
             <div class="card" style="border-left: 4px solid var(--danger);">
-                <h3 style="color: var(--danger);">Raw Data Fallback</h3>
-                <p style="font-size: 12px; color: var(--text-muted);">If your mobile browser security blocks file downloads, click an export button above, then copy the raw text below.</p>
-                <textarea id="rawDataBox" readonly placeholder="Raw data will populate here..."></textarea>
+                <h3 style="color: var(--danger);">Emergency Text Fallback</h3>
+                <p style="font-size: 12px; color: var(--text-muted);">If your mobile browser blocks the file downloads above, click an export button, then copy the raw text below.</p>
+                <textarea id="rawDataBox" class="code-textarea" readonly placeholder="Text fallback will populate here..."></textarea>
                 <button class="btn btn-outline" onclick="copyRawData()">Copy to Clipboard</button>
             </div>
         </div>
@@ -281,7 +292,7 @@
         <div class="nav-item" onclick="switchTab('entry', this)"><span class="nav-icon">📝</span>Log</div>
         <div class="nav-item" onclick="switchTab('stats', this)"><span class="nav-icon">📈</span>Stats</div>
         <div class="nav-item" onclick="switchTab('gear', this)"><span class="nav-icon">⚙️</span>Ref</div>
-        <div class="nav-item" onclick="switchTab('save', this)"><span class="nav-icon">💾</span>Export</div>
+        <div class="nav-item" onclick="switchTab('save', this)"><span class="nav-icon">📄</span>Report</div>
     </div>
 
     <!-- APP LOGIC -->
@@ -329,13 +340,11 @@
 
         let catchData =[]; let siteLat = "UNK", siteLon = "UNK", airTemp = "UNK", weatherCode = "UNK"; let chartInstance = null;
 
-        // Startup
         function startGame() {
             document.getElementById('splash-screen').style.display = 'none';
             document.getElementById('app-body').style.display = 'block';
             document.getElementById('nav-bar').style.display = 'flex';
             
-            // Populate Species
             const speciesSelect = document.getElementById('species');
             speciesDB.forEach(group => {
                 const optGroup = document.createElement('optgroup');
@@ -348,7 +357,7 @@
                 speciesSelect.appendChild(optGroup);
             });
 
-            // Populate Conversion Dropdowns
+            // Populate Conversions
             let lenHTML = '<option disabled selected>Select mm...</option>';
             for(let i=10; i<=1000; i+=10) lenHTML += `<option value="${i}">${i} mm</option>`;
             document.getElementById('lenConv').innerHTML = lenHTML;
@@ -360,16 +369,13 @@
             initChart();
         }
 
-        // Conversions
         function calcLen() {
             let mm = document.getElementById('lenConv').value;
-            let inches = (mm / 25.4).toFixed(2);
-            document.getElementById('lenResult').innerText = `${mm} mm = ${inches} in`;
+            document.getElementById('lenResult').innerText = `${mm} mm = ${(mm / 25.4).toFixed(2)} in`;
         }
         function calcTemp() {
             let c = document.getElementById('tempConv').value;
-            let f = ((c * 1.8) + 32).toFixed(1);
-            document.getElementById('tempResult').innerText = `${c} °C = ${f} °F`;
+            document.getElementById('tempResult').innerText = `${c} °C = ${((c * 1.8) + 32).toFixed(1)} °F`;
         }
 
         function updateBioDex() {
@@ -390,7 +396,6 @@
             if(tabId === 'stats') updateChart();
         }
 
-        // GPS & Weather 
         function getLocationAndWeather() {
             const envDiv = document.getElementById('env-data'); 
             envDiv.innerHTML = "Acquiring satellite signal...<br><small>(Ensure browser location permissions are active)</small>";
@@ -412,28 +417,21 @@
             } else { envDiv.innerHTML = "Hardware radar unavailable on this device."; }
         }
 
-        // Log Catch Data with Image Processing
         async function saveCatch() {
             const pass = document.getElementById('passNum').value;
             const speciesSelect = document.getElementById('species'); const speciesOpt = speciesSelect.options[speciesSelect.selectedIndex];
             const speciesName = speciesOpt.value; const length = document.getElementById('length').value;
-            
             if(!pass || !speciesName || !length) { alert("Data entry error: Please input Sweep #, Species, and Length."); return; }
 
             const btn = document.getElementById('logBtn'); btn.innerText = "Processing..."; btn.style.backgroundColor = "var(--text-muted)";
 
-            // Handle Image Upload to Base64
             const photoInput = document.getElementById('photo');
-            let photoDataUrl = "N";
-            let photoThumbHTML = "No Photo";
+            let photoDataUrl = "N"; let photoThumbHTML = "No Photo";
 
             if (photoInput.files.length > 0) {
                 photoDataUrl = await new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => resolve(e.target.result);
-                    reader.readAsDataURL(photoInput.files[0]);
+                    const reader = new FileReader(); reader.onload = (e) => resolve(e.target.result); reader.readAsDataURL(photoInput.files[0]);
                 });
-                // Create clickable thumbnail for UI
                 photoThumbHTML = `<img src="${photoDataUrl}" style="height:35px; width:35px; object-fit:cover; border-radius:4px; border:2px solid var(--primary); cursor:pointer;" onclick="openPhoto('${photoDataUrl}')">`;
             }
 
@@ -446,37 +444,25 @@
             };
             catchData.push(record);
             
-            // Add to UI log table
             const tr = document.createElement('tr');
             tr.innerHTML = `<td>${pass}</td><td><strong>${speciesName}</strong></td><td>${length}</td><td>${photoThumbHTML}</td>`;
             document.getElementById('logBody').prepend(tr);
 
-            // Reset inputs
             document.getElementById('length').value = ''; document.getElementById('weight').value = ''; document.getElementById('photo').value = '';
             document.getElementById('condition').value = 'Vigorous'; document.getElementById('biodex-box').style.display = 'none'; speciesSelect.selectedIndex = 0;
             
-            // Success State
             btn.style.backgroundColor = "var(--success)"; btn.innerText = "Logged Successfully!";
             setTimeout(() => { btn.style.backgroundColor = "var(--primary)"; btn.innerText = "Log Specimen"; }, 1000);
         }
 
-        // Photo Modal Viewer
-        function openPhoto(base64Url) {
-            document.getElementById('modal-img').src = base64Url;
-            document.getElementById('photo-modal').style.display = 'flex';
-        }
-        function closePhoto() {
-            document.getElementById('photo-modal').style.display = 'none';
-            document.getElementById('modal-img').src = "";
-        }
+        function openPhoto(base64Url) { document.getElementById('modal-img').src = base64Url; document.getElementById('photo-modal').style.display = 'flex'; }
+        function closePhoto() { document.getElementById('photo-modal').style.display = 'none'; document.getElementById('modal-img').src = ""; }
 
-        // Professional Charting
         function initChart() {
             Chart.defaults.font.family = "'Inter', sans-serif"; Chart.defaults.color = '#7F8C8D';
             const ctx = document.getElementById('depletionChart').getContext('2d');
             chartInstance = new Chart(ctx, {
-                type: 'line',
-                data: { labels: [], datasets:[{ label: 'Fish Caught per Sweep', data: [], borderColor: '#0F4C81', backgroundColor: 'rgba(15, 76, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.4, pointRadius: 5, pointBackgroundColor: '#4A90E2' }] },
+                type: 'line', data: { labels: [], datasets:[{ label: 'Fish Caught per Sweep', data: [], borderColor: '#0F4C81', backgroundColor: 'rgba(15, 76, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.4, pointRadius: 5, pointBackgroundColor: '#4A90E2' }] },
                 options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: {} }, plugins: { legend: { display: false } } }
             });
         }
@@ -487,25 +473,14 @@
             chartInstance.data.labels = sortedPasses.map(p => `Sweep ${p}`); chartInstance.data.datasets[0].data = counts; chartInstance.update();
         }
 
-        // Chart Downloader
         function downloadChartImage() {
             if(catchData.length === 0) return alert("Log some data first to generate a curve!");
             const canvas = document.getElementById('depletionChart');
-            
-            // Create a temporary canvas to fill a white background (so it's not transparent)
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = canvas.width; tempCanvas.height = canvas.height;
-            const ctx = tempCanvas.getContext('2d');
-            ctx.fillStyle = 'white'; ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-            ctx.drawImage(canvas, 0, 0);
-
-            const link = document.createElement('a');
-            link.download = 'Depletion_Curve.jpg';
-            link.href = tempCanvas.toDataURL('image/jpeg', 1.0);
-            link.click();
+            const tempCanvas = document.createElement('canvas'); tempCanvas.width = canvas.width; tempCanvas.height = canvas.height;
+            const ctx = tempCanvas.getContext('2d'); ctx.fillStyle = 'white'; ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height); ctx.drawImage(canvas, 0, 0);
+            const link = document.createElement('a'); link.download = 'Depletion_Curve.jpg'; link.href = tempCanvas.toDataURL('image/jpeg', 1.0); link.click();
         }
 
-        // Field Calculator
         let calcVal = "";
         function calcIn(val) { calcVal += val; document.getElementById('calcDisplay').value = calcVal; }
         function calcClear() { calcVal = ""; document.getElementById('calcDisplay').value = ""; }
@@ -514,40 +489,76 @@
         // --- EXPORT LOGIC ---
         function exportCSV() {
             if(catchData.length === 0) return alert("No database records to export.");
-            let csv = "Time,Lat,Lon,AirTempC,WaterTempC,Cond_uS,Reach_m,BlockNets,Sweep,ShockSecs,Volts,FreqHz,Duty%,Common_Name,Scientific_Name,Length_mm,Weight_g,Condition,Photo_Status\n";
-            catchData.forEach(d => { csv += `${d.time},${siteLat},${siteLon},${airTemp},${d.waterTemp},${d.cond},${d.reachLen},${d.blockNets},${d.pass},${d.shockSecs},${d.volts},${d.freq},${d.duty},${d.species},${d.sci},${d.length},${d.weight},${d.condition},${d.photoStatus}\n`; });
+            let csv = "Time,Stream_Name,Crew,Lat,Lon,AirTempC,WaterTempC,Cond_uS,Reach_m,BlockNets,Sweep,ShockSecs,Equip_Model,Volts,FreqHz,Duty%,Common_Name,Scientific_Name,Length_mm,Weight_g,Condition,Photo_Status\n";
+            const stream = document.getElementById('streamName').value || "Unnamed"; const crew = document.getElementById('crewNames').value || "Unnamed";
+            const equip = document.getElementById('equipModel').value || "Unknown";
+            
+            catchData.forEach(d => { csv += `${d.time},${stream},${crew},${siteLat},${siteLon},${airTemp},${d.waterTemp},${d.cond},${d.reachLen},${d.blockNets},${d.pass},${d.shockSecs},${equip},${d.volts},${d.freq},${d.duty},${d.species},${d.sci},${d.length},${d.weight},${d.condition},${d.photoStatus}\n`; });
             
             document.getElementById('rawDataBox').value = csv;
-            
             const uri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-            const a = document.createElement('a'); a.href = uri; a.download = 'Electro_Depletion_Log.csv';
+            const a = document.createElement('a'); a.href = uri; a.download = 'Electro_Raw_Data.csv';
             document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
 
         function exportDOC() {
             if(catchData.length === 0) return alert("No database records to export.");
             const d0 = catchData[0];
-            let html = `<html><head><meta charset="UTF-8"><title>Reach Report</title><style>table {border-collapse: collapse; width: 100%;} th, td {border: 1px solid black; padding: 8px; text-align: left;} th {background-color: #f2f2f2;}</style></head><body style="font-family: sans-serif;">
-                <h2>ELECTROFISHING REACH REPORT (NMFS STD)</h2>
-                <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p><p><strong>GPS Coordinates:</strong> ${siteLat}, ${siteLon}</p>
-                <p><strong>Reach Length:</strong> ${d0.reachLen} m | <strong>Block Nets:</strong> ${d0.blockNets}</p>
-                <p><strong>Water Temp:</strong> ${d0.waterTemp} °C | <strong>Conductivity:</strong> ${d0.cond} µS/cm</p><hr>
-                <table>
-                <tr><th>Sweep</th><th>Effort (s)</th><th>Settings (V/Hz)</th><th>Common Name</th><th>Scientific Name</th><th>L (mm)</th><th>W (g)</th><th>Condition</th><th>Photo</th></tr>`;
-            
-            let fallbackText = `ELECTROFISHING REACH REPORT\nDate: ${new Date().toLocaleDateString()}\nGPS: ${siteLat}, ${siteLon}\nReach: ${d0.reachLen}m | Block Nets: ${d0.blockNets}\nTemp: ${d0.waterTemp}C | Cond: ${d0.cond}uS/cm\n\nSWEEP | SEC | V/Hz | SPECIES | SCIENTIFIC | L(mm) | W(g) | COND | PHOTO\n`;
-            fallbackText += "-----------------------------------------------------------------------\n";
+            const stream = document.getElementById('streamName').value || "Unnamed Waterbody";
+            const crew = document.getElementById('crewNames').value || "Not specified";
+            const equip = document.getElementById('equipModel').value || "Not specified";
+            const habNotes = document.getElementById('habitatNotes').value || "None provided.";
+            const comments = document.getElementById('surveyComments').value || "None provided.";
 
-            catchData.forEach(d => { 
-                html += `<tr><td>${d.pass}</td><td>${d.shockSecs}</td><td>${d.volts}V/${d.freq}Hz</td><td>${d.species}</td><td><i>${d.sci}</i></td><td>${d.length}</td><td>${d.weight}</td><td>${d.condition}</td><td>${d.photoStatus}</td></tr>`; 
-                fallbackText += `${d.pass} | ${d.shockSecs} | ${d.volts}V/${d.freq}Hz | ${d.species} | ${d.sci} | ${d.length} | ${d.weight} | ${d.condition} | ${d.photoStatus}\n`;
+            // Pass Summary Calculations
+            let passes = {};
+            catchData.forEach(d => {
+                if(!passes[d.pass]) passes[d.pass] = { count: 0, secs: d.shockSecs, v: d.volts, hz: d.freq, duty: d.duty };
+                passes[d.pass].count++;
             });
-            html += "</table><br><p><i>Generated by ElectroFish Pro</i></p></body></html>";
+
+            let summaryHTML = ""; let summaryText = "";
+            Object.keys(passes).sort((a,b)=>a-b).forEach(p => {
+                let info = passes[p];
+                summaryHTML += `<tr><td>Pass ${p}</td><td>${info.secs} s</td><td>${info.v}V, ${info.hz}Hz, ${info.duty}%</td><td><strong>${info.count}</strong></td></tr>`;
+                summaryText += `Pass ${p} | ${info.secs}s | ${info.v}V, ${info.hz}Hz | Caught: ${info.count}\n`;
+            });
+
+            // Generate HTML for Word
+            let html = `<html><head><meta charset="UTF-8"><title>Depletion Survey Report</title><style>body {font-family: Arial, sans-serif;} table {border-collapse: collapse; width: 100%; margin-bottom: 20px;} th, td {border: 1px solid #ddd; padding: 8px; text-align: left;} th {background-color: #f2f2f2;} h2 {color: #0F4C81; border-bottom: 2px solid #0F4C81; padding-bottom: 5px;}</style></head><body>
+                <h1 style="text-align:center;">ELECTROFISHING DEPLETION SURVEY REPORT</h1>
+                <p><strong>Waterbody / Reach:</strong> ${stream}</p>
+                <p><strong>Date of Survey:</strong> ${new Date().toLocaleDateString()}</p>
+                <p><strong>Survey Crew:</strong> ${crew}</p>
+                
+                <h2>1. Site & Environmental Conditions</h2>
+                <p><strong>GPS Coordinates:</strong> ${siteLat}, ${siteLon} | <strong>Weather (Air):</strong> ${airTemp} °C</p>
+                <p><strong>Reach Length:</strong> ${d0.reachLen} m | <strong>Block Nets:</strong> ${d0.blockNets}</p>
+                <p><strong>Water Temp:</strong> ${d0.waterTemp} °C | <strong>Conductivity:</strong> ${d0.cond} µS/cm</p>
+
+                <h2>2. Field Notes & Observations</h2>
+                <p><strong>Habitat Description:</strong><br>${habNotes}</p>
+                <p><strong>General Comments / Anomalies:</strong><br>${comments}</p>
+
+                <h2>3. Survey Effort & Machine Settings</h2>
+                <p><strong>Equipment Used:</strong> ${equip}</p>
+                <table><tr><th>Sweep</th><th>Shock Time (Effort)</th><th>Machine Settings</th><th>Total Catch</th></tr>${summaryHTML}</table>
+
+                <h2>4. Comprehensive Specimen Log</h2>
+                <table><tr><th>Sweep</th><th>Common Name</th><th>Scientific Name</th><th>L (mm)</th><th>W (g)</th><th>Condition</th></tr>`;
+            
+            // Raw text fallback
+            let fallbackText = `DEPLETION SURVEY REPORT\nStream: ${stream}\nDate: ${new Date().toLocaleDateString()}\nCrew: ${crew}\n\n[ ENVIRONMENT ]\nGPS: ${siteLat}, ${siteLon}\nReach: ${d0.reachLen}m | Nets: ${d0.blockNets}\nWater Temp: ${d0.waterTemp}C | Cond: ${d0.cond}uS/cm\n\n[ FIELD NOTES ]\nHabitat: ${habNotes}\nComments: ${comments}\n\n[ EFFORT SUMMARY ]\nEquip: ${equip}\n${summaryText}\n\n[ SPECIMEN LOG ]\nSWP | SPECIES | SCIENTIFIC | L(mm) | W(g) | COND\n`;
+            
+            catchData.forEach(d => { 
+                html += `<tr><td>${d.pass}</td><td>${d.species}</td><td><i>${d.sci}</i></td><td>${d.length}</td><td>${d.weight}</td><td>${d.condition}</td></tr>`; 
+                fallbackText += `${d.pass} | ${d.species} | ${d.sci} | ${d.length} | ${d.weight} | ${d.condition}\n`;
+            });
+            html += "</table><br><p><i>Generated by ElectroFish Pro (Collegiate Protocol)</i></p></body></html>";
 
             document.getElementById('rawDataBox').value = fallbackText;
-
             const uri = 'data:application/msword;charset=utf-8,' + encodeURIComponent(html);
-            const a = document.createElement('a'); a.href = uri; a.download = 'Electro_Reach_Report.doc'; 
+            const a = document.createElement('a'); a.href = uri; a.download = 'Depletion_Survey_Report.doc'; 
             document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
 
@@ -555,7 +566,7 @@
             const rawBox = document.getElementById('rawDataBox');
             if(!rawBox.value) { alert("Please generate an export first."); return; }
             rawBox.select(); rawBox.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(rawBox.value).then(() => { alert("Data copied to clipboard! Paste this into an email or notes app."); }).catch(() => { alert("Copy failed. Please manually highlight the text box and copy."); });
+            navigator.clipboard.writeText(rawBox.value).then(() => { alert("Report text copied to clipboard!"); }).catch(() => { alert("Copy failed. Please copy manually."); });
         }
     </script>
 </body>
