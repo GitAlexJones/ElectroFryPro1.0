@@ -8,7 +8,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #0F4C81; --secondary: #4A90E2; --success: #27AE60; --danger: #E74C3C; --bg: #F4F7F9; --surf: #FFFFFF; --text: #2C3E50; --muted: #7F8C8D; --border: #E0E6ED; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; margin: 0; padding: 60px 0 80px 0; -webkit-font-smoothing: antialiased; }
+        
+        /* Adjusted padding to account for the new taller top header */
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; margin: 0; padding: 130px 0 30px 0; -webkit-font-smoothing: antialiased; }
+        
         h1, h2, h3, h4, h5 { color: var(--primary); margin: 0 0 10px 0; font-weight: 600; }
         h3 { font-size: 1.1rem; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-bottom: 16px; }
         p { margin: 0 0 10px 0; }
@@ -26,12 +29,22 @@
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 13px; }
         th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); } th { background: #F8FAFC; font-weight: 600; color: var(--muted); text-transform: uppercase; }
-        .top-header { position: fixed; top: 0; left: 0; width: 100%; background: var(--primary); color: white; padding: 15px; box-sizing: border-box; z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        /* NEW TOP NAVIGATION SYSTEM */
+        .app-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.08); background: var(--surf); }
+        .top-header { background: var(--primary); color: white; padding: 15px; padding-top: calc(15px + env(safe-area-inset-top)); display: flex; justify-content: space-between; align-items: center; }
         .header-title { font-weight: 700; font-size: 16px; margin: 0; } .header-badge { background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 11px; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--surf); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
-        .nav-item { text-align: center; color: var(--muted); cursor: pointer; flex: 1; font-size: 11px; font-weight: 600; padding: 5px; } .nav-item.active { color: var(--primary); } .nav-icon { display: block; font-size: 20px; margin-bottom: 3px; }
+        .top-nav { display: flex; justify-content: space-around; padding: 8px 5px; border-bottom: 1px solid var(--border); }
+        
+        /* Light Blue Tab Styling */
+        .nav-item { text-align: center; color: var(--muted); cursor: pointer; flex: 1; font-size: 11px; font-weight: 600; padding: 8px 2px; margin: 0 4px; border-radius: 8px; transition: all 0.2s ease; }
+        .nav-item:active { transform: scale(0.95); }
+        .nav-item.active { color: var(--secondary); background: #EBF5FF; }
+        .nav-icon { display: block; font-size: 20px; margin-bottom: 4px; }
+
         .tab-content { display: none; } .tab-content.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; text-align: center; color: white; }
         .modal-overlay.dark { background: rgba(0,0,0,0.9); } .modal-overlay.blur { background: rgba(15, 76, 129, 0.95); }
         .modal-card { background: white; color: var(--text); padding: 30px; border-radius: 12px; max-width: 450px; width: 100%; text-align: left; max-height: 80vh; overflow-y: auto; }
@@ -42,6 +55,8 @@
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; } .calc-grid .btn { padding: 15px 0; font-size: 18px; border-radius: 8px; background: #F1F5F9; color: var(--text); }
         .calc-grid .btn-op { background: var(--secondary); color: white; } .calc-grid .btn-clear { background: var(--danger); color: white; } .calc-grid .btn-eq { background: var(--success); color: white; grid-column: span 4; }
         .app-footer { text-align: center; padding: 30px 10px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); margin-top: 20px; } .app-footer a { color: var(--secondary); text-decoration: none; font-weight: 600; }
+        .manual-section h5 { margin-top: 15px; margin-bottom: 4px; color: var(--primary); } .manual-section p { font-size: 13px; color: var(--text); margin-bottom: 10px; }
+        .safety-section h5 { margin-top: 15px; margin-bottom: 4px; color: var(--danger); } .safety-section p { font-size: 13px; color: var(--text); margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -57,7 +72,7 @@
             <h2 style="margin-top:0;">Terms of Use</h2>
             <p style="font-size: 13px;"><strong>Educational Software:</strong> ElectroFish Pro is a beta software tool designed strictly for collegiate educational purposes and field biology training.</p>
             <p style="font-size: 13px;"><strong>Data Retention:</strong> Data logged is stored locally in your browser's active cache. It is the user's responsibility to frequently export data. Closing the browser tab may result in data loss.</p>
-            <p style="font-size: 13px;"><strong>Safety Warning:</strong> Electrofishing involves high voltage and inherent dangers. This app is a data collection tool, NOT a replacement for formal AFS safety training.</p>
+            <p style="font-size: 13px;"><strong>Safety Warning:</strong> Electrofishing involves high voltage and inherent dangers. This app is a data collection tool, NOT a replacement for formal AFS safety training, CPR certification, or standard operating procedures.</p>
             <button class="btn btn-primary" style="margin-top: 20px;" onclick="document.getElementById('terms-modal').style.display='none'">I Understand & Agree</button>
         </div>
     </div>
@@ -80,10 +95,22 @@
         </div>
     </div>
 
-    <!-- HEADER -->
-    <div class="top-header"><div class="header-title">ElectroFish Pro</div><div class="header-badge" id="header-status">Standby</div></div>
+    <!-- NEW TOP HEADER & NAV SYSTEM -->
+    <header class="app-header">
+        <div class="top-header">
+            <div class="header-title">ElectroFish Pro</div>
+            <div class="header-badge" id="header-status">Standby</div>
+        </div>
+        <div class="top-nav" id="nav-bar" style="display: none;">
+            <div class="nav-item active" onclick="switchTab('site', this)"><span class="nav-icon">📍</span>Site</div>
+            <div class="nav-item" onclick="switchTab('entry', this)"><span class="nav-icon">📝</span>Log</div>
+            <div class="nav-item" onclick="switchTab('stats', this)"><span class="nav-icon">📈</span>Stats</div>
+            <div class="nav-item" onclick="switchTab('gear', this)"><span class="nav-icon">⚙️</span>Ref</div>
+            <div class="nav-item" onclick="switchTab('save', this)"><span class="nav-icon">📄</span>Report</div>
+        </div>
+    </header>
 
-    <!-- TABS -->
+    <!-- MAIN APP CONTAINER -->
     <div id="app-body" class="container" style="display: none;">
 
         <!-- 1. SITE -->
@@ -147,15 +174,32 @@
 
         <!-- 4. REF / GEAR -->
         <div id="tab-gear" class="tab-content">
-            <div class="card" style="border-left: 4px solid var(--danger); background: #fffaf9;">
-                <h3 style="color: var(--danger);">Backpack Safety</h3>
-                <h5 style="margin-top:10px; color: var(--danger);">1. Communication ("Power On")</h5>
-                <p style="font-size: 12px;">Operator loudly announces <strong>"POWER ON!"</strong> before pressing anode. Announce <strong>"POWER OFF!"</strong> when releasing. Never press if hands are in water.</p>
-                <h5 style="margin-top:15px; color: var(--danger);">2. Fall Procedures & Tilt Switch</h5>
-                <p style="font-size: 12px;">If anyone falls, release switch immediately. Modern packs have a 45-degree tilt-switch cutoff. Test before wading.</p>
+            <div class="card safety-section" style="border-left: 4px solid var(--danger); background: #fffaf9;">
+                <h3 style="color: var(--danger); border-bottom-color: var(--danger);">Backpack Safety Protocol</h3>
+                <h5 style="margin-top:0;">1. Personal Protective Equipment (PPE)</h5>
+                <p>All crew must wear non-leaking, non-breathable chest waders, a wading belt to prevent water entry during a fall, and high-voltage lineman's gloves (Class 0, rated to 1000V). Polarized sunglasses are required.</p>
+                <h5>2. Communication ("Power On")</h5>
+                <p>The operator must loudly announce <strong>"POWER ON!"</strong> before pressing the anode switch. Netters must acknowledge. When releasing, announce <strong>"POWER OFF!"</strong></p>
+                <h5>3. Fall Procedures & Immersion Switches</h5>
+                <p>If anyone slips, release the switch instantly. Modern backpacks feature internal tilt-switches that cut power if the operator leans past ~45 degrees. Test these before wading.</p>
+                <h5>4. Cathode Tail Awareness</h5>
+                <p>Ensure the metal cathode tail (the braided wire dragging behind) is fully submerged and trailing freely. It must never wrap around the operator's or netter's legs.</p>
             </div>
+            
+            <div class="card manual-section" style="border-left: 4px solid var(--secondary); background: #f4f9ff;">
+                <h3 style="color: var(--primary); border-bottom-color: var(--secondary);">Electrofishing Parameters</h3>
+                <h5 style="margin-top:0;">Conductivity (Cond µS/cm)</h5>
+                <p>Fish internal conductivity is roughly <strong>115 to 150 µS/cm</strong>. This dictates your voltage. If water conductivity is very low, it resists electricity; if very high, it conducts better than the fish.</p>
+                <h5>Voltage (V)</h5>
+                <p><strong>Low Conductivity = High Voltage (500V-1000V+)</strong> to force current through resistive water. <strong>High Conductivity = Low Voltage (50V-200V)</strong> to prevent overloading the pack and injuring fish.</p>
+                <h5>Frequency (Hz)</h5>
+                <p>High frequencies (60+ Hz) induce rapid, rigid muscle contractions (tetany), which increases capture rates but drastically increases the risk of severe spinal injuries. Lower frequencies (15-30 Hz) are safer.</p>
+                <h5>Duty Cycle (%)</h5>
+                <p>Percentage of time electricity is flowing during a pulse cycle. Standard is 10-25%. Higher duty cycle = more total power, but increased risk of muscular hemorrhaging.</p>
+            </div>
+
             <div class="card">
-                <h3>Calculator</h3>
+                <h3>Field Calculator</h3>
                 <input type="text" id="calcDisplay" disabled style="font-size: 20px; text-align: right; background: #fff; margin-bottom:15px; color:#333;">
                 <div class="calc-grid">
                     <button class="btn" onclick="calcIn('7')">7</button><button class="btn" onclick="calcIn('8')">8</button><button class="btn" onclick="calcIn('9')">9</button><button class="btn btn-op" onclick="calcIn('/')">÷</button>
@@ -165,6 +209,7 @@
                     <button class="btn btn-eq" onclick="calcEval()">=</button>
                 </div>
             </div>
+
             <div class="card">
                 <h3>Conversions</h3>
                 <div class="row" style="margin-bottom: 0;">
@@ -172,11 +217,12 @@
                     <div class="col"><label>Temp (°C → °F)</label><select id="tempConv" onchange="calcTemp()"></select><div id="tempResult" style="margin-top:8px; font-weight:bold; color:var(--danger); font-size:16px;">--</div></div>
                 </div>
             </div>
-            <div class="card" style="background: #F8FAFC;">
+
+            <div class="card manual-section" style="background: #F8FAFC;">
                 <h3>Depletion Theory & Formulas</h3>
-                <h5 style="margin-top:10px;">1. Catchability Coefficient (q)</h5><p style="font-size: 12px;"><strong>q = C / (N × E)</strong><br>Proportion of population caught by one unit of effort. Assumes 'q' remains constant across sweeps.</p>
-                <h5 style="margin-top:15px;">2. Seber-Le Cren (2-Pass Method)</h5><p style="font-size: 12px;"><strong>N = C₁² / (C₁ - C₂)</strong><br>Calculates estimated population (N) for two sweeps. C₁ must be strictly greater than C₂.</p>
-                <h5 style="margin-top:15px;">3. Leslie Graphical Method (3+ Passes)</h5><p style="font-size: 12px;">CPUE (Y-axis) plotted against Cumulative Catch (X-axis). Where regression line crosses X-axis (CPUE = 0) is the estimated total population.</p>
+                <h5 style="margin-top:0;">1. Catchability Coefficient (q)</h5><p><strong>q = C / (N × E)</strong><br>Proportion of population caught by one unit of effort. Assumes 'q' remains constant across sweeps.</p>
+                <h5>2. Seber-Le Cren (2-Pass Method)</h5><p><strong>N = C₁² / (C₁ - C₂)</strong><br>Calculates estimated population (N) for two sweeps. C₁ must be strictly greater than C₂.</p>
+                <h5>3. Leslie Graphical Method (3+ Passes)</h5><p>CPUE (Y-axis) plotted against Cumulative Catch (X-axis). Where regression line crosses X-axis (CPUE = 0) is the estimated total population.</p>
             </div>
         </div>
 
@@ -215,15 +261,6 @@
         </div>
 
         <div class="app-footer">Created by Michael Stocklin<br><a href="#" onclick="document.getElementById('terms-modal').style.display='flex'; return false;">Terms of Use & Disclaimer</a></div>
-    </div>
-
-    <!-- BOTTOM NAV -->
-    <div class="bottom-nav" id="nav-bar" style="display: none;">
-        <div class="nav-item active" onclick="switchTab('site', this)"><span class="nav-icon">📍</span>Site</div>
-        <div class="nav-item" onclick="switchTab('entry', this)"><span class="nav-icon">📝</span>Log</div>
-        <div class="nav-item" onclick="switchTab('stats', this)"><span class="nav-icon">📈</span>Stats</div>
-        <div class="nav-item" onclick="switchTab('gear', this)"><span class="nav-icon">⚙️</span>Ref</div>
-        <div class="nav-item" onclick="switchTab('save', this)"><span class="nav-icon">📄</span>Report</div>
     </div>
 
     <script>
