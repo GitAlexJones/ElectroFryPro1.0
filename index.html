@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ElectroFish Pro | NMFS Standard</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js & ExcelJS Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+
     <style>
         :root { --primary: #0F4C81; --secondary: #4A90E2; --success: #27AE60; --danger: #E74C3C; --bg: #F4F7F9; --surf: #FFFFFF; --text: #2C3E50; --muted: #7F8C8D; --border: #E0E6ED; }
-        
-        /* Adjusted padding to account for the new taller top header */
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; margin: 0; padding: 130px 0 30px 0; -webkit-font-smoothing: antialiased; }
-        
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; margin: 0; padding: 60px 0 80px 0; -webkit-font-smoothing: antialiased; }
         h1, h2, h3, h4, h5 { color: var(--primary); margin: 0 0 10px 0; font-weight: 600; }
         h3 { font-size: 1.1rem; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-bottom: 16px; }
         p { margin: 0 0 10px 0; }
@@ -29,22 +31,12 @@
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 13px; }
         th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); } th { background: #F8FAFC; font-weight: 600; color: var(--muted); text-transform: uppercase; }
-        
-        /* NEW TOP NAVIGATION SYSTEM */
-        .app-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.08); background: var(--surf); }
-        .top-header { background: var(--primary); color: white; padding: 15px; padding-top: calc(15px + env(safe-area-inset-top)); display: flex; justify-content: space-between; align-items: center; }
+        .top-header { position: fixed; top: 0; left: 0; width: 100%; background: var(--primary); color: white; padding: 15px; box-sizing: border-box; z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .header-title { font-weight: 700; font-size: 16px; margin: 0; } .header-badge { background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 11px; }
-        .top-nav { display: flex; justify-content: space-around; padding: 8px 5px; border-bottom: 1px solid var(--border); }
-        
-        /* Light Blue Tab Styling */
-        .nav-item { text-align: center; color: var(--muted); cursor: pointer; flex: 1; font-size: 11px; font-weight: 600; padding: 8px 2px; margin: 0 4px; border-radius: 8px; transition: all 0.2s ease; }
-        .nav-item:active { transform: scale(0.95); }
-        .nav-item.active { color: var(--secondary); background: #EBF5FF; }
-        .nav-icon { display: block; font-size: 20px; margin-bottom: 4px; }
-
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--surf); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+        .nav-item { text-align: center; color: var(--muted); cursor: pointer; flex: 1; font-size: 11px; font-weight: 600; padding: 5px; } .nav-item.active { color: var(--primary); } .nav-icon { display: block; font-size: 20px; margin-bottom: 3px; }
         .tab-content { display: none; } .tab-content.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; text-align: center; color: white; }
         .modal-overlay.dark { background: rgba(0,0,0,0.9); } .modal-overlay.blur { background: rgba(15, 76, 129, 0.95); }
         .modal-card { background: white; color: var(--text); padding: 30px; border-radius: 12px; max-width: 450px; width: 100%; text-align: left; max-height: 80vh; overflow-y: auto; }
@@ -85,8 +77,7 @@
                 <li>Comprehensive PNW Species Database</li>
                 <li>In-App Photo Documentation</li>
                 <li>Automated Depletion Curves</li>
-                <li>Professional Report Generator</li>
-                <li>Built-in Student Field Manual</li>
+                <li>Downloadable Excel Files w/ Embedded Charts</li>
             </ul>
             <button class="btn btn-primary" onclick="startGame()">Initialize Protocol</button>
             <div style="text-align: center; margin-top: 15px; font-size: 12px;">
@@ -95,22 +86,10 @@
         </div>
     </div>
 
-    <!-- NEW TOP HEADER & NAV SYSTEM -->
-    <header class="app-header">
-        <div class="top-header">
-            <div class="header-title">ElectroFish Pro</div>
-            <div class="header-badge" id="header-status">Standby</div>
-        </div>
-        <div class="top-nav" id="nav-bar" style="display: none;">
-            <div class="nav-item active" onclick="switchTab('site', this)"><span class="nav-icon">📍</span>Site</div>
-            <div class="nav-item" onclick="switchTab('entry', this)"><span class="nav-icon">📝</span>Log</div>
-            <div class="nav-item" onclick="switchTab('stats', this)"><span class="nav-icon">📈</span>Stats</div>
-            <div class="nav-item" onclick="switchTab('gear', this)"><span class="nav-icon">⚙️</span>Ref</div>
-            <div class="nav-item" onclick="switchTab('save', this)"><span class="nav-icon">📄</span>Report</div>
-        </div>
-    </header>
+    <!-- HEADER -->
+    <div class="top-header"><div class="header-title">ElectroFish Pro</div><div class="header-badge" id="header-status">Standby</div></div>
 
-    <!-- MAIN APP CONTAINER -->
+    <!-- TABS -->
     <div id="app-body" class="container" style="display: none;">
 
         <!-- 1. SITE -->
@@ -164,7 +143,6 @@
             <div class="card">
                 <h3>Depletion Curve</h3>
                 <div style="background: white; border: 1px solid var(--border); border-radius: 6px; padding: 5px; margin-bottom: 10px;"><canvas id="depletionChart" width="400" height="250" style="background-color: white;"></canvas></div>
-                <button class="btn btn-outline" onclick="downloadChartImage()">💾 Download Chart (.JPG)</button>
             </div>
             <div class="card">
                 <h3>Survey Raw Log</h3>
@@ -250,8 +228,9 @@
             </div>
             <div class="card" style="text-align: center; padding: 20px;">
                 <h3>Generate Final Report</h3>
-                <button class="btn btn-primary" onclick="exportDOC()" style="margin-bottom: 15px;">📄 Download Formal Report (.DOC)</button>
-                <button class="btn btn-success" onclick="exportCSV()">📊 Download Raw Data (.CSV)</button>
+                <!-- UPDATED BUTTONS FOR EXCELJS -->
+                <button class="btn btn-success" onclick="exportXLSX()" style="margin-bottom: 15px;">📊 Download Data + Chart (.XLSX)</button>
+                <button class="btn btn-primary" onclick="exportDOC()">📄 Download Formal Report (.DOC)</button>
             </div>
             <div class="card" style="border-left: 4px solid var(--danger);">
                 <h3 style="color: var(--danger);">Emergency Text Fallback</h3>
@@ -261,6 +240,15 @@
         </div>
 
         <div class="app-footer">Created by Michael Stocklin<br><a href="#" onclick="document.getElementById('terms-modal').style.display='flex'; return false;">Terms of Use & Disclaimer</a></div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav" id="nav-bar" style="display: none;">
+        <div class="nav-item active" onclick="switchTab('site', this)"><span class="nav-icon">📍</span>Site</div>
+        <div class="nav-item" onclick="switchTab('entry', this)"><span class="nav-icon">📝</span>Log</div>
+        <div class="nav-item" onclick="switchTab('stats', this)"><span class="nav-icon">📈</span>Stats</div>
+        <div class="nav-item" onclick="switchTab('gear', this)"><span class="nav-icon">⚙️</span>Ref</div>
+        <div class="nav-item" onclick="switchTab('save', this)"><span class="nav-icon">📄</span>Report</div>
     </div>
 
     <script>
@@ -339,36 +327,94 @@
 
         function openPhoto(u) { document.getElementById('modal-img').src = u; document.getElementById('photo-modal').style.display = 'flex'; }
 
+        const drawDataLabels = {
+            id: 'drawDataLabels',
+            afterDatasetsDraw(chart) {
+                const { ctx, data } = chart;
+                ctx.save();
+                const dataset = data.datasets[0];
+                const meta = chart.getDatasetMeta(0);
+                dataset.data.forEach((datapoint, index) => {
+                    const { x, y } = meta.data[index];
+                    ctx.fillStyle = '#E74C3C'; ctx.font = 'bold 14px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+                    ctx.fillText(datapoint, x, y - 12);
+                });
+                ctx.restore();
+            }
+        };
+
         function initChart() {
             Chart.defaults.font.family = "'Inter', sans-serif"; Chart.defaults.color = '#7F8C8D';
             const ctx = document.getElementById('depletionChart').getContext('2d');
-            chartInstance = new Chart(ctx, { type: 'line', data: { labels: [], datasets:[{ label: 'Fish / Sweep', data: [], borderColor: '#0F4C81', backgroundColor: 'rgba(15, 76, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.4, pointRadius: 5 }] }, options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }, plugins: { legend: { display: false } } } });
+            chartInstance = new Chart(ctx, { 
+                type: 'line', 
+                data: { labels: [], datasets:[{ label: 'Fish / Sweep', data: [], borderColor: '#0F4C81', backgroundColor: 'rgba(15, 76, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.4, pointRadius: 6 }] }, 
+                options: { layout: { padding: { top: 30, right: 15, left: 10 } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }, plugins: { legend: { display: false } } },
+                plugins: [drawDataLabels]
+            });
         }
         function updateChart() {
             if(!chartInstance) return; let p = {}; catchData.forEach(d => { p[d.pass] = (p[d.pass] || 0) + 1; });
             const s = Object.keys(p).sort((a,b)=>a-b); chartInstance.data.labels = s.map(x => `Sweep ${x}`); chartInstance.data.datasets[0].data = s.map(x => p[x]); chartInstance.update();
         }
 
-        function downloadChartImage() {
-            if(catchData.length === 0) return alert("Log data first!");
-            const cvs = document.getElementById('depletionChart'); const tCvs = document.createElement('canvas'); tCvs.width = cvs.width; tCvs.height = cvs.height;
-            const ctx = tCvs.getContext('2d'); ctx.fillStyle = 'white'; ctx.fillRect(0, 0, tCvs.width, tCvs.height); ctx.drawImage(cvs, 0, 0);
-            const a = document.createElement('a'); a.download = 'Depletion_Curve.jpg'; a.href = tCvs.toDataURL('image/jpeg', 1.0); a.click();
-        }
-
         let cV = ""; function calcIn(v) { cV += v; document.getElementById('calcDisplay').value = cV; } function calcClear() { cV = ""; document.getElementById('calcDisplay').value = ""; } function calcEval() { try { cV = eval(cV).toString(); document.getElementById('calcDisplay').value = cV; } catch { document.getElementById('calcDisplay').value = "Err"; cV=""; } }
 
-        function exportCSV() {
-            if(catchData.length === 0) return alert("No data to export.");
+        // --- NEW EXCELJS EXPORT WITH EMBEDDED CHART ---
+        async function exportXLSX() {
+            if(catchData.length === 0) return alert("No database records to export.");
+
+            // Generate Fallback Text just in case
             let csv = `"Time","Stream","Crew","Lat","Lon","AirTempC","WaterTempC","Cond_uS","Reach_m","BlockNets","Weather","Clarity","Flow","Substrate","Net_Int","Efficiency","Sweep","Secs","Model","Volts","Hz","Duty%","Common_Name","Scientific","Length_mm","Weight_g","Condition","Photo"\n`;
-            
             const strm = (document.getElementById('streamName').value||"Unk").replace(/"/g, '""'); const crw = (document.getElementById('crewNames').value||"Unk").replace(/"/g, '""'); const eq = (document.getElementById('equipModel').value||"Unk").replace(/"/g, '""');
             const wth = document.getElementById('rptWeather').value; const clr = document.getElementById('rptClarity').value; const flw = document.getElementById('rptFlow').value; const sub = document.getElementById('rptSubstrate').value; const netI = document.getElementById('rptNets').value; const eff = document.getElementById('rptEfficiency').value;
-            
             catchData.forEach(d => { csv += `"${d.t}","${strm}","${crw}","${siteLat}","${siteLon}","${airTemp}","${d.wTmp}","${d.cnd}","${d.rLen}","${d.nets}","${wth}","${clr}","${flw}","${sub}","${netI}","${eff}","${d.pass}","${d.sec}","${eq}","${d.v}","${d.hz}","${d.dty}","${d.sp}","${d.sci}","${d.len}","${d.wt}","${d.cond}","${d.pStat}"\n`; });
-            
-            document.getElementById('rawDataBox').value = csv; const u = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-            const a = document.createElement('a'); a.href = u; a.download = 'Electro_Raw_Data.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            document.getElementById('rawDataBox').value = csv;
+
+            // Generate True XLSX via ExcelJS
+            const wb = new ExcelJS.Workbook();
+            const ws = wb.addWorksheet('Depletion Survey');
+
+            ws.columns =[
+                { header: 'Time', key: 't', width: 12 }, { header: 'Sweep', key: 'pass', width: 10 },
+                { header: 'Species', key: 'sp', width: 22 }, { header: 'Scientific Name', key: 'sci', width: 25 },
+                { header: 'Length (mm)', key: 'len', width: 15 }, { header: 'Weight (g)', key: 'wt', width: 15 },
+                { header: 'Condition', key: 'cond', width: 15 }, { header: 'Volts', key: 'v', width: 10 },
+                { header: 'Hz', key: 'hz', width: 10 }, { header: 'Duty %', key: 'dty', width: 10 },
+                { header: 'Water Temp', key: 'wTmp', width: 12 }, { header: 'Cond (uS)', key: 'cnd', width: 12 },
+                { header: 'Stream', key: 'strm', width: 20 }, { header: 'Crew', key: 'crw', width: 20 }
+            ];
+
+            catchData.forEach(d => {
+                ws.addRow({ t: d.t, pass: d.pass, sp: d.sp, sci: d.sci, len: d.len, wt: d.wt, cond: d.cond, v: d.v, hz: d.hz, dty: d.dty, wTmp: d.wTmp, cnd: d.cnd, strm: strm, crw: crw });
+            });
+
+            // Bold the header row
+            ws.getRow(1).font = { bold: true };
+
+            // Render Chart to Image and Add to Excel
+            if(chartInstance) {
+                const cvs = document.getElementById('depletionChart');
+                const tCvs = document.createElement('canvas'); tCvs.width = cvs.width; tCvs.height = cvs.height;
+                const ctx = tCvs.getContext('2d'); ctx.fillStyle = 'white'; ctx.fillRect(0, 0, tCvs.width, tCvs.height); ctx.drawImage(cvs, 0, 0);
+                const base64Image = tCvs.toDataURL('image/png');
+
+                const imageId = wb.addImage({ base64: base64Image, extension: 'png' });
+                
+                // Add image right below the data
+                ws.addImage(imageId, {
+                    tl: { col: 1, row: catchData.length + 3 },
+                    ext: { width: 500, height: 300 }
+                });
+            }
+
+            // Download file
+            const buffer = await wb.xlsx.writeBuffer();
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'Electro_Survey_Data.xlsx';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url);
         }
 
         function exportDOC() {
