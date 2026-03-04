@@ -74,8 +74,9 @@
             <ul style="padding-left: 20px; margin-bottom: 25px; font-size: 14px;">
                 <li>Comprehensive PNW Species Database</li>
                 <li>In-App Photo Documentation</li>
-                <li>Automated Depletion Curves</li>
-                <li>Downloadable Excel Files w/ Embedded Charts</li>
+                <li>Multi-Tab Excel Export w/ Chart Data</li>
+                <li>Professional Report Generator</li>
+                <li>Built-in Student Field Manual</li>
             </ul>
             <button class="btn btn-primary" onclick="startGame()">Initialize Protocol</button>
             <div style="text-align: center; margin-top: 15px; font-size: 12px;">
@@ -148,7 +149,7 @@
             </div>
         </div>
 
-        <!-- 4. REF / GEAR (EXPANDED EDUCATIONAL MANUAL) -->
+        <!-- 4. REF / GEAR -->
         <div id="tab-gear" class="tab-content">
             
             <div class="card safety-section" style="border-left: 4px solid var(--danger); background: #fffaf9;">
@@ -211,9 +212,9 @@
                 <p>A linear regression method used when you conduct 3 or more passes. Catch Per Unit Effort (CPUE) is plotted on the Y-axis against Cumulative Catch (prior to the current pass) on the X-axis.</p>
                 <div class="example-box">
                     <strong>Step-by-Step Example:</strong><br>
-                    • <strong>Pass 1:</strong> Catch = 50. (Cum. Catch before pass = 0). Plot Point ➔ <strong>(0, 50)</strong><br>
-                    • <strong>Pass 2:</strong> Catch = 30. (Cum. Catch before pass = 50). Plot Point ➔ <strong>(50, 30)</strong><br>
-                    • <strong>Pass 3:</strong> Catch = 10. (Cum. Catch before pass = 50+30=80). Plot Point ➔ <strong>(80, 10)</strong><br><br>
+                    • <strong>Pass 1:</strong> Catch = 50. (Cum. Catch before pass = 0). Plot ➔ <strong>(0, 50)</strong><br>
+                    • <strong>Pass 2:</strong> Catch = 30. (Cum. Catch before pass = 50). Plot ➔ <strong>(50, 30)</strong><br>
+                    • <strong>Pass 3:</strong> Catch = 10. (Cum. Catch before pass = 50+30=80). Plot ➔ <strong>(80, 10)</strong><br><br>
                     <strong>Step 1:</strong> Plot these three points on a graph.<br>
                     <strong>Step 2:</strong> Draw a straight line of best fit through the points descending toward the bottom axis.<br>
                     <strong>Step 3:</strong> Find where the line intersects the X-axis (where Catch theoretically hits 0).<br><br>
@@ -266,7 +267,7 @@
             </div>
             <div class="card" style="text-align: center; padding: 20px;">
                 <h3>Generate Final Report</h3>
-                <button class="btn btn-success" onclick="exportXLSX()" style="margin-bottom: 15px;">📊 Download Data + Chart (.XLSX)</button>
+                <button class="btn btn-success" onclick="exportXLSX()" style="margin-bottom: 15px;">📊 Download Excel Data w/ Chart</button>
                 <button class="btn btn-primary" onclick="exportDOC()">📄 Download Formal Report (.DOC)</button>
             </div>
             <div class="card" style="border-left: 4px solid var(--danger);">
@@ -351,7 +352,7 @@
 
             const rec = { 
                 t: new Date().toLocaleTimeString(), rLen: document.getElementById('reachLen').value||"UNK", nets: document.getElementById('blockNets').value,
-                wTmp: document.getElementById('waterTemp').value||"UNK", cnd: document.getElementById('conductivity').value||"UNK", pass, sec: document.getElementById('shockSecs').value||"UNK",
+                wTmp: document.getElementById('waterTemp').value||"UNK", cnd: document.getElementById('conductivity').value||"UNK", pass: parseInt(pass), sec: document.getElementById('shockSecs').value||"UNK",
                 v: document.getElementById('volts').value||"UNK", hz: document.getElementById('freq').value||"UNK", dty: document.getElementById('duty').value||"UNK",
                 sp: spName, sci: spOpt.dataset.sci||"UNK", len, wt: document.getElementById('weight').value||"---", cond: document.getElementById('condition').value, pStat: pInput.files.length>0?"Yes":"No"
             };
@@ -403,12 +404,14 @@
             let csv = `"Time","Stream","Crew","Lat","Lon","AirTempC","WaterTempC","Cond_uS","Reach_m","BlockNets","Weather","Clarity","Flow","Substrate","Net_Int","Efficiency","Sweep","Secs","Model","Volts","Hz","Duty%","Common_Name","Scientific","Length_mm","Weight_g","Condition","Photo"\n`;
             const strm = (document.getElementById('streamName').value||"Unk").replace(/"/g, '""'); const crw = (document.getElementById('crewNames').value||"Unk").replace(/"/g, '""'); const eq = (document.getElementById('equipModel').value||"Unk").replace(/"/g, '""');
             const wth = document.getElementById('rptWeather').value; const clr = document.getElementById('rptClarity').value; const flw = document.getElementById('rptFlow').value; const sub = document.getElementById('rptSubstrate').value; const netI = document.getElementById('rptNets').value; const eff = document.getElementById('rptEfficiency').value;
+            
             catchData.forEach(d => { csv += `"${d.t}","${strm}","${crw}","${siteLat}","${siteLon}","${airTemp}","${d.wTmp}","${d.cnd}","${d.rLen}","${d.nets}","${wth}","${clr}","${flw}","${sub}","${netI}","${eff}","${d.pass}","${d.sec}","${eq}","${d.v}","${d.hz}","${d.dty}","${d.sp}","${d.sci}","${d.len}","${d.wt}","${d.cond}","${d.pStat}"\n`; });
             document.getElementById('rawDataBox').value = csv;
 
             const wb = new ExcelJS.Workbook();
-            const ws = wb.addWorksheet('Depletion Survey');
-
+            
+            // Sheet 1: Raw Data
+            const ws = wb.addWorksheet('Raw Data Log');
             ws.columns =[
                 { header: 'Time', key: 't', width: 12 }, { header: 'Sweep', key: 'pass', width: 10 },
                 { header: 'Species', key: 'sp', width: 22 }, { header: 'Scientific Name', key: 'sci', width: 25 },
@@ -418,19 +421,31 @@
                 { header: 'Water Temp', key: 'wTmp', width: 12 }, { header: 'Cond (uS)', key: 'cnd', width: 12 },
                 { header: 'Stream', key: 'strm', width: 20 }, { header: 'Crew', key: 'crw', width: 20 }
             ];
-
             catchData.forEach(d => { ws.addRow({ t: d.t, pass: d.pass, sp: d.sp, sci: d.sci, len: d.len, wt: d.wt, cond: d.cond, v: d.v, hz: d.hz, dty: d.dty, wTmp: d.wTmp, cnd: d.cnd, strm: strm, crw: crw }); });
             ws.getRow(1).font = { bold: true };
 
+            // Embed Chart Image in Sheet 1
             if(chartInstance) {
                 const cvs = document.getElementById('depletionChart');
                 const tCvs = document.createElement('canvas'); tCvs.width = cvs.width; tCvs.height = cvs.height;
                 const ctx = tCvs.getContext('2d'); ctx.fillStyle = 'white'; ctx.fillRect(0, 0, tCvs.width, tCvs.height); ctx.drawImage(cvs, 0, 0);
-                const base64Image = tCvs.toDataURL('image/png');
-
-                const imageId = wb.addImage({ base64: base64Image, extension: 'png' });
+                const imageId = wb.addImage({ base64: tCvs.toDataURL('image/png'), extension: 'png' });
                 ws.addImage(imageId, { tl: { col: 1, row: catchData.length + 3 }, ext: { width: 500, height: 300 } });
             }
+
+            // Sheet 2: Native Chart Formatting Table
+            const wsChart = wb.addWorksheet('Depletion Curve Data');
+            wsChart.columns =[
+                { header: 'Sweep Number', key: 'swp', width: 15 },
+                { header: 'Total Catch', key: 'ctc', width: 15 }
+            ];
+            
+            let p = {}; catchData.forEach(d => { if(!p[d.pass]) p[d.pass] = 0; p[d.pass]++; });
+            Object.keys(p).sort((a,b)=>a-b).forEach(k => { wsChart.addRow({ swp: parseInt(k), ctc: p[k] }); });
+            wsChart.getRow(1).font = { bold: true };
+
+            wsChart.addRow([]); wsChart.addRow(['HOW TO CREATE YOUR NATIVE EXCEL CHART:']); wsChart.addRow(['1. Highlight the data table above (e.g., A1 to B4).']); wsChart.addRow(['2. Go to Insert -> Line Chart (or Scatter with Smooth Lines).']);
+            wsChart.getRow(wsChart.rowCount - 3).font = { bold: true, color: { arg: 'FF0F4C81' } };
 
             const buffer = await wb.xlsx.writeBuffer();
             const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
