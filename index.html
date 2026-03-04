@@ -46,6 +46,7 @@
         .manual-section h5 { margin-top: 15px; margin-bottom: 4px; color: var(--primary); } .manual-section p { font-size: 13px; color: var(--text); margin-bottom: 10px; }
         .safety-section h5 { margin-top: 15px; margin-bottom: 4px; color: var(--danger); } .safety-section p { font-size: 13px; color: var(--text); margin-bottom: 10px; }
         .ex-text { display: block; margin-top: 4px; font-size: 11.5px; color: var(--primary); font-style: italic; line-height: 1.4; }
+        .example-box { background: #EBF5FF; padding: 12px; border-radius: 6px; font-size: 13px; margin-top: 8px; border-left: 3px solid var(--secondary); color: var(--text); font-style: normal; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -147,7 +148,7 @@
             </div>
         </div>
 
-        <!-- 4. REF / GEAR -->
+        <!-- 4. REF / GEAR (EXPANDED EDUCATIONAL MANUAL) -->
         <div id="tab-gear" class="tab-content">
             
             <div class="card safety-section" style="border-left: 4px solid var(--danger); background: #fffaf9;">
@@ -182,6 +183,44 @@
                 <span class="ex-text">Example: If fishing at 30 Hz and fish are escaping the electric field, increasing the duty cycle from 10% to 24% will put more overall energy into the water and widen the capture zone without spiking the dangerous peak voltage.</span></p>
             </div>
 
+            <!-- DETAILED THEORY SECTION -->
+            <div class="card manual-section" style="background: #F8FAFC;">
+                <h3>Depletion Theory & Formulas</h3>
+                
+                <h5 style="margin-top:0;">1. Catchability Coefficient (q)</h5>
+                <p><strong>Formula: q = C / (N × E)</strong><br>
+                The fundamental concept of depletion surveys. It represents the proportion of the total population (N) caught by one unit of effort (E). Depletion mathematics strictly assume 'q' remains constant across all sweeps.</p>
+                <div class="example-box">
+                    <strong>Why it matters:</strong> If you catch exactly 50% of the fish in Pass 1, you must catch exactly 50% of the <em>remaining</em> fish in Pass 2. If fish become "shock-shy" and hide better during the second pass, your 'q' drops, and your final population estimate will be mathematically flawed. This is why effort (shock seconds) must remain identical between passes.
+                </div>
+
+                <h5 style="margin-top:15px;">2. Seber-Le Cren (2-Pass Method)</h5>
+                <p><strong>Formula: N = C₁² / (C₁ - C₂)</strong><br>
+                Calculates the estimated total population (N) when exactly two sweeps are performed. <br><em>Mathematical Rule: Catch 1 (C₁) must be strictly greater than Catch 2 (C₂).</em></p>
+                <div class="example-box">
+                    <strong>Step-by-Step Example:</strong><br>
+                    • Pass 1 (C₁) = 60 fish caught.<br>
+                    • Pass 2 (C₂) = 20 fish caught.<br><br>
+                    <strong>Step 1:</strong> Calculate denominator (C₁ - C₂) ➔ 60 - 20 = 40.<br>
+                    <strong>Step 2:</strong> Calculate numerator (C₁²) ➔ 60 × 60 = 3600.<br>
+                    <strong>Step 3:</strong> Divide (3600 ÷ 40) ➔ <strong>N = 90</strong>.<br><br>
+                    <em>Conclusion: Even though you only caught 80 fish physically, the math estimates the true total population of the reach is 90 fish.</em>
+                </div>
+
+                <h5 style="margin-top:15px;">3. Leslie Graphical Method (3+ Passes)</h5>
+                <p>A linear regression method used when you conduct 3 or more passes. Catch Per Unit Effort (CPUE) is plotted on the Y-axis against Cumulative Catch (prior to the current pass) on the X-axis.</p>
+                <div class="example-box">
+                    <strong>Step-by-Step Example:</strong><br>
+                    • <strong>Pass 1:</strong> Catch = 50. (Cum. Catch before pass = 0). Plot Point ➔ <strong>(0, 50)</strong><br>
+                    • <strong>Pass 2:</strong> Catch = 30. (Cum. Catch before pass = 50). Plot Point ➔ <strong>(50, 30)</strong><br>
+                    • <strong>Pass 3:</strong> Catch = 10. (Cum. Catch before pass = 50+30=80). Plot Point ➔ <strong>(80, 10)</strong><br><br>
+                    <strong>Step 1:</strong> Plot these three points on a graph.<br>
+                    <strong>Step 2:</strong> Draw a straight line of best fit through the points descending toward the bottom axis.<br>
+                    <strong>Step 3:</strong> Find where the line intersects the X-axis (where Catch theoretically hits 0).<br><br>
+                    <em>Conclusion: If the line crosses the X-axis at 95, your estimated total population is 95 fish.</em>
+                </div>
+            </div>
+
             <div class="card">
                 <h3>Field Calculator</h3>
                 <input type="text" id="calcDisplay" disabled style="font-size: 20px; text-align: right; background: #fff; margin-bottom:15px; color:#333;">
@@ -200,13 +239,6 @@
                     <div class="col"><label>Length (mm → in)</label><select id="lenConv" onchange="calcLen()"></select><div id="lenResult" style="margin-top:8px; font-weight:bold; color:var(--primary); font-size:16px;">--</div></div>
                     <div class="col"><label>Temp (°C → °F)</label><select id="tempConv" onchange="calcTemp()"></select><div id="tempResult" style="margin-top:8px; font-weight:bold; color:var(--danger); font-size:16px;">--</div></div>
                 </div>
-            </div>
-
-            <div class="card manual-section" style="background: #F8FAFC;">
-                <h3>Depletion Theory & Formulas</h3>
-                <h5 style="margin-top:0;">1. Catchability Coefficient (q)</h5><p><strong>q = C / (N × E)</strong><br>Proportion of population caught by one unit of effort. Assumes 'q' remains constant across sweeps.</p>
-                <h5>2. Seber-Le Cren (2-Pass Method)</h5><p><strong>N = C₁² / (C₁ - C₂)</strong><br>Calculates estimated population (N) for two sweeps. C₁ must be strictly greater than C₂.</p>
-                <h5>3. Leslie Graphical Method (3+ Passes)</h5><p>CPUE (Y-axis) plotted against Cumulative Catch (X-axis). Where regression line crosses X-axis (CPUE = 0) is the estimated total population.</p>
             </div>
         </div>
 
@@ -234,7 +266,6 @@
             </div>
             <div class="card" style="text-align: center; padding: 20px;">
                 <h3>Generate Final Report</h3>
-                <!-- UPDATED BUTTONS FOR EXCELJS -->
                 <button class="btn btn-success" onclick="exportXLSX()" style="margin-bottom: 15px;">📊 Download Data + Chart (.XLSX)</button>
                 <button class="btn btn-primary" onclick="exportDOC()">📄 Download Formal Report (.DOC)</button>
             </div>
@@ -366,18 +397,15 @@
 
         let cV = ""; function calcIn(v) { cV += v; document.getElementById('calcDisplay').value = cV; } function calcClear() { cV = ""; document.getElementById('calcDisplay').value = ""; } function calcEval() { try { cV = eval(cV).toString(); document.getElementById('calcDisplay').value = cV; } catch { document.getElementById('calcDisplay').value = "Err"; cV=""; } }
 
-        // --- NEW EXCELJS EXPORT WITH EMBEDDED CHART ---
         async function exportXLSX() {
             if(catchData.length === 0) return alert("No database records to export.");
 
-            // Generate Fallback Text just in case
             let csv = `"Time","Stream","Crew","Lat","Lon","AirTempC","WaterTempC","Cond_uS","Reach_m","BlockNets","Weather","Clarity","Flow","Substrate","Net_Int","Efficiency","Sweep","Secs","Model","Volts","Hz","Duty%","Common_Name","Scientific","Length_mm","Weight_g","Condition","Photo"\n`;
             const strm = (document.getElementById('streamName').value||"Unk").replace(/"/g, '""'); const crw = (document.getElementById('crewNames').value||"Unk").replace(/"/g, '""'); const eq = (document.getElementById('equipModel').value||"Unk").replace(/"/g, '""');
             const wth = document.getElementById('rptWeather').value; const clr = document.getElementById('rptClarity').value; const flw = document.getElementById('rptFlow').value; const sub = document.getElementById('rptSubstrate').value; const netI = document.getElementById('rptNets').value; const eff = document.getElementById('rptEfficiency').value;
             catchData.forEach(d => { csv += `"${d.t}","${strm}","${crw}","${siteLat}","${siteLon}","${airTemp}","${d.wTmp}","${d.cnd}","${d.rLen}","${d.nets}","${wth}","${clr}","${flw}","${sub}","${netI}","${eff}","${d.pass}","${d.sec}","${eq}","${d.v}","${d.hz}","${d.dty}","${d.sp}","${d.sci}","${d.len}","${d.wt}","${d.cond}","${d.pStat}"\n`; });
             document.getElementById('rawDataBox').value = csv;
 
-            // Generate True XLSX via ExcelJS
             const wb = new ExcelJS.Workbook();
             const ws = wb.addWorksheet('Depletion Survey');
 
@@ -391,10 +419,7 @@
                 { header: 'Stream', key: 'strm', width: 20 }, { header: 'Crew', key: 'crw', width: 20 }
             ];
 
-            catchData.forEach(d => {
-                ws.addRow({ t: d.t, pass: d.pass, sp: d.sp, sci: d.sci, len: d.len, wt: d.wt, cond: d.cond, v: d.v, hz: d.hz, dty: d.dty, wTmp: d.wTmp, cnd: d.cnd, strm: strm, crw: crw });
-            });
-
+            catchData.forEach(d => { ws.addRow({ t: d.t, pass: d.pass, sp: d.sp, sci: d.sci, len: d.len, wt: d.wt, cond: d.cond, v: d.v, hz: d.hz, dty: d.dty, wTmp: d.wTmp, cnd: d.cnd, strm: strm, crw: crw }); });
             ws.getRow(1).font = { bold: true };
 
             if(chartInstance) {
