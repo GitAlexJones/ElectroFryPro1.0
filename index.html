@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ElectroFish Pro | NMFS Standard</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Chart.js & ExcelJS Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
-
     <style>
         :root { --primary: #0F4C81; --secondary: #4A90E2; --success: #27AE60; --danger: #E74C3C; --bg: #F4F7F9; --surf: #FFFFFF; --text: #2C3E50; --muted: #7F8C8D; --border: #E0E6ED; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; margin: 0; padding: 60px 0 80px 0; -webkit-font-smoothing: antialiased; }
@@ -49,6 +45,7 @@
         .app-footer { text-align: center; padding: 30px 10px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); margin-top: 20px; } .app-footer a { color: var(--secondary); text-decoration: none; font-weight: 600; }
         .manual-section h5 { margin-top: 15px; margin-bottom: 4px; color: var(--primary); } .manual-section p { font-size: 13px; color: var(--text); margin-bottom: 10px; }
         .safety-section h5 { margin-top: 15px; margin-bottom: 4px; color: var(--danger); } .safety-section p { font-size: 13px; color: var(--text); margin-bottom: 10px; }
+        .ex-text { display: block; margin-top: 4px; font-size: 11.5px; color: var(--primary); font-style: italic; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -152,6 +149,7 @@
 
         <!-- 4. REF / GEAR -->
         <div id="tab-gear" class="tab-content">
+            
             <div class="card safety-section" style="border-left: 4px solid var(--danger); background: #fffaf9;">
                 <h3 style="color: var(--danger); border-bottom-color: var(--danger);">Backpack Safety Protocol</h3>
                 <h5 style="margin-top:0;">1. Personal Protective Equipment (PPE)</h5>
@@ -166,14 +164,22 @@
             
             <div class="card manual-section" style="border-left: 4px solid var(--secondary); background: #f4f9ff;">
                 <h3 style="color: var(--primary); border-bottom-color: var(--secondary);">Electrofishing Parameters</h3>
+                
                 <h5 style="margin-top:0;">Conductivity (Cond µS/cm)</h5>
-                <p>Fish internal conductivity is roughly <strong>115 to 150 µS/cm</strong>. This dictates your voltage. If water conductivity is very low, it resists electricity; if very high, it conducts better than the fish.</p>
+                <p>Fish internal conductivity is roughly <strong>115 to 150 µS/cm</strong>. This dictates your voltage. If water conductivity is very low, it resists electricity; if very high, it conducts better than the fish.
+                <span class="ex-text">Example: Pristine alpine snowmelt streams are highly resistive (20-50 µS/cm). Lowland agricultural rivers or tidal estuaries are highly conductive (400-1000+ µS/cm).</span></p>
+                
                 <h5>Voltage (V)</h5>
-                <p><strong>Low Conductivity = High Voltage (500V-1000V+)</strong> to force current through resistive water. <strong>High Conductivity = Low Voltage (50V-200V)</strong> to prevent overloading the pack and injuring fish.</p>
+                <p><strong>Low Conductivity = High Voltage (500V-1000V+)</strong> to force current through resistive water. <strong>High Conductivity = Low Voltage (50V-200V)</strong> to prevent overloading the pack and injuring fish.
+                <span class="ex-text">Example: In a clear mountain creek (30 µS/cm), you may need 700V to create an effective field. In a salty tidal slough (800 µS/cm), 700V will instantly overload the backpack; you must drop to ~100V.</span></p>
+                
                 <h5>Frequency (Hz)</h5>
-                <p>High frequencies (60+ Hz) induce rapid, rigid muscle contractions (tetany), which increases capture rates but drastically increases the risk of severe spinal injuries. Lower frequencies (15-30 Hz) are safer.</p>
+                <p>High frequencies (60+ Hz) induce rapid, rigid muscle contractions (tetany), which increases capture rates but drastically increases the risk of severe spinal injuries. Lower frequencies (15-30 Hz) are safer.
+                <span class="ex-text">Example: Use low frequency (15-30 Hz) when targeting sensitive adult Salmonids or coaxing Catfish from deep cover. Use higher frequency (60 Hz) for small, heavily scaled fish like juvenile minnows that require a faster pulse to stun.</span></p>
+                
                 <h5>Duty Cycle (%)</h5>
-                <p>Percentage of time electricity is flowing during a pulse cycle. Standard is 10-25%. Higher duty cycle = more total power, but increased risk of muscular hemorrhaging.</p>
+                <p>Percentage of time electricity is flowing during a pulse cycle. Standard is 10-25%. Higher duty cycle = more total power, but increased risk of muscular hemorrhaging.
+                <span class="ex-text">Example: If fishing at 30 Hz and fish are escaping the electric field, increasing the duty cycle from 10% to 24% will put more overall energy into the water and widen the capture zone without spiking the dangerous peak voltage.</span></p>
             </div>
 
             <div class="card">
@@ -389,10 +395,8 @@
                 ws.addRow({ t: d.t, pass: d.pass, sp: d.sp, sci: d.sci, len: d.len, wt: d.wt, cond: d.cond, v: d.v, hz: d.hz, dty: d.dty, wTmp: d.wTmp, cnd: d.cnd, strm: strm, crw: crw });
             });
 
-            // Bold the header row
             ws.getRow(1).font = { bold: true };
 
-            // Render Chart to Image and Add to Excel
             if(chartInstance) {
                 const cvs = document.getElementById('depletionChart');
                 const tCvs = document.createElement('canvas'); tCvs.width = cvs.width; tCvs.height = cvs.height;
@@ -400,20 +404,13 @@
                 const base64Image = tCvs.toDataURL('image/png');
 
                 const imageId = wb.addImage({ base64: base64Image, extension: 'png' });
-                
-                // Add image right below the data
-                ws.addImage(imageId, {
-                    tl: { col: 1, row: catchData.length + 3 },
-                    ext: { width: 500, height: 300 }
-                });
+                ws.addImage(imageId, { tl: { col: 1, row: catchData.length + 3 }, ext: { width: 500, height: 300 } });
             }
 
-            // Download file
             const buffer = await wb.xlsx.writeBuffer();
             const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
             const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = 'Electro_Survey_Data.xlsx';
+            const a = document.createElement('a'); a.href = url; a.download = 'Electro_Survey_Data.xlsx';
             document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url);
         }
 
