@@ -74,9 +74,8 @@
             <ul style="padding-left: 20px; margin-bottom: 25px; font-size: 14px;">
                 <li>Comprehensive PNW Species Database</li>
                 <li>In-App Photo Documentation</li>
-                <li>Multi-Tab Excel Export w/ Chart Data</li>
-                <li>Professional Report Generator</li>
-                <li>Built-in Student Field Manual</li>
+                <li>Labeled Exponential Depletion Curves</li>
+                <li>Downloadable Excel Files w/ Embedded Charts</li>
             </ul>
             <button class="btn btn-primary" onclick="startGame()">Initialize Protocol</button>
             <div style="text-align: center; margin-top: 15px; font-size: 12px;">
@@ -140,8 +139,12 @@
         <!-- 3. STATS -->
         <div id="tab-stats" class="tab-content">
             <div class="card">
-                <h3>Depletion Curve</h3>
-                <div style="background: white; border: 1px solid var(--border); border-radius: 6px; padding: 5px; margin-bottom: 10px;"><canvas id="depletionChart" width="400" height="250" style="background-color: white;"></canvas></div>
+                <h3>Depletion Curve Modeling</h3>
+                <div style="background: white; border: 1px solid var(--border); border-radius: 6px; padding: 5px; margin-bottom: 10px;">
+                    <!-- Increased height to accommodate titles and legends cleanly -->
+                    <canvas id="depletionChart" width="400" height="320" style="background-color: white;"></canvas>
+                </div>
+                <button class="btn btn-outline" onclick="downloadChartImage()">💾 Download Chart (.JPG)</button>
             </div>
             <div class="card">
                 <h3>Survey Raw Log</h3>
@@ -375,25 +378,73 @@
                 dataset.data.forEach((datapoint, index) => {
                     const { x, y } = meta.data[index];
                     ctx.fillStyle = '#E74C3C'; ctx.font = 'bold 14px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-                    ctx.fillText(datapoint, x, y - 12);
+                    ctx.fillText(Math.round(datapoint.y), x, y - 12);
                 });
                 ctx.restore();
             }
         };
 
+        function calcRegCurve(countsObj) {
+            let pts = Object.keys(countsObj).map(k => ({x: Number(k), y: countsObj[k]}));
+            if(pts.length < 2) return null;
+            let n = 0, sX = 0, sY = 0, sXY = 0, sXX = 0;
+            pts.forEach(p => { if(p.y > 0) { let lx = p.x, ly = Math.log(p.y); n++; sX+=lx; sY+=ly; sXY+=lx*ly; sXX+=lx*lx; } });
+            if(n < 2) return null;
+            let d = (n*sXX - sX*sX); if(d === 0) return null;
+            let m = (n*sXY - sX*sY) / d; let b = (sY - m*sX) / n;
+            return { a: Math.exp(b), b: m };
+        }
+
         function initChart() {
             Chart.defaults.font.family = "'Inter', sans-serif"; Chart.defaults.color = '#7F8C8D';
             const ctx = document.getElementById('depletionChart').getContext('2d');
             chartInstance = new Chart(ctx, { 
-                type: 'line', 
-                data: { labels: [], datasets:[{ label: 'Fish / Sweep', data: [], borderColor: '#0F4C81', backgroundColor: 'rgba(15, 76, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.4, pointRadius: 6 }] }, 
-                options: { layout: { padding: { top: 30, right: 15, left: 10 } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }, plugins: { legend: { display: false } } },
+                type: 'scatter', 
+                data: { 
+                    datasets:[
+                        { label: 'Actual Catch', type: 'scatter', data: [], backgroundColor: '#4A90E2', borderColor: '#0F4C81', pointRadius: 8, borderWidth: 3 },
+                        { label: 'Fitted Curve', type: 'line', data:[], borderColor: '#27AE60', borderWidth: 3, borderDash:[5, 5], fill: false, tension: 0, pointRadius: 0, pointHoverRadius: 0 }
+                    ] 
+                }, 
+                options: { 
+                    layout: { padding: { top: 30, right: 15, left: 10, bottom: 10 } }, 
+                    scales: { 
+                        x: { 
+                            type: 'linear', 
+                            title: {display: true, text: 'Sweep Number (Effort)', font: {weight: 'bold', size: 14}, color: '#2C3E50'}, 
+                            ticks: { stepSize: 1, callback: function(v) { return Number.isInteger(v) ? v : ''; } } 
+                        },
+                        y: { 
+                            beginAtZero: true, 
+                            title: {display: true, text: 'Quantity of Fish Caught', font: {weight: 'bold', size: 14}, color: '#2C3E50'} 
+                        } 
+                    }, 
+                    plugins: { 
+                        legend: { display: true, position: 'bottom' },
+                        title: { display: true, text: 'Electrofishing Depletion Curve', font: { size: 16, weight: 'bold' }, color: '#0F4C81', padding: {bottom: 15} }
+                    } 
+                },
                 plugins: [drawDataLabels]
             });
         }
+
         function updateChart() {
             if(!chartInstance) return; let p = {}; catchData.forEach(d => { p[d.pass] = (p[d.pass] || 0) + 1; });
-            const s = Object.keys(p).sort((a,b)=>a-b); chartInstance.data.labels = s.map(x => `Sweep ${x}`); chartInstance.data.datasets[0].data = s.map(x => p[x]); chartInstance.update();
+            
+            let actualData = Object.keys(p).sort((a,b)=>a-b).map(k => ({x: Number(k), y: p[k]}));
+            let curveData =[];
+            let reg = calcRegCurve(p);
+            if(reg && actualData.length > 0) {
+                let minX = actualData[0].x; let maxX = actualData[actualData.length - 1].x;
+                for(let i = minX; i <= maxX; i += 0.1) {
+                    let calcY = reg.a * Math.exp(reg.b * i);
+                    curveData.push({x: parseFloat(i.toFixed(1)), y: Math.max(0, calcY)});
+                }
+            } else { curveData = actualData; }
+
+            chartInstance.data.datasets[0].data = actualData;
+            chartInstance.data.datasets[1].data = curveData;
+            chartInstance.update();
         }
 
         let cV = ""; function calcIn(v) { cV += v; document.getElementById('calcDisplay').value = cV; } function calcClear() { cV = ""; document.getElementById('calcDisplay').value = ""; } function calcEval() { try { cV = eval(cV).toString(); document.getElementById('calcDisplay').value = cV; } catch { document.getElementById('calcDisplay').value = "Err"; cV=""; } }
@@ -410,7 +461,6 @@
 
             const wb = new ExcelJS.Workbook();
             
-            // Sheet 1: Raw Data
             const ws = wb.addWorksheet('Raw Data Log');
             ws.columns =[
                 { header: 'Time', key: 't', width: 12 }, { header: 'Sweep', key: 'pass', width: 10 },
@@ -424,27 +474,41 @@
             catchData.forEach(d => { ws.addRow({ t: d.t, pass: d.pass, sp: d.sp, sci: d.sci, len: d.len, wt: d.wt, cond: d.cond, v: d.v, hz: d.hz, dty: d.dty, wTmp: d.wTmp, cnd: d.cnd, strm: strm, crw: crw }); });
             ws.getRow(1).font = { bold: true };
 
-            // Embed Chart Image in Sheet 1
             if(chartInstance) {
                 const cvs = document.getElementById('depletionChart');
                 const tCvs = document.createElement('canvas'); tCvs.width = cvs.width; tCvs.height = cvs.height;
                 const ctx = tCvs.getContext('2d'); ctx.fillStyle = 'white'; ctx.fillRect(0, 0, tCvs.width, tCvs.height); ctx.drawImage(cvs, 0, 0);
                 const imageId = wb.addImage({ base64: tCvs.toDataURL('image/png'), extension: 'png' });
-                ws.addImage(imageId, { tl: { col: 1, row: catchData.length + 3 }, ext: { width: 500, height: 300 } });
+                ws.addImage(imageId, { tl: { col: 1, row: catchData.length + 3 }, ext: { width: 500, height: 350 } });
             }
 
-            // Sheet 2: Native Chart Formatting Table
             const wsChart = wb.addWorksheet('Depletion Curve Data');
             wsChart.columns =[
-                { header: 'Sweep Number', key: 'swp', width: 15 },
-                { header: 'Total Catch', key: 'ctc', width: 15 }
+                { header: 'Sweep Number (X)', key: 'x', width: 18 },
+                { header: 'Actual Catch (Y1)', key: 'y1', width: 18 },
+                { header: 'Fitted Curve (Y2)', key: 'y2', width: 18 }
             ];
             
             let p = {}; catchData.forEach(d => { if(!p[d.pass]) p[d.pass] = 0; p[d.pass]++; });
-            Object.keys(p).sort((a,b)=>a-b).forEach(k => { wsChart.addRow({ swp: parseInt(k), ctc: p[k] }); });
-            wsChart.getRow(1).font = { bold: true };
+            let reg = calcRegCurve(p);
+            let sortedKeys = Object.keys(p).sort((a,b)=>a-b).map(Number);
 
-            wsChart.addRow([]); wsChart.addRow(['HOW TO CREATE YOUR NATIVE EXCEL CHART:']); wsChart.addRow(['1. Highlight the data table above (e.g., A1 to B4).']); wsChart.addRow(['2. Go to Insert -> Line Chart (or Scatter with Smooth Lines).']);
+            if(reg && sortedKeys.length > 0) {
+                let minX = sortedKeys[0]; let maxX = sortedKeys[sortedKeys.length - 1];
+                for(let i = minX; i <= maxX; i += 0.1) {
+                    let xVal = parseFloat(i.toFixed(1));
+                    let expY = reg.a * Math.exp(reg.b * xVal);
+                    let actY = (Number.isInteger(xVal) && p[xVal] !== undefined) ? p[xVal] : "";
+                    wsChart.addRow({ x: xVal, y1: actY, y2: Math.max(0, expY).toFixed(2) });
+                }
+            } else {
+                sortedKeys.forEach(k => { wsChart.addRow({ x: k, y1: p[k], y2: p[k] }); });
+            }
+
+            wsChart.getRow(1).font = { bold: true };
+            wsChart.addRow([]); wsChart.addRow(['HOW TO CREATE YOUR NATIVE EXCEL CHART:']); 
+            wsChart.addRow(['1. Highlight the 3 columns of data above.']); 
+            wsChart.addRow(['2. Go to Insert -> Chart -> Scatter with Smooth Lines.']);
             wsChart.getRow(wsChart.rowCount - 3).font = { bold: true, color: { arg: 'FF0F4C81' } };
 
             const buffer = await wb.xlsx.writeBuffer();
