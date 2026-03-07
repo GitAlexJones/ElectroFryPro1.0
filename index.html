@@ -3,89 +3,663 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ElectroFish Pro | NMFS Standard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>ElectroFry Pro 1.0 | NMFS Standard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
     <style>
-        :root { --primary: #0F4C81; --secondary: #4A90E2; --success: #27AE60; --danger: #E74C3C; --bg: #F4F7F9; --surf: #FFFFFF; --text: #2C3E50; --muted: #7F8C8D; --border: #E0E6ED; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; margin: 0; padding: 60px 0 80px 0; -webkit-font-smoothing: antialiased; }
-        h1, h2, h3, h4, h5 { color: var(--primary); margin: 0 0 10px 0; font-weight: 600; }
-        h3 { font-size: 1.1rem; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-bottom: 16px; }
+        :root {
+            --primary: #00e5ff;
+            --primary-dim: #00889a;
+            --secondary: #7c4dff;
+            --success: #00e676;
+            --danger: #ff1744;
+            --warning: #ffab00;
+            --bg: #0a0e17;
+            --bg2: #0d1225;
+            --surf: #111a2e;
+            --surf2: #162040;
+            --text: #c8d6e5;
+            --text-bright: #e8f0fe;
+            --muted: #546e8a;
+            --border: #1e3050;
+            --glow: rgba(0, 229, 255, 0.15);
+            --glow-strong: rgba(0, 229, 255, 0.4);
+            --xp-bar: linear-gradient(90deg, #00e5ff, #7c4dff);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Exo 2', sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+            padding: 95px 0 80px 0;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* SCANLINE OVERLAY */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 229, 255, 0.015) 2px,
+                rgba(0, 229, 255, 0.015) 4px
+            );
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* PARTICLE CANVAS */
+        #particles-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        h1, h2, h3, h4, h5 {
+            color: var(--primary);
+            margin: 0 0 10px 0;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        h3 {
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+            text-shadow: 0 0 20px var(--glow-strong);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        h3::before {
+            content: '//';
+            color: var(--secondary);
+            font-weight: 400;
+            opacity: 0.6;
+        }
         p { margin: 0 0 10px 0; }
-        .container { padding: 10px; max-width: 800px; margin: 0 auto; }
-        .card { background: var(--surf); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .row { display: flex; gap: 12px; margin-bottom: 15px; } .col { flex: 1; }
-        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        input, select, textarea { width: 100%; padding: 12px; background: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 16px; color: var(--text); box-sizing: border-box; transition: border-color 0.2s; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--secondary); background: #FFF; box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2); }
-        textarea { height: 100px; resize: vertical; font-size: 14px; } .code-textarea { height: 120px; font-family: monospace; font-size: 12px; }
-        .btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; text-align: center; cursor: pointer; transition: opacity 0.2s, transform 0.1s; }
-        .btn:active { transform: scale(0.98); }
-        .btn-primary { background: var(--primary); color: white; } .btn-secondary { background: var(--secondary); color: white; }
-        .btn-success { background: var(--success); color: white; } .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 10px; font-size: 13px; }
+
+        .container { padding: 10px; max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+
+        .card {
+            background: linear-gradient(135deg, var(--surf) 0%, var(--surf2) 100%);
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px; height: 100%;
+            background: var(--xp-bar);
+            opacity: 0.6;
+        }
+        .card:hover {
+            border-color: rgba(0, 229, 255, 0.3);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.05);
+        }
+
+        .row { display: flex; gap: 12px; margin-bottom: 15px; }
+        .col { flex: 1; }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--primary-dim);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 229, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 15px;
+            color: var(--text-bright);
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(0, 229, 255, 0.08);
+            box-shadow: 0 0 15px var(--glow), inset 0 0 15px rgba(0, 229, 255, 0.03);
+        }
+        select { cursor: pointer; }
+        select option { background: var(--bg2); color: var(--text); }
+        textarea { height: 100px; resize: vertical; font-size: 13px; }
+        .code-textarea { height: 120px; font-family: 'Share Tech Mono', monospace; font-size: 11px; }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 3px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+        }
+        .btn:active::after { width: 300px; height: 300px; }
+        .btn:active { transform: scale(0.97); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0d47a1, #1565c0);
+            color: var(--primary);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+        }
+        .btn-primary:hover { box-shadow: 0 0 30px rgba(0, 229, 255, 0.2); border-color: var(--primary); }
+        .btn-secondary {
+            background: linear-gradient(135deg, #4a148c, #6a1b9a);
+            color: #ce93d8;
+            border: 1px solid rgba(124, 77, 255, 0.3);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #1b5e20, #2e7d32);
+            color: var(--success);
+            border: 1px solid rgba(0, 230, 118, 0.3);
+            box-shadow: 0 0 20px rgba(0, 230, 118, 0.1);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--primary);
+            padding: 10px;
+            font-size: 11px;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 1px;
+        }
+        .btn-outline:hover { border-color: var(--primary); background: var(--glow); }
+
         .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 13px; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); } th { background: #F8FAFC; font-weight: 600; color: var(--muted); text-transform: uppercase; }
-        .top-header { position: fixed; top: 0; left: 0; width: 100%; background: var(--primary); color: white; padding: 15px; box-sizing: border-box; z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header-title { font-weight: 700; font-size: 16px; margin: 0; } .header-badge { background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 11px; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--surf); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
-        .nav-item { text-align: center; color: var(--muted); cursor: pointer; flex: 1; font-size: 11px; font-weight: 600; padding: 5px; } .nav-item.active { color: var(--primary); } .nav-icon { display: block; font-size: 20px; margin-bottom: 3px; }
-        .tab-content { display: none; } .tab-content.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; text-align: center; color: white; }
-        .modal-overlay.dark { background: rgba(0,0,0,0.9); } .modal-overlay.blur { background: rgba(15, 76, 129, 0.95); }
-        .modal-card { background: white; color: var(--text); padding: 30px; border-radius: 12px; max-width: 450px; width: 100%; text-align: left; max-height: 80vh; overflow-y: auto; }
-        #biodex-box { background: #EBF5FF; border-left: 4px solid var(--secondary); padding: 15px; margin-bottom: 15px; border-radius: 0 6px 6px 0; display: none; }
-        .biodex-sci { font-size: 14px; font-style: italic; color: var(--text); margin-bottom: 5px; font-weight: 500; }
-        #photo-modal img { max-width: 100%; max-height: 70vh; border-radius: 8px; border: 4px solid white; }
-        .close-btn { background: var(--danger); color: white; padding: 10px 20px; margin-top: 20px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; }
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; } .calc-grid .btn { padding: 15px 0; font-size: 18px; border-radius: 8px; background: #F1F5F9; color: var(--text); }
-        .calc-grid .btn-op { background: var(--secondary); color: white; } .calc-grid .btn-clear { background: var(--danger); color: white; } .calc-grid .btn-eq { background: var(--success); color: white; grid-column: span 4; }
-        .app-footer { text-align: center; padding: 30px 10px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); margin-top: 20px; } .app-footer a { color: var(--secondary); text-decoration: none; font-weight: 600; }
-        .manual-section h5 { margin-top: 15px; margin-bottom: 4px; color: var(--primary); } .manual-section p { font-size: 13px; color: var(--text); margin-bottom: 10px; }
-        .safety-section h5 { margin-top: 15px; margin-bottom: 4px; color: var(--danger); } .safety-section p { font-size: 13px; color: var(--text); margin-bottom: 10px; }
-        .ex-text { display: block; margin-top: 4px; font-size: 11.5px; color: var(--primary); font-style: italic; line-height: 1.4; }
-        .example-box { background: #EBF5FF; padding: 12px; border-radius: 6px; font-size: 13px; margin-top: 8px; border-left: 3px solid var(--secondary); color: var(--text); font-style: normal; line-height: 1.5; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px; font-family: 'Share Tech Mono', monospace; }
+        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: rgba(0,229,255,0.05); font-weight: 600; color: var(--primary-dim); text-transform: uppercase; font-size: 10px; letter-spacing: 1px; }
+        td { color: var(--text); }
+
+        /* === TOP HEADER HUD === */
+        .top-header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: linear-gradient(180deg, var(--bg2) 0%, rgba(13,18,37,0.95) 100%);
+            color: white;
+            padding: 10px 15px;
+            box-sizing: border-box;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+        .hud-row-1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .header-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--primary);
+            text-shadow: 0 0 20px var(--glow-strong);
+            letter-spacing: 2px;
+        }
+        .header-badge {
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid var(--border);
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+        .header-badge.active { color: var(--success); border-color: rgba(0, 230, 118, 0.3); background: rgba(0, 230, 118, 0.08); }
+
+        /* XP BAR */
+        .xp-bar-container {
+            display: flex; align-items: center; gap: 8px;
+        }
+        .xp-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--secondary);
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+        .xp-track {
+            flex: 1;
+            height: 6px;
+            background: rgba(124, 77, 255, 0.15);
+            border-radius: 3px;
+            overflow: hidden;
+            border: 1px solid rgba(124, 77, 255, 0.2);
+        }
+        .xp-fill {
+            height: 100%;
+            background: var(--xp-bar);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 0 10px rgba(124, 77, 255, 0.5);
+        }
+        .xp-text {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+        .species-counter {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 10px;
+            color: var(--warning);
+            white-space: nowrap;
+        }
+        .hud-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* === BOTTOM NAV === */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(0deg, var(--bg2) 0%, rgba(13,18,37,0.98) 100%);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 1000;
+            padding-bottom: calc(8px + env(safe-area-inset-bottom));
+            backdrop-filter: blur(10px);
+        }
+        .nav-item {
+            text-align: center;
+            color: var(--muted);
+            cursor: pointer;
+            flex: 1;
+            font-size: 9px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            padding: 5px;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .nav-item.active { color: var(--primary); }
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: -9px; left: 25%; right: 25%;
+            height: 2px;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+            border-radius: 0 0 2px 2px;
+        }
+        .nav-icon { display: block; font-size: 18px; margin-bottom: 3px; }
+
+        /* TABS */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: glitchIn 0.4s; }
+        @keyframes glitchIn {
+            0% { opacity: 0; transform: translateY(8px); filter: hue-rotate(40deg) brightness(1.5); }
+            30% { opacity: 0.7; filter: hue-rotate(0deg) brightness(1.2); }
+            100% { opacity: 1; transform: translateY(0); filter: none; }
+        }
+
+        /* SPLASH */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 20px; box-sizing: border-box; text-align: center; color: white;
+        }
+        .modal-overlay.dark { background: rgba(0,0,0,0.95); }
+        .modal-overlay.blur { background: rgba(10, 14, 23, 0.97); }
+
+        .modal-card {
+            background: var(--surf);
+            color: var(--text);
+            padding: 30px;
+            border-radius: 4px;
+            max-width: 450px;
+            width: 100%;
+            text-align: left;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        .modal-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--xp-bar);
+        }
+
+        /* SPLASH SPECIAL */
+        .splash-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 32px;
+            color: var(--primary);
+            text-shadow: 0 0 40px var(--glow-strong), 0 0 80px rgba(0,229,255,0.2);
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+            animation: titlePulse 3s ease-in-out infinite;
+        }
+        @keyframes titlePulse {
+            0%, 100% { text-shadow: 0 0 40px var(--glow-strong), 0 0 80px rgba(0,229,255,0.2); }
+            50% { text-shadow: 0 0 60px var(--glow-strong), 0 0 120px rgba(0,229,255,0.3), 0 0 160px rgba(124,77,255,0.1); }
+        }
+        .splash-sub {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+        }
+        .splash-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 25px 0;
+        }
+        .splash-features li {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .splash-features li:last-child { border: none; }
+        .feat-icon {
+            width: 28px; height: 28px;
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        /* BIODEX */
+        #biodex-box {
+            background: linear-gradient(135deg, rgba(0,229,255,0.06), rgba(124,77,255,0.06));
+            border-left: 3px solid var(--secondary);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 4px 4px 0;
+            display: none;
+            position: relative;
+            animation: biodexSlide 0.4s ease-out;
+        }
+        @keyframes biodexSlide { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        .biodex-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            color: var(--secondary);
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+        .biodex-sci {
+            font-size: 14px;
+            font-style: italic;
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        /* PHOTO MODAL */
+        #photo-modal img { max-width: 100%; max-height: 70vh; border-radius: 4px; border: 2px solid var(--primary); box-shadow: 0 0 40px var(--glow); }
+        .close-btn {
+            background: linear-gradient(135deg, #b71c1c, #c62828);
+            color: white;
+            padding: 10px 24px;
+            margin-top: 20px;
+            border-radius: 3px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: 1px solid rgba(255, 23, 68, 0.4);
+        }
+
+        /* CALCULATOR */
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .calc-grid .btn {
+            padding: 14px 0;
+            font-size: 17px;
+            border-radius: 3px;
+            background: var(--surf2);
+            color: var(--text);
+            border: 1px solid var(--border);
+            font-family: 'Share Tech Mono', monospace;
+        }
+        .calc-grid .btn:hover { border-color: rgba(0,229,255,0.3); }
+        .calc-grid .btn-op { background: rgba(124, 77, 255, 0.15); color: var(--secondary); border-color: rgba(124,77,255,0.3); }
+        .calc-grid .btn-clear { background: rgba(255, 23, 68, 0.12); color: var(--danger); border-color: rgba(255,23,68,0.3); }
+        .calc-grid .btn-eq { background: rgba(0, 230, 118, 0.12); color: var(--success); border-color: rgba(0,230,118,0.3); grid-column: span 4; }
+
+        /* REFERENCE SECTIONS */
+        .manual-section h5 { margin-top: 15px; margin-bottom: 4px; color: var(--primary); font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px; }
+        .manual-section p { font-size: 13px; color: var(--text); margin-bottom: 10px; }
+        .safety-section h5 { margin-top: 15px; margin-bottom: 4px; color: var(--danger); font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px; }
+        .safety-section p { font-size: 13px; color: var(--text); margin-bottom: 10px; }
+        .ex-text { display: block; margin-top: 6px; font-size: 11.5px; color: var(--primary-dim); font-style: italic; line-height: 1.5; border-left: 2px solid var(--border); padding-left: 10px; margin-left: 4px; }
+        .example-box {
+            background: rgba(0, 229, 255, 0.04);
+            padding: 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-top: 8px;
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--secondary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .app-footer {
+            text-align: center;
+            padding: 30px 10px;
+            color: var(--muted);
+            font-size: 11px;
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+            font-family: 'Share Tech Mono', monospace;
+        }
+        .app-footer a { color: var(--primary); text-decoration: none; }
+
+        /* ACHIEVEMENT TOAST */
+        .achievement-toast {
+            position: fixed;
+            top: 100px;
+            right: -400px;
+            z-index: 10000;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 1px solid var(--warning);
+            border-radius: 4px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 0 30px rgba(255, 171, 0, 0.2), 0 8px 32px rgba(0,0,0,0.5);
+            transition: right 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            max-width: 320px;
+        }
+        .achievement-toast.show { right: 15px; }
+        .achievement-toast .ach-icon { font-size: 28px; }
+        .achievement-toast .ach-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 8px;
+            color: var(--warning);
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+        .achievement-toast .ach-title {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 14px;
+            color: var(--text-bright);
+            font-weight: 600;
+        }
+        .achievement-toast .ach-xp {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            color: var(--success);
+        }
+
+        /* LEVEL UP FLASH */
+        .level-up-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, rgba(124, 77, 255, 0.3), transparent 70%);
+            z-index: 9990;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .level-up-overlay.flash { opacity: 1; animation: lvlFlash 1s forwards; }
+        @keyframes lvlFlash { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+        /* LOG ROW ANIMATION */
+        @keyframes rowSlide {
+            from { opacity: 0; transform: translateX(-20px); background: rgba(0, 229, 255, 0.1); }
+            to { opacity: 1; transform: translateX(0); background: transparent; }
+        }
+        #logBody tr { animation: rowSlide 0.4s ease-out; }
+        #logBody tr td { position: relative; }
+
+        /* CONVERSION RESULTS */
+        .conv-result {
+            margin-top: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* RESPONSIVE GRID CORNER DECORATIONS */
+        .corner-marks { position: relative; }
+        .corner-marks::after {
+            content: '';
+            position: absolute;
+            top: 4px; right: 4px;
+            width: 12px; height: 12px;
+            border-top: 2px solid var(--primary);
+            border-right: 2px solid var(--primary);
+            opacity: 0.3;
+        }
     </style>
 </head>
 <body>
 
+    <!-- PARTICLE BACKGROUND -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- LEVEL UP FLASH -->
+    <div class="level-up-overlay" id="levelFlash"></div>
+
+    <!-- ACHIEVEMENT TOAST -->
+    <div class="achievement-toast" id="achToast">
+        <div class="ach-icon" id="achIcon">🏆</div>
+        <div>
+            <div class="ach-label">ACHIEVEMENT UNLOCKED</div>
+            <div class="ach-title" id="achTitle">First Catch</div>
+            <div class="ach-xp" id="achXp">+50 XP</div>
+        </div>
+    </div>
+
     <!-- MODALS -->
     <div id="photo-modal" class="modal-overlay dark" style="display: none;">
         <img id="modal-img" src="" alt="Specimen Photo">
-        <button class="close-btn" onclick="document.getElementById('photo-modal').style.display='none'">Close Image</button>
+        <button class="close-btn" onclick="document.getElementById('photo-modal').style.display='none'">CLOSE IMAGE</button>
     </div>
 
     <div id="terms-modal" class="modal-overlay blur" style="display: none;">
         <div class="modal-card">
-            <h2 style="margin-top:0;">Terms of Use</h2>
-            <p style="font-size: 13px;"><strong>Educational Software:</strong> ElectroFish Pro is a beta software tool designed strictly for collegiate educational purposes and field biology training.</p>
-            <p style="font-size: 13px;"><strong>Data Retention:</strong> Data logged is stored locally in your browser's active cache. It is the user's responsibility to frequently export data. Closing the browser tab may result in data loss.</p>
-            <p style="font-size: 13px;"><strong>Safety Warning:</strong> Electrofishing involves high voltage and inherent dangers. This app is a data collection tool, NOT a replacement for formal AFS safety training, CPR certification, or standard operating procedures.</p>
-            <button class="btn btn-primary" style="margin-top: 20px;" onclick="document.getElementById('terms-modal').style.display='none'">I Understand & Agree</button>
+            <h2 style="margin-top:0; font-size: 16px;">Terms of Use</h2>
+            <p style="font-size: 13px;"><strong style="color:var(--primary);">Educational Software:</strong> ElectroFry Pro 1.0 is a beta software tool designed strictly for collegiate educational purposes and field biology training.</p>
+            <p style="font-size: 13px;"><strong style="color:var(--warning);">Data Retention:</strong> Data logged is stored locally in your browser's active cache. It is the user's responsibility to frequently export data. Closing the browser tab may result in data loss.</p>
+            <p style="font-size: 13px;"><strong style="color:var(--danger);">Safety Warning:</strong> Electrofishing involves high voltage and inherent dangers. This app is a data collection tool, NOT a replacement for formal AFS safety training, CPR certification, or standard operating procedures.</p>
+            <button class="btn btn-primary" style="margin-top: 20px;" onclick="document.getElementById('terms-modal').style.display='none'">I Understand &amp; Agree</button>
         </div>
     </div>
 
     <div id="splash-screen" class="modal-overlay">
-        <h1 style="color: white; margin-bottom: 30px; font-size: 28px;">ElectroFish Pro</h1>
+        <div class="splash-title">ELECTROFRY</div>
+        <div class="splash-sub">PRO 1.0 — NMFS PROTOCOL EDITION</div>
         <div class="modal-card">
-            <h3 style="margin-top:0;">NMFS Protocol Edition</h3>
-            <ul style="padding-left: 20px; margin-bottom: 25px; font-size: 14px;">
-                <li>Comprehensive PNW Species Database</li>
-                <li>In-App Photo Documentation</li>
-                <li>Labeled Exponential Depletion Curves</li>
-                <li>Downloadable Excel Files w/ Embedded Charts</li>
+            <h3 style="margin-top:0; font-size: 12px;">System Modules</h3>
+            <ul class="splash-features">
+                <li><div class="feat-icon">🐟</div> Comprehensive PNW Species Codex</li>
+                <li><div class="feat-icon">📸</div> In-App Photo Documentation</li>
+                <li><div class="feat-icon">📊</div> Labeled Exponential Depletion Curves</li>
+                <li><div class="feat-icon">📥</div> Downloadable Excel Files w/ Embedded Charts</li>
+                <li><div class="feat-icon">🏆</div> XP System &amp; Field Achievements</li>
             </ul>
-            <button class="btn btn-primary" onclick="startGame()">Initialize Protocol</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px;">
-                <a href="#" onclick="document.getElementById('terms-modal').style.display='flex'; return false;" style="color: var(--primary);">View Terms of Use</a>
+            <button class="btn btn-primary" onclick="startGame()" style="font-size: 14px; padding: 16px;">▶ INITIALIZE PROTOCOL</button>
+            <div style="text-align: center; margin-top: 15px; font-size: 11px;">
+                <a href="#" onclick="document.getElementById('terms-modal').style.display='flex'; return false;" style="color: var(--muted); font-family:'Share Tech Mono',monospace; letter-spacing:1px;">VIEW TERMS OF USE</a>
             </div>
         </div>
     </div>
 
-    <!-- HEADER -->
-    <div class="top-header"><div class="header-title">ElectroFish Pro</div><div class="header-badge" id="header-status">Standby</div></div>
+    <!-- HEADER HUD -->
+    <div class="top-header">
+        <div class="hud-row-1">
+            <div class="header-title">ELECTROFRY PRO 1.0</div>
+            <div class="header-badge" id="header-status">⏳ STANDBY</div>
+        </div>
+        <div class="hud-stats">
+            <div class="xp-bar-container" style="flex:1;">
+                <div class="xp-label">LV <span id="playerLevel">1</span></div>
+                <div class="xp-track"><div class="xp-fill" id="xpFill"></div></div>
+                <div class="xp-text"><span id="xpCurrent">0</span>/<span id="xpNeeded">100</span> XP</div>
+            </div>
+            <div class="species-counter">🐟 <span id="speciesCount">0</span> LOGGED</div>
+        </div>
+    </div>
 
     <!-- TABS -->
     <div id="app-body" class="container" style="display: none;">
@@ -97,10 +671,10 @@
                 <label>Waterbody / Stream Name</label><input type="text" id="streamName" placeholder="e.g. Bear Creek, Reach 2" style="margin-bottom: 12px;">
                 <label>Crew Members</label><input type="text" id="crewNames" placeholder="e.g. Dr. Smith, J. Doe">
             </div>
-            <div class="card">
+            <div class="card corner-marks">
                 <h3>Environmental Data</h3>
-                <button class="btn btn-secondary" onclick="getLocationAndWeather()" style="margin-bottom: 15px;">📡 Acquire GPS & Weather</button>
-                <div id="env-data" style="font-size: 13px; color: var(--muted); background: #F8FAFC; padding: 10px; border-radius: 6px;">Awaiting sensor input...</div>
+                <button class="btn btn-secondary" onclick="getLocationAndWeather()" style="margin-bottom: 15px;">📡 ACQUIRE GPS &amp; WEATHER</button>
+                <div id="env-data" style="font-size: 12px; color: var(--muted); background: rgba(0,229,255,0.03); padding: 12px; border-radius: 4px; border: 1px solid var(--border); font-family: 'Share Tech Mono', monospace;">⏳ Awaiting sensor input...</div>
             </div>
             <div class="card">
                 <h3>Reach Parameters</h3>
@@ -123,15 +697,19 @@
                 <div class="row"><div class="col"><label>Sweep (Pass)</label><input type="number" id="passNum" value="1" min="1"></div><div class="col"><label>Shock Seconds</label><input type="number" id="shockSecs" placeholder="Time"></div></div>
                 <div class="row"><div class="col"><label>Voltage (V)</label><input type="number" id="volts"></div><div class="col"><label>Freq (Hz)</label><input type="number" id="freq"></div><div class="col"><label>Duty (%)</label><input type="number" id="duty"></div></div>
             </div>
-            <div class="card">
+            <div class="card corner-marks">
                 <h3>Specimen Log</h3>
                 <form id="catchForm">
                     <label>Species Identification</label>
                     <select id="species" required onchange="updateBioDex()"><option value="" disabled selected>Select species...</option></select>
-                    <div id="biodex-box"><div style="font-size:11px; color:var(--primary); font-weight:bold; margin-bottom:5px;">FIELD IDENTIFICATION</div><div id="biodex-sci" class="biodex-sci"></div><div id="biodex-traits" style="font-size:13px; color:#475569;"></div></div>
+                    <div id="biodex-box">
+                        <div class="biodex-header">▸ FIELD CODEX ENTRY</div>
+                        <div id="biodex-sci" class="biodex-sci"></div>
+                        <div id="biodex-traits" style="font-size:13px; color: var(--text);"></div>
+                    </div>
                     <div class="row"><div class="col"><label>Length (mm)</label><input type="number" id="length" required></div><div class="col"><label>Weight (g)</label><input type="number" step="0.1" id="weight"></div></div>
                     <div class="row"><div class="col"><label>Condition</label><select id="condition"><option>Vigorous</option><option>Lethargic</option><option>Mortality</option></select></div><div class="col"><label>Photo Doc</label><input type="file" id="photo" accept="image/*" capture="environment" style="padding: 9px;"></div></div>
-                    <button type="button" class="btn btn-primary" id="logBtn" onclick="saveCatch()" style="margin-top: 10px;">Log Specimen</button>
+                    <button type="button" class="btn btn-success" id="logBtn" onclick="saveCatch()" style="margin-top: 10px;">⚡ LOG SPECIMEN</button>
                 </form>
             </div>
         </div>
@@ -140,11 +718,10 @@
         <div id="tab-stats" class="tab-content">
             <div class="card">
                 <h3>Depletion Curve Modeling</h3>
-                <div style="background: white; border: 1px solid var(--border); border-radius: 6px; padding: 5px; margin-bottom: 10px;">
-                    <!-- Increased height to accommodate titles and legends cleanly -->
-                    <canvas id="depletionChart" width="400" height="320" style="background-color: white;"></canvas>
+                <div style="background: #0d1225; border: 1px solid var(--border); border-radius: 4px; padding: 8px; margin-bottom: 10px;">
+                    <canvas id="depletionChart" width="400" height="320"></canvas>
                 </div>
-                <button class="btn btn-outline" onclick="downloadChartImage()">💾 Download Chart (.JPG)</button>
+                <button class="btn btn-outline" onclick="downloadChartImage()">💾 DOWNLOAD CHART (.JPG)</button>
             </div>
             <div class="card">
                 <h3>Survey Raw Log</h3>
@@ -154,80 +731,79 @@
 
         <!-- 4. REF / GEAR -->
         <div id="tab-gear" class="tab-content">
-            
-            <div class="card safety-section" style="border-left: 4px solid var(--danger); background: #fffaf9;">
-                <h3 style="color: var(--danger); border-bottom-color: var(--danger);">Backpack Safety Protocol</h3>
+
+            <div class="card safety-section" style="border-left: 3px solid var(--danger);">
+                <h3 style="color: var(--danger); border-bottom-color: rgba(255,23,68,0.3);">⚠ Backpack Safety Protocol</h3>
                 <h5 style="margin-top:0;">1. Personal Protective Equipment (PPE)</h5>
                 <p>All crew must wear non-leaking, non-breathable chest waders, a wading belt to prevent water entry during a fall, and high-voltage lineman's gloves (Class 0, rated to 1000V). Polarized sunglasses are required.</p>
                 <h5>2. Communication ("Power On")</h5>
-                <p>The operator must loudly announce <strong>"POWER ON!"</strong> before pressing the anode switch. Netters must acknowledge. When releasing, announce <strong>"POWER OFF!"</strong></p>
+                <p>The operator must loudly announce <strong style="color:var(--danger);">"POWER ON!"</strong> before pressing the anode switch. Netters must acknowledge. When releasing, announce <strong style="color:var(--success);">"POWER OFF!"</strong></p>
                 <h5>3. Fall Procedures & Immersion Switches</h5>
                 <p>If anyone slips, release the switch instantly. Modern backpacks feature internal tilt-switches that cut power if the operator leans past ~45 degrees. Test these before wading.</p>
                 <h5>4. Cathode Tail Awareness</h5>
                 <p>Ensure the metal cathode tail (the braided wire dragging behind) is fully submerged and trailing freely. It must never wrap around the operator's or netter's legs.</p>
             </div>
-            
-            <div class="card manual-section" style="border-left: 4px solid var(--secondary); background: #f4f9ff;">
-                <h3 style="color: var(--primary); border-bottom-color: var(--secondary);">Electrofishing Parameters</h3>
-                
+
+            <div class="card manual-section">
+                <h3>Electrofishing Parameters</h3>
+
                 <h5 style="margin-top:0;">Conductivity (Cond µS/cm)</h5>
-                <p>Fish internal conductivity is roughly <strong>115 to 150 µS/cm</strong>. This dictates your voltage. If water conductivity is very low, it resists electricity; if very high, it conducts better than the fish.
+                <p>Fish internal conductivity is roughly <strong style="color:var(--primary);">115 to 150 µS/cm</strong>. This dictates your voltage. If water conductivity is very low, it resists electricity; if very high, it conducts better than the fish.
                 <span class="ex-text">Example: Pristine alpine snowmelt streams are highly resistive (20-50 µS/cm). Lowland agricultural rivers or tidal estuaries are highly conductive (400-1000+ µS/cm).</span></p>
-                
+
                 <h5>Voltage (V)</h5>
-                <p><strong>Low Conductivity = High Voltage (500V-1000V+)</strong> to force current through resistive water. <strong>High Conductivity = Low Voltage (50V-200V)</strong> to prevent overloading the pack and injuring fish.
+                <p><strong style="color:var(--warning);">Low Conductivity = High Voltage (500V-1000V+)</strong> to force current through resistive water. <strong style="color:var(--success);">High Conductivity = Low Voltage (50V-200V)</strong> to prevent overloading the pack and injuring fish.
                 <span class="ex-text">Example: In a clear mountain creek (30 µS/cm), you may need 700V to create an effective field. In a salty tidal slough (800 µS/cm), 700V will instantly overload the backpack; you must drop to ~100V.</span></p>
-                
+
                 <h5>Frequency (Hz)</h5>
                 <p>High frequencies (60+ Hz) induce rapid, rigid muscle contractions (tetany), which increases capture rates but drastically increases the risk of severe spinal injuries. Lower frequencies (15-30 Hz) are safer.
                 <span class="ex-text">Example: Use low frequency (15-30 Hz) when targeting sensitive adult Salmonids or coaxing Catfish from deep cover. Use higher frequency (60 Hz) for small, heavily scaled fish like juvenile minnows that require a faster pulse to stun.</span></p>
-                
+
                 <h5>Duty Cycle (%)</h5>
                 <p>Percentage of time electricity is flowing during a pulse cycle. Standard is 10-25%. Higher duty cycle = more total power, but increased risk of muscular hemorrhaging.
                 <span class="ex-text">Example: If fishing at 30 Hz and fish are escaping the electric field, increasing the duty cycle from 10% to 24% will put more overall energy into the water and widen the capture zone without spiking the dangerous peak voltage.</span></p>
             </div>
 
-            <!-- DETAILED THEORY SECTION -->
-            <div class="card manual-section" style="background: #F8FAFC;">
-                <h3>Depletion Theory & Formulas</h3>
-                
+            <div class="card manual-section">
+                <h3>Depletion Theory &amp; Formulas</h3>
+
                 <h5 style="margin-top:0;">1. Catchability Coefficient (q)</h5>
-                <p><strong>Formula: q = C / (N × E)</strong><br>
+                <p><strong style="color:var(--primary);">Formula: q = C / (N × E)</strong><br>
                 The fundamental concept of depletion surveys. It represents the proportion of the total population (N) caught by one unit of effort (E). Depletion mathematics strictly assume 'q' remains constant across all sweeps.</p>
                 <div class="example-box">
-                    <strong>Why it matters:</strong> If you catch exactly 50% of the fish in Pass 1, you must catch exactly 50% of the <em>remaining</em> fish in Pass 2. If fish become "shock-shy" and hide better during the second pass, your 'q' drops, and your final population estimate will be mathematically flawed. This is why effort (shock seconds) must remain identical between passes.
+                    <strong style="color:var(--warning);">Why it matters:</strong> If you catch exactly 50% of the fish in Pass 1, you must catch exactly 50% of the <em>remaining</em> fish in Pass 2. If fish become "shock-shy" and hide better during the second pass, your 'q' drops, and your final population estimate will be mathematically flawed. This is why effort (shock seconds) must remain identical between passes.
                 </div>
 
                 <h5 style="margin-top:15px;">2. Seber-Le Cren (2-Pass Method)</h5>
-                <p><strong>Formula: N = C₁² / (C₁ - C₂)</strong><br>
-                Calculates the estimated total population (N) when exactly two sweeps are performed. <br><em>Mathematical Rule: Catch 1 (C₁) must be strictly greater than Catch 2 (C₂).</em></p>
+                <p><strong style="color:var(--primary);">Formula: N = C₁² / (C₁ - C₂)</strong><br>
+                Calculates the estimated total population (N) when exactly two sweeps are performed. <br><em style="color:var(--warning);">Mathematical Rule: Catch 1 (C₁) must be strictly greater than Catch 2 (C₂).</em></p>
                 <div class="example-box">
-                    <strong>Step-by-Step Example:</strong><br>
+                    <strong style="color:var(--secondary);">Step-by-Step Example:</strong><br>
                     • Pass 1 (C₁) = 60 fish caught.<br>
                     • Pass 2 (C₂) = 20 fish caught.<br><br>
                     <strong>Step 1:</strong> Calculate denominator (C₁ - C₂) ➔ 60 - 20 = 40.<br>
                     <strong>Step 2:</strong> Calculate numerator (C₁²) ➔ 60 × 60 = 3600.<br>
-                    <strong>Step 3:</strong> Divide (3600 ÷ 40) ➔ <strong>N = 90</strong>.<br><br>
-                    <em>Conclusion: Even though you only caught 80 fish physically, the math estimates the true total population of the reach is 90 fish.</em>
+                    <strong>Step 3:</strong> Divide (3600 ÷ 40) ➔ <strong style="color:var(--success);">N = 90</strong>.<br><br>
+                    <em style="color:var(--muted);">Conclusion: Even though you only caught 80 fish physically, the math estimates the true total population of the reach is 90 fish.</em>
                 </div>
 
                 <h5 style="margin-top:15px;">3. Leslie Graphical Method (3+ Passes)</h5>
                 <p>A linear regression method used when you conduct 3 or more passes. Catch Per Unit Effort (CPUE) is plotted on the Y-axis against Cumulative Catch (prior to the current pass) on the X-axis.</p>
                 <div class="example-box">
-                    <strong>Step-by-Step Example:</strong><br>
-                    • <strong>Pass 1:</strong> Catch = 50. (Cum. Catch before pass = 0). Plot ➔ <strong>(0, 50)</strong><br>
-                    • <strong>Pass 2:</strong> Catch = 30. (Cum. Catch before pass = 50). Plot ➔ <strong>(50, 30)</strong><br>
-                    • <strong>Pass 3:</strong> Catch = 10. (Cum. Catch before pass = 50+30=80). Plot ➔ <strong>(80, 10)</strong><br><br>
+                    <strong style="color:var(--secondary);">Step-by-Step Example:</strong><br>
+                    • <strong>Pass 1:</strong> Catch = 50. (Cum. Catch before pass = 0). Plot ➔ <strong style="color:var(--primary);">(0, 50)</strong><br>
+                    • <strong>Pass 2:</strong> Catch = 30. (Cum. Catch before pass = 50). Plot ➔ <strong style="color:var(--primary);">(50, 30)</strong><br>
+                    • <strong>Pass 3:</strong> Catch = 10. (Cum. Catch before pass = 50+30=80). Plot ➔ <strong style="color:var(--primary);">(80, 10)</strong><br><br>
                     <strong>Step 1:</strong> Plot these three points on a graph.<br>
                     <strong>Step 2:</strong> Draw a straight line of best fit through the points descending toward the bottom axis.<br>
                     <strong>Step 3:</strong> Find where the line intersects the X-axis (where Catch theoretically hits 0).<br><br>
-                    <em>Conclusion: If the line crosses the X-axis at 95, your estimated total population is 95 fish.</em>
+                    <em style="color:var(--muted);">Conclusion: If the line crosses the X-axis at 95, your estimated total population is 95 fish.</em>
                 </div>
             </div>
 
             <div class="card">
                 <h3>Field Calculator</h3>
-                <input type="text" id="calcDisplay" disabled style="font-size: 20px; text-align: right; background: #fff; margin-bottom:15px; color:#333;">
+                <input type="text" id="calcDisplay" disabled style="font-size: 20px; text-align: right; background: var(--bg); margin-bottom:15px; color:var(--primary); border-color:var(--border); font-family:'Share Tech Mono',monospace;">
                 <div class="calc-grid">
                     <button class="btn" onclick="calcIn('7')">7</button><button class="btn" onclick="calcIn('8')">8</button><button class="btn" onclick="calcIn('9')">9</button><button class="btn btn-op" onclick="calcIn('/')">÷</button>
                     <button class="btn" onclick="calcIn('4')">4</button><button class="btn" onclick="calcIn('5')">5</button><button class="btn" onclick="calcIn('6')">6</button><button class="btn btn-op" onclick="calcIn('*')">×</button>
@@ -240,15 +816,15 @@
             <div class="card">
                 <h3>Conversions</h3>
                 <div class="row" style="margin-bottom: 0;">
-                    <div class="col"><label>Length (mm → in)</label><select id="lenConv" onchange="calcLen()"></select><div id="lenResult" style="margin-top:8px; font-weight:bold; color:var(--primary); font-size:16px;">--</div></div>
-                    <div class="col"><label>Temp (°C → °F)</label><select id="tempConv" onchange="calcTemp()"></select><div id="tempResult" style="margin-top:8px; font-weight:bold; color:var(--danger); font-size:16px;">--</div></div>
+                    <div class="col"><label>Length (mm → in)</label><select id="lenConv" onchange="calcLen()"></select><div id="lenResult" class="conv-result" style="color:var(--primary);">--</div></div>
+                    <div class="col"><label>Temp (°C → °F)</label><select id="tempConv" onchange="calcTemp()"></select><div id="tempResult" class="conv-result" style="color:var(--danger);">--</div></div>
                 </div>
             </div>
         </div>
 
         <!-- 5. REPORT -->
         <div id="tab-save" class="tab-content">
-            <div class="card" style="border-top: 4px solid var(--primary);">
+            <div class="card" style="border-top: 2px solid var(--primary);">
                 <h3>Standardized Site Conditions</h3>
                 <div class="row">
                     <div class="col"><label>Weather</label><select id="rptWeather"><option>Clear</option><option>Partly Cloudy</option><option>Overcast</option><option>Light Rain</option><option>Heavy Rain</option></select></div>
@@ -264,23 +840,23 @@
                 </div>
             </div>
             <div class="card">
-                <h3>Additional Notes & Anomalies</h3>
+                <h3>Additional Notes &amp; Anomalies</h3>
                 <label>Habitat Notes (Woody Debris, Cover)</label><textarea id="habitatNotes" placeholder="Describe specific cover types..."></textarea>
                 <label style="margin-top: 10px;">General Comments / Incidents</label><textarea id="surveyComments" placeholder="Describe gear malfunctions, mortalities..."></textarea>
             </div>
             <div class="card" style="text-align: center; padding: 20px;">
                 <h3>Generate Final Report</h3>
-                <button class="btn btn-success" onclick="exportXLSX()" style="margin-bottom: 15px;">📊 Download Excel Data w/ Chart</button>
-                <button class="btn btn-primary" onclick="exportDOC()">📄 Download Formal Report (.DOC)</button>
+                <button class="btn btn-success" onclick="exportXLSX()" style="margin-bottom: 15px;">📊 DOWNLOAD EXCEL DATA W/ CHART</button>
+                <button class="btn btn-primary" onclick="exportDOC()">📄 DOWNLOAD FORMAL REPORT (.DOC)</button>
             </div>
-            <div class="card" style="border-left: 4px solid var(--danger);">
+            <div class="card" style="border-left: 3px solid var(--danger);">
                 <h3 style="color: var(--danger);">Emergency Text Fallback</h3>
                 <textarea id="rawDataBox" class="code-textarea" readonly placeholder="Text fallback will populate here..."></textarea>
-                <button class="btn btn-outline" onclick="copyRawData()" style="margin-top: 10px;">Copy to Clipboard</button>
+                <button class="btn btn-outline" onclick="copyRawData()" style="margin-top: 10px;">COPY TO CLIPBOARD</button>
             </div>
         </div>
 
-        <div class="app-footer">Created by Michael Stocklin<br><a href="#" onclick="document.getElementById('terms-modal').style.display='flex'; return false;">Terms of Use & Disclaimer</a></div>
+        <div class="app-footer">Created by Michael Stocklin<br><a href="#" onclick="document.getElementById('terms-modal').style.display='flex'; return false;">Terms of Use &amp; Disclaimer</a></div>
     </div>
 
     <!-- BOTTOM NAV -->
@@ -293,6 +869,166 @@
     </div>
 
     <script>
+        /* ===========================
+           SOUND ENGINE (Web Audio API)
+           =========================== */
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+        function ensureAudio() { if(!audioCtx) audioCtx = new AudioCtx(); }
+
+        function playTone(freq, dur, type='sine', vol=0.12) {
+            ensureAudio();
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = type;
+            o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            g.gain.setValueAtTime(vol, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+            o.connect(g); g.connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime + dur);
+        }
+
+        function sfxLog() { playTone(523, 0.08, 'square', 0.08); setTimeout(()=>playTone(784, 0.12, 'square', 0.08), 80); setTimeout(()=>playTone(1047, 0.15, 'sine', 0.06), 160); }
+        function sfxAchieve() { playTone(659, 0.1, 'square', 0.1); setTimeout(()=>playTone(784, 0.1, 'square', 0.1), 100); setTimeout(()=>playTone(1047, 0.2, 'sine', 0.08), 200); setTimeout(()=>playTone(1319, 0.3, 'sine', 0.06), 350); }
+        function sfxLevelUp() { [523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>playTone(f, 0.15, 'square', 0.1), i*80)); }
+        function sfxClick() { playTone(880, 0.04, 'square', 0.04); }
+        function sfxGPS() { playTone(440, 0.05, 'sine', 0.06); setTimeout(()=>playTone(660, 0.05, 'sine', 0.06), 120); setTimeout(()=>playTone(880, 0.1, 'sine', 0.06), 240); }
+        function sfxBoot() { playTone(220, 0.3, 'sawtooth', 0.05); setTimeout(()=>playTone(440, 0.2, 'sine', 0.08), 300); setTimeout(()=>playTone(660, 0.3, 'sine', 0.06), 500); }
+
+        /* ===========================
+           PARTICLE BACKGROUND
+           =========================== */
+        const pCanvas = document.getElementById('particles-canvas');
+        const pCtx = pCanvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() { pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * pCanvas.width;
+                this.y = Math.random() * pCanvas.height;
+                this.vx = (Math.random() - 0.5) * 0.3;
+                this.vy = (Math.random() - 0.5) * 0.3;
+                this.r = Math.random() * 1.5 + 0.3;
+                this.alpha = Math.random() * 0.4 + 0.1;
+                this.color = Math.random() > 0.7 ? '124, 77, 255' : '0, 229, 255';
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if(this.x < 0 || this.x > pCanvas.width || this.y < 0 || this.y > pCanvas.height) this.reset();
+            }
+            draw() {
+                pCtx.beginPath();
+                pCtx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                pCtx.fillStyle = `rgba(${this.color}, ${this.alpha})`;
+                pCtx.fill();
+            }
+        }
+
+        for(let i = 0; i < 60; i++) particles.push(new Particle());
+
+        function animateParticles() {
+            pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            // Draw connections
+            for(let i = 0; i < particles.length; i++) {
+                for(let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if(dist < 120) {
+                        pCtx.beginPath();
+                        pCtx.strokeStyle = `rgba(0, 229, 255, ${0.06 * (1 - dist/120)})`;
+                        pCtx.lineWidth = 0.5;
+                        pCtx.moveTo(particles[i].x, particles[i].y);
+                        pCtx.lineTo(particles[j].x, particles[j].y);
+                        pCtx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        /* ===========================
+           XP & ACHIEVEMENT SYSTEM
+           =========================== */
+        let playerXP = 0;
+        let playerLevel = 1;
+        let uniqueSpecies = new Set();
+        const XP_PER_LEVEL = 100;
+        const XP_GROWTH = 1.4;
+
+        const achievements = {
+            firstCatch: { name: "First Catch", icon: "🎣", xp: 50, desc: "Log your first specimen", done: false },
+            fiveSpecimens: { name: "Netting Pro", icon: "🐟", xp: 75, desc: "Log 5 specimens", done: false },
+            tenSpecimens: { name: "Survey Veteran", icon: "⚡", xp: 100, desc: "Log 10 specimens", done: false },
+            twentyFive: { name: "Master Biologist", icon: "🔬", xp: 200, desc: "Log 25 specimens", done: false },
+            threeSpecies: { name: "Biodiversity I", icon: "🧬", xp: 100, desc: "Log 3 unique species", done: false },
+            sixSpecies: { name: "Biodiversity II", icon: "🌊", xp: 150, desc: "Log 6 unique species", done: false },
+            gpsLock: { name: "Satellite Link", icon: "📡", xp: 30, desc: "Acquire GPS lock", done: false },
+            multiPass: { name: "Depletion Scientist", icon: "📊", xp: 120, desc: "Log on 3+ different passes", done: false },
+        };
+
+        function getXPForLevel(lv) { return Math.floor(XP_PER_LEVEL * Math.pow(XP_GROWTH, lv - 1)); }
+
+        function addXP(amount) {
+            playerXP += amount;
+            let needed = getXPForLevel(playerLevel);
+            while(playerXP >= needed) {
+                playerXP -= needed;
+                playerLevel++;
+                needed = getXPForLevel(playerLevel);
+                sfxLevelUp();
+                const flash = document.getElementById('levelFlash');
+                flash.classList.add('flash');
+                setTimeout(() => flash.classList.remove('flash'), 1100);
+            }
+            updateHUD();
+        }
+
+        function updateHUD() {
+            const needed = getXPForLevel(playerLevel);
+            document.getElementById('playerLevel').textContent = playerLevel;
+            document.getElementById('xpCurrent').textContent = playerXP;
+            document.getElementById('xpNeeded').textContent = needed;
+            document.getElementById('xpFill').style.width = ((playerXP / needed) * 100) + '%';
+            document.getElementById('speciesCount').textContent = catchData.length;
+        }
+
+        function checkAchievements() {
+            const count = catchData.length;
+            const passes = new Set(catchData.map(d => d.pass));
+
+            if(count >= 1 && !achievements.firstCatch.done) { unlockAch('firstCatch'); }
+            if(count >= 5 && !achievements.fiveSpecimens.done) { unlockAch('fiveSpecimens'); }
+            if(count >= 10 && !achievements.tenSpecimens.done) { unlockAch('tenSpecimens'); }
+            if(count >= 25 && !achievements.twentyFive.done) { unlockAch('twentyFive'); }
+            if(uniqueSpecies.size >= 3 && !achievements.threeSpecies.done) { unlockAch('threeSpecies'); }
+            if(uniqueSpecies.size >= 6 && !achievements.sixSpecies.done) { unlockAch('sixSpecies'); }
+            if(passes.size >= 3 && !achievements.multiPass.done) { unlockAch('multiPass'); }
+        }
+
+        function unlockAch(key) {
+            const a = achievements[key];
+            a.done = true;
+            addXP(a.xp);
+            sfxAchieve();
+            const toast = document.getElementById('achToast');
+            document.getElementById('achIcon').textContent = a.icon;
+            document.getElementById('achTitle').textContent = a.name;
+            document.getElementById('achXp').textContent = '+' + a.xp + ' XP';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+        /* ===========================
+           SPECIES DATABASE (unchanged)
+           =========================== */
         const speciesDB =[
             { group: "Salmonidae", items:[{n:"Chinook Salmon", s:"Oncorhynchus tshawytscha", t:"Black mouth/gums. Spots on BOTH lobes of tail."}, {n:"Coho Salmon", s:"Oncorhynchus kisutch", t:"Black mouth, WHITE gums. Spots on UPPER tail lobe."}, {n:"Sockeye / Kokanee", s:"Oncorhynchus nerka", t:"No distinct back spots. Glassy eyes. 28-40 gill rakers."}, {n:"Chum Salmon", s:"Oncorhynchus keta", t:"No spots. Spawners have calico bands and canine teeth."}, {n:"Pink Salmon", s:"Oncorhynchus gorbuscha", t:"Large oval spots on back/tail. Tiny scales."}, {n:"Steelhead/Rainbow", s:"Oncorhynchus mykiss", t:"Radiating rows of black spots on tail. Pink lateral band."}, {n:"Coastal Cutthroat", s:"O. clarkii clarkii", t:"Red slash under jaw. Spots below lateral line."}, {n:"Bull Trout", s:"Salvelinus confluentus", t:"No black on dorsal. Pale yellow/pink spots on olive back."}, {n:"Brook Trout", s:"Salvelinus fontinalis", t:"Worm-like vermiculations on back. White leading fin edges."}, {n:"Brown Trout", s:"Salmo trutta", t:"Large dark/red spots with halos. Few spots on tail."}, {n:"Mountain Whitefish", s:"Prosopium williamsoni", t:"Large scales, subterminal mouth. Adipose fin."}] },
             { group: "Cyprinidae", items:[{n:"Northern Pikeminnow", s:"Ptychocheilus oregonensis", t:"Large mouth past front of eye. Forked tail."}, {n:"Peamouth", s:"Mylocheilus caurinus", t:"Small mouth, reddish corners. Deeply forked tail."}, {n:"Redside Shiner", s:"Richardsonius balteatus", t:"Deep body. Long anal fin (10-22 rays). Crimson band."}, {n:"Speckled Dace", s:"Rhinichthys osculus", t:"Small subterminal mouth. Speckled dark pattern."}, {n:"Longnose Dace", s:"Rhinichthys cataractae", t:"Fleshy snout projects past mouth. Fast riffles."}, {n:"Common Carp", s:"Cyprinus carpio", t:"Two barbels per side. Heavy serrated dorsal/anal spines."}] },
@@ -302,72 +1038,108 @@
 
         let catchData =[]; let siteLat = "UNK", siteLon = "UNK", airTemp = "UNK", weatherCode = "UNK"; let chartInstance = null;
 
+        /* ===========================
+           CORE APP LOGIC
+           =========================== */
         function startGame() {
-            document.getElementById('splash-screen').style.display = 'none'; document.getElementById('app-body').style.display = 'block'; document.getElementById('nav-bar').style.display = 'flex';
+            sfxBoot();
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('app-body').style.display = 'block';
+            document.getElementById('nav-bar').style.display = 'flex';
             const sel = document.getElementById('species');
             speciesDB.forEach(g => {
-                const grp = document.createElement('optgroup'); grp.label = g.group;
+                const grp = document.createElement('optgroup'); grp.label = '— ' + g.group.toUpperCase() + ' —';
                 g.items.forEach(i => { const opt = document.createElement('option'); opt.value = i.n; opt.dataset.sci = i.s; opt.dataset.traits = i.t; opt.textContent = i.n; grp.appendChild(opt); });
                 sel.appendChild(grp);
             });
             let lenHTML = '<option disabled selected>Select mm...</option>'; for(let i=10; i<=1000; i+=10) lenHTML += `<option value="${i}">${i} mm</option>`; document.getElementById('lenConv').innerHTML = lenHTML;
             let tmpHTML = '<option disabled selected>Select °C...</option>'; for(let i=-5; i<=35; i+=1) tmpHTML += `<option value="${i}">${i} °C</option>`; document.getElementById('tempConv').innerHTML = tmpHTML;
             initChart();
+            updateHUD();
         }
 
-        function calcLen() { let v = document.getElementById('lenConv').value; document.getElementById('lenResult').innerText = `${v} mm = ${(v / 25.4).toFixed(2)} in`; }
-        function calcTemp() { let v = document.getElementById('tempConv').value; document.getElementById('tempResult').innerText = `${v} °C = ${((v * 1.8) + 32).toFixed(1)} °F`; }
+        function calcLen() { let v = document.getElementById('lenConv').value; document.getElementById('lenResult').innerText = `${v} mm = ${(v / 25.4).toFixed(2)} in`; sfxClick(); }
+        function calcTemp() { let v = document.getElementById('tempConv').value; document.getElementById('tempResult').innerText = `${v} °C = ${((v * 1.8) + 32).toFixed(1)} °F`; sfxClick(); }
         function updateBioDex() {
             const opt = document.getElementById('species').options[document.getElementById('species').selectedIndex];
-            if(opt.value) { document.getElementById('biodex-box').style.display = 'block'; document.getElementById('biodex-sci').innerText = opt.dataset.sci; document.getElementById('biodex-traits').innerText = opt.dataset.traits; }
+            if(opt.value) { document.getElementById('biodex-box').style.display = 'block'; document.getElementById('biodex-sci').innerText = opt.dataset.sci; document.getElementById('biodex-traits').innerText = opt.dataset.traits; sfxClick(); }
         }
 
         function switchTab(tId, el) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
+            sfxClick();
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
             document.getElementById('tab-' + tId).classList.add('active'); el.classList.add('active'); window.scrollTo(0,0);
             if(tId === 'stats') updateChart();
         }
 
         function getLocationAndWeather() {
-            const d = document.getElementById('env-data'); d.innerHTML = "Acquiring satellite signal...";
+            sfxGPS();
+            const d = document.getElementById('env-data'); d.innerHTML = "⏳ Acquiring satellite signal...";
             async function fetchW(lat, lon) {
-                try { const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`); const w = await r.json(); airTemp = w.current_weather.temperature; weatherCode = w.current_weather.windspeed; d.innerHTML = `<strong>GPS:</strong> ${lat}, ${lon}<br><strong>Env:</strong> Air ${airTemp}°C, Wind ${weatherCode} km/h`; } 
-                catch (e) { d.innerHTML = `<strong>GPS:</strong> ${lat}, ${lon}<br><strong>Env:</strong> API unreachable.`; }
-                document.getElementById('header-status').innerText = "GPS Locked"; document.getElementById('header-status').style.background = "rgba(39, 174, 96, 0.8)";
+                try { const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`); const w = await r.json(); airTemp = w.current_weather.temperature; weatherCode = w.current_weather.windspeed; d.innerHTML = `<span style="color:var(--success);">✓ GPS LOCKED</span><br><strong style="color:var(--primary);">GPS:</strong> ${lat}, ${lon}<br><strong style="color:var(--primary);">ENV:</strong> Air ${airTemp}°C, Wind ${weatherCode} km/h`; }
+                catch (e) { d.innerHTML = `<span style="color:var(--success);">✓ GPS LOCKED</span><br><strong style="color:var(--primary);">GPS:</strong> ${lat}, ${lon}<br><span style="color:var(--warning);">⚠ Weather API unreachable</span>`; }
+                document.getElementById('header-status').innerText = "✓ GPS LOCKED";
+                document.getElementById('header-status').classList.add('active');
+                if(!achievements.gpsLock.done) unlockAch('gpsLock');
             }
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((p) => { siteLat = p.coords.latitude.toFixed(5); siteLon = p.coords.longitude.toFixed(5); fetchW(siteLat, siteLon); }, 
-                (e) => { d.innerHTML = "<span style='color:var(--danger)'>GPS Blocked. Using fallback.</span>"; siteLat = "45.5231"; siteLon = "-122.6765"; setTimeout(() => fetchW(siteLat, siteLon), 1000); }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
-            } else { d.innerHTML = "Radar unavailable."; }
+                navigator.geolocation.getCurrentPosition((p) => { siteLat = p.coords.latitude.toFixed(5); siteLon = p.coords.longitude.toFixed(5); fetchW(siteLat, siteLon); },
+                (e) => { d.innerHTML = "<span style='color:var(--warning)'>⚠ GPS blocked. Using fallback coordinates.</span>"; siteLat = "45.5231"; siteLon = "-122.6765"; setTimeout(() => fetchW(siteLat, siteLon), 1000); }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
+            } else { d.innerHTML = "⚠ Geolocation unavailable."; }
         }
 
         async function saveCatch() {
             const pass = document.getElementById('passNum').value; const spOpt = document.getElementById('species').options[document.getElementById('species').selectedIndex];
             const spName = spOpt.value; const len = document.getElementById('length').value;
-            if(!pass || !spName || !len) return alert("Error: Input Sweep #, Species, and Length.");
-            const btn = document.getElementById('logBtn'); btn.innerText = "Processing..."; btn.style.backgroundColor = "var(--muted)";
-            
-            const pInput = document.getElementById('photo'); let pData = "N"; let pThumb = "No Photo";
+            if(!pass || !spName || !len) return alert("⚠ Input Sweep #, Species, and Length.");
+            const btn = document.getElementById('logBtn'); btn.innerText = "⏳ PROCESSING..."; btn.style.opacity = '0.6';
+
+            const pInput = document.getElementById('photo'); let pData = "N"; let pThumb = "<span style='color:var(--muted);'>—</span>";
             if (pInput.files.length > 0) {
                 pData = await new Promise((res) => { const r = new FileReader(); r.onload = (e) => res(e.target.result); r.readAsDataURL(pInput.files[0]); });
-                pThumb = `<img src="${pData}" style="height:35px; width:35px; object-fit:cover; border-radius:4px; border:2px solid var(--primary); cursor:pointer;" onclick="openPhoto('${pData}')">`;
+                pThumb = `<img src="${pData}" style="height:35px; width:35px; object-fit:cover; border-radius:3px; border:2px solid var(--primary); cursor:pointer; box-shadow:0 0 8px var(--glow);" onclick="openPhoto('${pData}')">`;
             }
 
-            const rec = { 
+            const rec = {
                 t: new Date().toLocaleTimeString(), rLen: document.getElementById('reachLen').value||"UNK", nets: document.getElementById('blockNets').value,
                 wTmp: document.getElementById('waterTemp').value||"UNK", cnd: document.getElementById('conductivity').value||"UNK", pass: parseInt(pass), sec: document.getElementById('shockSecs').value||"UNK",
                 v: document.getElementById('volts').value||"UNK", hz: document.getElementById('freq').value||"UNK", dty: document.getElementById('duty').value||"UNK",
                 sp: spName, sci: spOpt.dataset.sci||"UNK", len, wt: document.getElementById('weight').value||"---", cond: document.getElementById('condition').value, pStat: pInput.files.length>0?"Yes":"No"
             };
             catchData.push(rec);
-            
-            const tr = document.createElement('tr'); tr.innerHTML = `<td>${pass}</td><td><strong>${spName}</strong></td><td>${len}</td><td>${pThumb}</td>`; document.getElementById('logBody').prepend(tr);
+            uniqueSpecies.add(spName);
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td style="color:var(--secondary); font-weight:bold;">${pass}</td><td><strong style="color:var(--text-bright);">${spName}</strong><br><span style="font-size:10px; color:var(--muted); font-style:italic;">${rec.sci}</span></td><td style="color:var(--primary);">${len}</td><td>${pThumb}</td>`;
+            document.getElementById('logBody').prepend(tr);
+
             document.getElementById('length').value = ''; document.getElementById('weight').value = ''; document.getElementById('photo').value = ''; document.getElementById('condition').value = 'Vigorous'; document.getElementById('biodex-box').style.display = 'none'; document.getElementById('species').selectedIndex = 0;
-            btn.style.backgroundColor = "var(--success)"; btn.innerText = "Logged Successfully!"; setTimeout(() => { btn.style.backgroundColor = "var(--primary)"; btn.innerText = "Log Specimen"; }, 1000);
+
+            sfxLog();
+            addXP(25);
+            checkAchievements();
+
+            btn.style.opacity = '1';
+            btn.style.background = 'linear-gradient(135deg, #1b5e20, #2e7d32)';
+            btn.innerText = "✓ LOGGED SUCCESSFULLY";
+            setTimeout(() => { btn.style.background = ''; btn.innerText = "⚡ LOG SPECIMEN"; }, 1200);
         }
 
         function openPhoto(u) { document.getElementById('modal-img').src = u; document.getElementById('photo-modal').style.display = 'flex'; }
 
+        function downloadChartImage() {
+            if(!chartInstance) return;
+            sfxClick();
+            const cvs = document.getElementById('depletionChart');
+            const tCvs = document.createElement('canvas'); tCvs.width = cvs.width; tCvs.height = cvs.height;
+            const ctx = tCvs.getContext('2d'); ctx.fillStyle = '#0d1225'; ctx.fillRect(0, 0, tCvs.width, tCvs.height); ctx.drawImage(cvs, 0, 0);
+            const link = document.createElement('a'); link.download = 'Depletion_Chart.jpg'; link.href = tCvs.toDataURL('image/jpeg', 0.95); link.click();
+        }
+
+        /* ===========================
+           CHART (dark themed)
+           =========================== */
         const drawDataLabels = {
             id: 'drawDataLabels',
             afterDatasetsDraw(chart) {
@@ -377,8 +1149,12 @@
                 const meta = chart.getDatasetMeta(0);
                 dataset.data.forEach((datapoint, index) => {
                     const { x, y } = meta.data[index];
-                    ctx.fillStyle = '#E74C3C'; ctx.font = 'bold 14px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-                    ctx.fillText(Math.round(datapoint.y), x, y - 12);
+                    ctx.fillStyle = '#00e5ff';
+                    ctx.font = 'bold 13px "Orbitron", sans-serif';
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+                    ctx.shadowColor = 'rgba(0, 229, 255, 0.6)'; ctx.shadowBlur = 8;
+                    ctx.fillText(Math.round(datapoint.y), x, y - 14);
+                    ctx.shadowBlur = 0;
                 });
                 ctx.restore();
             }
@@ -396,43 +1172,64 @@
         }
 
         function initChart() {
-            Chart.defaults.font.family = "'Inter', sans-serif"; Chart.defaults.color = '#7F8C8D';
+            Chart.defaults.font.family = "'Exo 2', sans-serif";
+            Chart.defaults.color = '#546e8a';
             const ctx = document.getElementById('depletionChart').getContext('2d');
-            chartInstance = new Chart(ctx, { 
-                type: 'scatter', 
-                data: { 
+            chartInstance = new Chart(ctx, {
+                type: 'scatter',
+                data: {
                     datasets:[
-                        { label: 'Actual Catch', type: 'scatter', data: [], backgroundColor: '#4A90E2', borderColor: '#0F4C81', pointRadius: 8, borderWidth: 3 },
-                        { label: 'Fitted Curve', type: 'line', data:[], borderColor: '#27AE60', borderWidth: 3, borderDash:[5, 5], fill: false, tension: 0, pointRadius: 0, pointHoverRadius: 0 }
-                    ] 
-                }, 
-                options: { 
-                    layout: { padding: { top: 30, right: 15, left: 10, bottom: 10 } }, 
-                    scales: { 
-                        x: { 
-                            type: 'linear', 
-                            title: {display: true, text: 'Sweep Number (Effort)', font: {weight: 'bold', size: 14}, color: '#2C3E50'}, 
-                            ticks: { stepSize: 1, callback: function(v) { return Number.isInteger(v) ? v : ''; } } 
+                        {
+                            label: 'Actual Catch', type: 'scatter', data: [],
+                            backgroundColor: 'rgba(0, 229, 255, 0.8)',
+                            borderColor: '#00e5ff',
+                            pointRadius: 8, borderWidth: 2,
+                            pointStyle: 'rectRot',
+                            pointHoverRadius: 12,
+                            pointHoverBorderWidth: 3,
+                            pointHoverBackgroundColor: '#00e5ff',
                         },
-                        y: { 
-                            beginAtZero: true, 
-                            title: {display: true, text: 'Quantity of Fish Caught', font: {weight: 'bold', size: 14}, color: '#2C3E50'} 
-                        } 
-                    }, 
-                    plugins: { 
-                        legend: { display: true, position: 'bottom' },
-                        title: { display: true, text: 'Electrofishing Depletion Curve', font: { size: 16, weight: 'bold' }, color: '#0F4C81', padding: {bottom: 15} }
-                    } 
+                        {
+                            label: 'Fitted Curve', type: 'line', data:[],
+                            borderColor: '#7c4dff',
+                            borderWidth: 2,
+                            borderDash:[6, 4],
+                            fill: false, tension: 0,
+                            pointRadius: 0, pointHoverRadius: 0,
+                        }
+                    ]
+                },
+                options: {
+                    layout: { padding: { top: 30, right: 15, left: 10, bottom: 10 } },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            title: { display: true, text: 'SWEEP NUMBER (EFFORT)', font: { weight: 'bold', size: 11, family: "'Orbitron', sans-serif" }, color: '#546e8a' },
+                            ticks: { stepSize: 1, callback: function(v) { return Number.isInteger(v) ? v : ''; }, color: '#546e8a' },
+                            grid: { color: 'rgba(30, 48, 80, 0.5)' },
+                            border: { color: '#1e3050' }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'QUANTITY OF FISH CAUGHT', font: { weight: 'bold', size: 11, family: "'Orbitron', sans-serif" }, color: '#546e8a' },
+                            grid: { color: 'rgba(30, 48, 80, 0.5)' },
+                            border: { color: '#1e3050' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: true, position: 'bottom', labels: { color: '#546e8a', font: { size: 11 }, usePointStyle: true, padding: 20 } },
+                        title: { display: true, text: 'ELECTROFISHING DEPLETION CURVE', font: { size: 13, weight: 'bold', family: "'Orbitron', sans-serif" }, color: '#00e5ff', padding: { bottom: 15 } }
+                    }
                 },
                 plugins: [drawDataLabels]
             });
         }
 
         function updateChart() {
-            if(!chartInstance) return; let p = {}; catchData.forEach(d => { p[d.pass] = (p[d.pass] || 0) + 1; });
-            
+            if(!chartInstance) return;
+            let p = {}; catchData.forEach(d => { p[d.pass] = (p[d.pass] || 0) + 1; });
             let actualData = Object.keys(p).sort((a,b)=>a-b).map(k => ({x: Number(k), y: p[k]}));
-            let curveData =[];
+            let curveData = [];
             let reg = calcRegCurve(p);
             if(reg && actualData.length > 0) {
                 let minX = actualData[0].x; let maxX = actualData[actualData.length - 1].x;
@@ -441,26 +1238,34 @@
                     curveData.push({x: parseFloat(i.toFixed(1)), y: Math.max(0, calcY)});
                 }
             } else { curveData = actualData; }
-
             chartInstance.data.datasets[0].data = actualData;
             chartInstance.data.datasets[1].data = curveData;
             chartInstance.update();
         }
 
-        let cV = ""; function calcIn(v) { cV += v; document.getElementById('calcDisplay').value = cV; } function calcClear() { cV = ""; document.getElementById('calcDisplay').value = ""; } function calcEval() { try { cV = eval(cV).toString(); document.getElementById('calcDisplay').value = cV; } catch { document.getElementById('calcDisplay').value = "Err"; cV=""; } }
+        /* ===========================
+           CALCULATOR
+           =========================== */
+        let cV = "";
+        function calcIn(v) { cV += v; document.getElementById('calcDisplay').value = cV; sfxClick(); }
+        function calcClear() { cV = ""; document.getElementById('calcDisplay').value = ""; sfxClick(); }
+        function calcEval() { try { cV = eval(cV).toString(); document.getElementById('calcDisplay').value = cV; sfxClick(); } catch { document.getElementById('calcDisplay').value = "ERR"; cV=""; } }
 
+        /* ===========================
+           EXPORT FUNCTIONS (unchanged logic)
+           =========================== */
         async function exportXLSX() {
             if(catchData.length === 0) return alert("No database records to export.");
+            sfxClick();
 
             let csv = `"Time","Stream","Crew","Lat","Lon","AirTempC","WaterTempC","Cond_uS","Reach_m","BlockNets","Weather","Clarity","Flow","Substrate","Net_Int","Efficiency","Sweep","Secs","Model","Volts","Hz","Duty%","Common_Name","Scientific","Length_mm","Weight_g","Condition","Photo"\n`;
             const strm = (document.getElementById('streamName').value||"Unk").replace(/"/g, '""'); const crw = (document.getElementById('crewNames').value||"Unk").replace(/"/g, '""'); const eq = (document.getElementById('equipModel').value||"Unk").replace(/"/g, '""');
             const wth = document.getElementById('rptWeather').value; const clr = document.getElementById('rptClarity').value; const flw = document.getElementById('rptFlow').value; const sub = document.getElementById('rptSubstrate').value; const netI = document.getElementById('rptNets').value; const eff = document.getElementById('rptEfficiency').value;
-            
+
             catchData.forEach(d => { csv += `"${d.t}","${strm}","${crw}","${siteLat}","${siteLon}","${airTemp}","${d.wTmp}","${d.cnd}","${d.rLen}","${d.nets}","${wth}","${clr}","${flw}","${sub}","${netI}","${eff}","${d.pass}","${d.sec}","${eq}","${d.v}","${d.hz}","${d.dty}","${d.sp}","${d.sci}","${d.len}","${d.wt}","${d.cond}","${d.pStat}"\n`; });
             document.getElementById('rawDataBox').value = csv;
 
             const wb = new ExcelJS.Workbook();
-            
             const ws = wb.addWorksheet('Raw Data Log');
             ws.columns =[
                 { header: 'Time', key: 't', width: 12 }, { header: 'Sweep', key: 'pass', width: 10 },
@@ -488,7 +1293,7 @@
                 { header: 'Actual Catch (Y1)', key: 'y1', width: 18 },
                 { header: 'Fitted Curve (Y2)', key: 'y2', width: 18 }
             ];
-            
+
             let p = {}; catchData.forEach(d => { if(!p[d.pass]) p[d.pass] = 0; p[d.pass]++; });
             let reg = calcRegCurve(p);
             let sortedKeys = Object.keys(p).sort((a,b)=>a-b).map(Number);
@@ -506,8 +1311,8 @@
             }
 
             wsChart.getRow(1).font = { bold: true };
-            wsChart.addRow([]); wsChart.addRow(['HOW TO CREATE YOUR NATIVE EXCEL CHART:']); 
-            wsChart.addRow(['1. Highlight the 3 columns of data above.']); 
+            wsChart.addRow([]); wsChart.addRow(['HOW TO CREATE YOUR NATIVE EXCEL CHART:']);
+            wsChart.addRow(['1. Highlight the 3 columns of data above.']);
             wsChart.addRow(['2. Go to Insert -> Chart -> Scatter with Smooth Lines.']);
             wsChart.getRow(wsChart.rowCount - 3).font = { bold: true, color: { arg: 'FF0F4C81' } };
 
@@ -520,6 +1325,7 @@
 
         function exportDOC() {
             if(catchData.length === 0) return alert("No data to export.");
+            sfxClick();
             const d0 = catchData[0]; const strm = document.getElementById('streamName').value||"Unnamed"; const crw = document.getElementById('crewNames').value||"N/A"; const eq = document.getElementById('equipModel').value||"N/A";
             const hNts = document.getElementById('habitatNotes').value||"None"; const cNts = document.getElementById('surveyComments').value||"None";
             const wth = document.getElementById('rptWeather').value; const clr = document.getElementById('rptClarity').value; const flw = document.getElementById('rptFlow').value; const sub = document.getElementById('rptSubstrate').value; const netI = document.getElementById('rptNets').value; const eff = document.getElementById('rptEfficiency').value;
@@ -533,16 +1339,16 @@
                 <h2>2. Notes</h2><p><strong>Habitat:</strong><br>${hNts}</p><p><strong>Comments:</strong><br>${cNts}</p>
                 <h2>3. Effort</h2><p><strong>Gear:</strong> ${eq}</p><table><tr><th>Sweep</th><th>Effort</th><th>Settings</th><th>Catch</th></tr>${sH}</table>
                 <h2>4. Specimen Log</h2><table><tr><th>Pass</th><th>Species</th><th>Sci Name</th><th>L(mm)</th><th>W(g)</th><th>Cond</th></tr>`;
-            
+
             let ft = `REPORT: ${strm} | ${new Date().toLocaleDateString()}\nCrew: ${crw}\nEnv: ${wth}, Air ${airTemp}C, Water ${d0.wTmp}C, Cond ${d0.cnd}uS/cm\nSite: ${d0.rLen}m, Flow: ${flw}, Sub: ${sub}, Nets: ${d0.nets}\n\nEffort:\n${sT}\nLog:\n`;
-            
+
             catchData.forEach(d => { html += `<tr><td>${d.pass}</td><td>${d.sp}</td><td><i>${d.sci}</i></td><td>${d.len}</td><td>${d.wt}</td><td>${d.cond}</td></tr>`; ft += `${d.pass}|${d.sp}|${d.len}mm|${d.wt}g|${d.cond}\n`; });
             html += "</table></body></html>"; document.getElementById('rawDataBox').value = ft;
-            
+
             const u = 'data:application/msword;charset=utf-8,' + encodeURIComponent(html); const a = document.createElement('a'); a.href = u; a.download = 'Report.doc'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
 
-        function copyRawData() { const b = document.getElementById('rawDataBox'); if(!b.value) return alert("Generate export first."); b.select(); b.setSelectionRange(0, 99999); navigator.clipboard.writeText(b.value).then(() => alert("Copied!")).catch(() => alert("Copy failed.")); }
+        function copyRawData() { const b = document.getElementById('rawDataBox'); if(!b.value) return alert("Generate export first."); b.select(); b.setSelectionRange(0, 99999); navigator.clipboard.writeText(b.value).then(() => alert("Copied!")).catch(() => alert("Copy failed.")); sfxClick(); }
     </script>
 </body>
 </html>
