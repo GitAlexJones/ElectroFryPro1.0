@@ -580,6 +580,158 @@
             font-family: 'Share Tech Mono', monospace;
         }
 
+        /* MLE CALCULATOR */
+        .mle-result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .mle-stat-box {
+            background: rgba(0, 229, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px;
+            text-align: center;
+        }
+        .mle-stat-box.full-width { grid-column: span 2; }
+        .mle-stat-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 8px;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .mle-stat-value {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        .mle-stat-value.warn { color: var(--warning); }
+        .mle-stat-value.good { color: var(--success); }
+        .mle-stat-value.small { font-size: 14px; }
+        .mle-warning {
+            background: rgba(255, 171, 0, 0.08);
+            border: 1px solid rgba(255, 171, 0, 0.3);
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--warning);
+            font-family: 'Share Tech Mono', monospace;
+        }
+        .mle-pass-inputs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .mle-pass-inputs input {
+            width: 70px;
+            text-align: center;
+            padding: 10px 4px;
+        }
+        .mle-pass-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 9px;
+            color: var(--muted);
+            text-align: center;
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* GROUP CATCH TOGGLE */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            background: rgba(124, 77, 255, 0.06);
+            border: 1px solid rgba(124, 77, 255, 0.15);
+            border-radius: 4px;
+        }
+        .toggle-row label:not(.toggle-switch) {
+            display: inline;
+            margin: 0;
+            font-size: 11px;
+            flex: 1;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px; height: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin: 0;
+        }
+        .toggle-switch input { 
+            position: absolute;
+            opacity: 0; 
+            width: 100%; height: 100%;
+            top: 0; left: 0;
+            cursor: pointer;
+            z-index: 2;
+            margin: 0;
+            padding: 0;
+        }
+        .toggle-track {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--border);
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+        .toggle-track::after {
+            content: '';
+            position: absolute;
+            width: 16px; height: 16px;
+            left: 2px; top: 2px;
+            background: var(--muted);
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        .toggle-switch input:checked + .toggle-track { background: rgba(124, 77, 255, 0.4); }
+        .toggle-switch input:checked + .toggle-track::after { transform: translateX(20px); background: var(--secondary); }
+        #groupCatchFields { display: none; }
+        #individualFields { display: block; }
+
+        /* PASS TIMER */
+        .timer-display {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 24px;
+            color: var(--primary);
+            text-align: center;
+            padding: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px var(--glow);
+        }
+        .timer-display.running { color: var(--success); border-color: rgba(0,230,118,0.3); }
+        .timer-btns { display: flex; gap: 6px; margin-bottom: 10px; }
+        .timer-btns .btn { flex: 1; padding: 10px; font-size: 11px; }
+        .pass-time-log {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            max-height: 80px;
+            overflow-y: auto;
+            padding: 6px;
+            background: rgba(0,229,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        .pass-time-log div { padding: 2px 0; border-bottom: 1px solid rgba(30,48,80,0.3); }
+
+        /* WIDTH TRANSECT INPUTS */
+        .transect-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
+        .transect-row input { width: 70px; padding: 8px 4px; text-align: center; font-size: 13px; }
+        .transect-row span { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; }
+
         /* RESPONSIVE GRID CORNER DECORATIONS */
         .corner-marks { position: relative; }
         .corner-marks::after {
@@ -635,9 +787,10 @@
             <ul class="splash-features">
                 <li><div class="feat-icon">🐟</div> Comprehensive PNW Species Codex</li>
                 <li><div class="feat-icon">📸</div> In-App Photo Documentation</li>
-                <li><div class="feat-icon">📊</div> Labeled Exponential Depletion Curves</li>
-                <li><div class="feat-icon">📥</div> Downloadable Excel Files w/ Embedded Charts</li>
-                <li><div class="feat-icon">🏆</div> XP System &amp; Field Achievements</li>
+                <li><div class="feat-icon">📊</div> Per-Species MLE, Biomass &amp; Density</li>
+                <li><div class="feat-icon">📈</div> Depletion Curves &amp; Length-Frequency</li>
+                <li><div class="feat-icon">⏱️</div> Pass Timer w/ Start/End Logging</li>
+                <li><div class="feat-icon">📥</div> Full Excel Report (8 Sheets)</li>
             </ul>
             <button class="btn btn-primary" onclick="startGame()" style="font-size: 14px; padding: 16px;">▶ INITIALIZE PROTOCOL</button>
             <div style="text-align: center; margin-top: 15px; font-size: 11px;">
@@ -687,6 +840,22 @@
                     <div class="col"><label>Water Temp (°C)</label><input type="number" step="0.1" id="waterTemp"></div>
                     <div class="col"><label>Cond (µS/cm)</label><input type="number" id="conductivity"></div>
                 </div>
+                <div class="row">
+                    <div class="col"><label>DO (mg/L)</label><input type="number" step="0.1" id="dissolvedO2" placeholder="e.g. 9.5"></div>
+                    <div class="col"><label>pH</label><input type="number" step="0.1" id="phLevel" placeholder="e.g. 7.2"></div>
+                    <div class="col"><label>Turbidity (NTU)</label><input type="number" step="0.1" id="turbidity" placeholder="e.g. 3.4"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Channel Width Transects</h3>
+                <p style="font-size: 11px; color: var(--muted); margin-bottom: 10px;">Measure wetted and bankfull width at 3–5 transects across the reach. The app will average them for area and density calculations.</p>
+                <div id="transectInputs">
+                    <div class="transect-row"><span>T1</span><input type="number" step="0.1" class="wettedW" placeholder="Wetted"><input type="number" step="0.1" class="bankfullW" placeholder="Bankfull"><span style="font-size:9px;">m</span></div>
+                    <div class="transect-row"><span>T2</span><input type="number" step="0.1" class="wettedW" placeholder="Wetted"><input type="number" step="0.1" class="bankfullW" placeholder="Bankfull"><span style="font-size:9px;">m</span></div>
+                    <div class="transect-row"><span>T3</span><input type="number" step="0.1" class="wettedW" placeholder="Wetted"><input type="number" step="0.1" class="bankfullW" placeholder="Bankfull"><span style="font-size:9px;">m</span></div>
+                </div>
+                <button class="btn btn-outline" onclick="addTransect()" style="margin-top: 6px; width: auto; display: inline-block; padding: 8px 16px;">+ ADD TRANSECT</button>
+                <div id="widthSummary" style="margin-top: 10px; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--muted);"></div>
             </div>
         </div>
 
@@ -695,8 +864,17 @@
             <div class="card">
                 <h3>Machine Effort</h3>
                 <div class="row" style="margin-bottom: 5px;"><div class="col"><label>Equipment Model</label><input type="text" id="equipModel" placeholder="e.g. LR-24" style="margin-bottom:12px;"></div></div>
-                <div class="row"><div class="col"><label>Sweep (Pass)</label><input type="number" id="passNum" value="1" min="1"></div><div class="col"><label>Shock Seconds</label><input type="number" id="shockSecs" placeholder="Time"></div></div>
+                <div class="row"><div class="col"><label>Study Site #</label><input type="number" id="siteNum" value="1" min="1" placeholder="1"></div><div class="col"><label>Sweep (Pass)</label><input type="number" id="passNum" value="1" min="1"></div><div class="col"><label>Shock Seconds</label><input type="number" id="shockSecs" placeholder="Time"></div></div>
                 <div class="row"><div class="col"><label>Voltage (V)</label><input type="number" id="volts"></div><div class="col"><label>Freq (Hz)</label><input type="number" id="freq"></div><div class="col"><label>Duty (%)</label><input type="number" id="duty"></div></div>
+
+                <label style="margin-top: 10px;">Pass Timer</label>
+                <div class="timer-display" id="timerDisplay">00:00</div>
+                <div class="timer-btns">
+                    <button class="btn btn-success" id="timerStartBtn" onclick="startTimer()" style="font-size:11px;">▶ START</button>
+                    <button class="btn btn-outline" onclick="stopTimer()" style="font-size:11px;">⏹ STOP</button>
+                    <button class="btn btn-outline" onclick="resetTimer()" style="font-size:11px;">↺ RESET</button>
+                </div>
+                <div class="pass-time-log" id="passTimeLog" style="display:none;"></div>
             </div>
             <div class="card corner-marks">
                 <h3>Specimen Log</h3>
@@ -708,7 +886,18 @@
                         <div id="biodex-sci" class="biodex-sci"></div>
                         <div id="biodex-traits" style="font-size:13px; color: var(--text);"></div>
                     </div>
-                    <div class="row"><div class="col"><label>Length (mm)</label><input type="number" id="length" required></div><div class="col"><label>Weight (g)</label><input type="number" step="0.1" id="weight"></div></div>
+                    <div class="toggle-row">
+                        <label>INDIVIDUAL FISH</label>
+                        <label class="toggle-switch"><input type="checkbox" id="groupToggle" onchange="toggleGroupCatch()"><div class="toggle-track"></div></label>
+                        <label style="color:var(--secondary);">GROUP CATCH</label>
+                    </div>
+                    <div id="individualFields">
+                        <div class="row"><div class="col"><label>Length (mm)</label><input type="number" id="length"></div><div class="col"><label>Weight (g)</label><input type="number" step="0.1" id="weight"></div></div>
+                    </div>
+                    <div id="groupCatchFields">
+                        <div class="row"><div class="col"><label>Group Count</label><input type="number" id="groupCount" min="1" placeholder="# of fish"></div><div class="col"><label>Group Weight (g)</label><input type="number" step="0.1" id="groupWeight" placeholder="Total weight"></div></div>
+                        <p style="font-size:11px; color:var(--muted); margin-top:4px;">Log a group of same-species fish counted and weighed collectively.</p>
+                    </div>
                     <div class="row"><div class="col"><label>Condition</label><select id="condition"><option>Vigorous</option><option>Lethargic</option><option>Mortality</option></select></div><div class="col"><label>Photo Doc</label><input type="file" id="photo" accept="image/*" capture="environment" style="padding: 9px;"></div></div>
                     <button type="button" class="btn btn-success" id="logBtn" onclick="saveCatch()" style="margin-top: 10px;">⚡ LOG SPECIMEN</button>
                 </form>
@@ -726,7 +915,63 @@
             </div>
             <div class="card">
                 <h3>Survey Raw Log</h3>
-                <div class="table-responsive"><table id="logTable"><thead><tr><th>Sweep</th><th>Taxa</th><th>L(mm)</th><th>Photo</th></tr></thead><tbody id="logBody"></tbody></table></div>
+                <div class="table-responsive"><table id="logTable"><thead><tr><th>Site</th><th>Sweep</th><th>Taxa</th><th>L(mm)</th><th>Photo</th></tr></thead><tbody id="logBody"></tbody></table></div>
+            </div>
+
+            <div class="card" style="border-top: 2px solid var(--secondary);">
+                <h3>MLE Population Estimate</h3>
+                <p style="font-size: 12px; color: var(--muted); margin-bottom: 12px;"><strong style="color:var(--text);">MLE (Maximum-Likelihood Estimation)</strong> finds the population size and capture probability that make your observed catch data the most mathematically probable. Enter total fish caught per sweep to compute a population estimate with 95% confidence interval.</p>
+                <label>Catches Per Pass (enter each pass total)</label>
+                <div class="mle-pass-inputs" id="mleInputs">
+                    <div><input type="number" id="mleP1" min="0" placeholder="0" oninput="runMLE()"><span class="mle-pass-label">Pass 1</span></div>
+                    <div><input type="number" id="mleP2" min="0" placeholder="0" oninput="runMLE()"><span class="mle-pass-label">Pass 2</span></div>
+                    <div><input type="number" id="mleP3" min="0" placeholder="0" oninput="runMLE()"><span class="mle-pass-label">Pass 3</span></div>
+                    <div><input type="number" id="mleP4" min="0" placeholder="0" oninput="runMLE()"><span class="mle-pass-label">Pass 4</span></div>
+                </div>
+                <button class="btn btn-outline" onclick="addMLEPass()" style="margin-bottom: 12px; width: auto; display: inline-block; padding: 8px 16px;">+ ADD PASS</button>
+                <button class="btn btn-outline" onclick="autoFillMLE()" style="margin-bottom: 12px; width: auto; display: inline-block; padding: 8px 16px; margin-left: 6px;">↻ AUTO-FILL FROM LOG</button>
+                <div id="mleResults" style="display:none;">
+                    <div class="mle-result-grid">
+                        <div class="mle-stat-box full-width">
+                            <div class="mle-stat-label">Population Estimate (N̂)</div>
+                            <div class="mle-stat-value good" id="mleN">—</div>
+                        </div>
+                        <div class="mle-stat-box">
+                            <div class="mle-stat-label">Total Catch</div>
+                            <div class="mle-stat-value small" id="mleT">—</div>
+                        </div>
+                        <div class="mle-stat-box">
+                            <div class="mle-stat-label">Capture Prob (p̂)</div>
+                            <div class="mle-stat-value small" id="mleP">—</div>
+                        </div>
+                        <div class="mle-stat-box">
+                            <div class="mle-stat-label">95% Confidence Interval</div>
+                            <div class="mle-stat-value small" id="mleCI">—</div>
+                        </div>
+                        <div class="mle-stat-box">
+                            <div class="mle-stat-label">Standard Error</div>
+                            <div class="mle-stat-value small" id="mleSE">—</div>
+                        </div>
+                    </div>
+                    <div id="mleWarning" class="mle-warning" style="display:none;"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Length-Frequency Distribution</h3>
+                <div style="background: #0d1225; border: 1px solid var(--border); border-radius: 4px; padding: 8px; margin-bottom: 10px;">
+                    <canvas id="lengthFreqChart" width="400" height="280"></canvas>
+                </div>
+                <button class="btn btn-outline" onclick="downloadLFChart()">💾 DOWNLOAD LENGTH-FREQ CHART (.JPG)</button>
+            </div>
+
+            <div class="card" style="border-top: 2px solid var(--success);">
+                <h3>Per-Species Population &amp; Biomass</h3>
+                <p style="font-size: 11px; color: var(--muted); margin-bottom: 10px;">Calculated from logged data. Density requires reach length and wetted width from the Site tab.</p>
+                <div class="table-responsive">
+                    <table id="speciesTable"><thead><tr><th>Species</th><th>Caught</th><th>N̂ (MLE)</th><th>p̂</th><th>Avg Wt(g)</th><th>Biomass(g)</th><th>Density</th></tr></thead><tbody id="speciesBody"></tbody></table>
+                </div>
+                <button class="btn btn-outline" onclick="calcSpeciesStats()" style="margin-top: 10px;">↻ REFRESH ESTIMATES</button>
             </div>
         </div>
 
@@ -800,6 +1045,63 @@
                     <strong>Step 3:</strong> Find where the line intersects the X-axis (where Catch theoretically hits 0).<br><br>
                     <em style="color:var(--muted);">Conclusion: If the line crosses the X-axis at 95, your estimated total population is 95 fish.</em>
                 </div>
+
+                <h5 style="margin-top:15px;">4. Maximum-Likelihood Estimation (MLE)</h5>
+                <p>The gold standard method for removal-depletion sampling. Unlike the simpler formulas above, MLE finds the population size (N) and capture probability (p) that make your actual observed data most probable.</p>
+                <div class="example-box">
+                    <strong style="color:var(--secondary);">How MLE Works (Plain English):</strong><br><br>
+                    <strong>Step 1:</strong> Assume a starting population N and capture probability p.<br>
+                    <strong>Step 2:</strong> Ask: "If there really were N fish and we catch p proportion each pass, how likely is the exact catch sequence we observed?"<br>
+                    <strong>Step 3:</strong> Try different N and p values. The pair that produces the highest likelihood is your Maximum-Likelihood Estimate.<br><br>
+                    <strong style="color:var(--warning);">Key advantage over Seber-Le Cren:</strong> MLE works with 2, 3, 4, or more passes, produces 95% confidence intervals, standard error, and handles unequal effort between passes. The 95% CI tells you the range within which the true population falls with 95% certainty.<br><br>
+                    <em style="color:var(--muted);">Use the interactive MLE calculator on the Stats tab (📈) to run these calculations in the field.</em>
+                </div>
+
+                <h5 style="margin-top:15px;">5. Non-Descending Removal Patterns</h5>
+                <p>A valid depletion survey requires catches to <strong style="color:var(--warning);">decrease</strong> with each successive pass. If Pass 2 catches more fish than Pass 1, the fundamental assumption of constant capture probability is violated.</p>
+                <div class="example-box">
+                    <strong style="color:var(--danger);">⚠ Common Causes of Non-Descending Patterns:</strong><br>
+                    • Net failure allowing fish to re-enter the reach between passes.<br>
+                    • Inconsistent effort (different shock times between passes).<br>
+                    • Habitat features like log jams releasing fish that were previously sheltered.<br>
+                    • Operator inexperience — the first pass may have poor coverage.<br><br>
+                    <em style="color:var(--muted);">If a non-descending pattern occurs, your population estimate may be unreliable — note it in your report.</em>
+                </div>
+            </div>
+
+            <div class="card manual-section">
+                <h3>Condition Factor &amp; Weight Estimation</h3>
+
+                <h5 style="margin-top:0;">Fulton's Condition Factor (K)</h5>
+                <p><strong style="color:var(--primary);">Formula: K = (W / L³) × 100,000</strong><br>
+                Where W = weight in grams and L = length in millimeters. K measures the "plumpness" or overall health of a fish relative to its length. A higher K means the fish is heavier than expected for its size — indicating good feeding conditions.</p>
+                <div class="example-box">
+                    <strong style="color:var(--secondary);">Step-by-Step Example:</strong><br>
+                    • A Rainbow Trout is 200 mm long and weighs 85 g.<br><br>
+                    <strong>Step 1:</strong> Cube the length → 200³ = 8,000,000.<br>
+                    <strong>Step 2:</strong> Divide weight by cubed length → 85 ÷ 8,000,000 = 0.000010625.<br>
+                    <strong>Step 3:</strong> Multiply by 100,000 → <strong style="color:var(--success);">K = 1.06</strong>.<br><br>
+                    <strong style="color:var(--warning);">Interpreting K (general salmonid ranges):</strong><br>
+                    • K &lt; 0.80 → Poor condition (underweight, stressed).<br>
+                    • K = 0.90–1.10 → Average condition.<br>
+                    • K &gt; 1.20 → Excellent condition (well-fed, healthy).<br><br>
+                    <em style="color:var(--muted);">K values vary by species and body shape. Elongated fish like Pikeminnow naturally have lower K than deep-bodied fish like Bluegill.</em>
+                </div>
+
+                <h5 style="margin-top:15px;">Capture Probability (p̂)</h5>
+                <p><strong style="color:var(--primary);">What it means:</strong> The estimated proportion of fish in the reach that are caught during a single electrofishing pass. If p̂ = 0.45, approximately 45% of the fish present are captured each sweep.</p>
+                <div class="example-box">
+                    <strong style="color:var(--warning);">Why Capture Probability Matters:</strong><br>
+                    • <strong>p̂ &gt; 0.50</strong> → Excellent. Your sweeps are highly effective — fewer passes needed.<br>
+                    • <strong>p̂ = 0.30–0.50</strong> → Good. Standard for most wadeable streams.<br>
+                    • <strong>p̂ &lt; 0.20</strong> → Poor. Deep pools, high turbidity, or poor technique. Your population estimate will have wide confidence intervals, meaning low precision.<br><br>
+                    <em style="color:var(--muted);">Rule of thumb: If capture probability is below 0.20, consider adding more passes to narrow the confidence interval. Use the MLE calculator on the Stats tab (📈) to test how additional passes would affect precision.</em>
+                </div>
+
+                <h5 style="margin-top:15px;">Standard Error (SE)</h5>
+                <p><strong style="color:var(--primary);">Formula: SE = √(Var(N̂))</strong><br>
+                Standard Error quantifies the precision of your population estimate. Smaller SE = tighter estimate. The 95% confidence interval is calculated as N̂ ± 1.96 × SE.</p>
+                <span class="ex-text">Example: If N̂ = 90 and SE = 5, then the 95% CI is 90 ± 9.8, or roughly 80 to 100 fish. That's a tight, reliable estimate. If SE = 25, then CI is 90 ± 49, meaning anywhere from 41 to 139 — too imprecise to be useful.</span>
             </div>
 
             <div class="card">
@@ -816,9 +1118,17 @@
 
             <div class="card">
                 <h3>Conversions</h3>
-                <div class="row" style="margin-bottom: 0;">
+                <div class="row" style="margin-bottom: 12px;">
                     <div class="col"><label>Length (mm → in)</label><select id="lenConv" onchange="calcLen()"></select><div id="lenResult" class="conv-result" style="color:var(--primary);">--</div></div>
                     <div class="col"><label>Temp (°C → °F)</label><select id="tempConv" onchange="calcTemp()"></select><div id="tempResult" class="conv-result" style="color:var(--danger);">--</div></div>
+                </div>
+                <div style="border-top: 1px solid var(--border); padding-top: 12px;">
+                    <label>Fulton's Condition Factor (K)</label>
+                    <div class="row" style="margin-bottom: 0;">
+                        <div class="col"><label style="font-size:9px; color:var(--muted);">Length (mm)</label><input type="number" id="kLength" placeholder="mm" oninput="calcK()"></div>
+                        <div class="col"><label style="font-size:9px; color:var(--muted);">Weight (g)</label><input type="number" step="0.1" id="kWeight" placeholder="g" oninput="calcK()"></div>
+                    </div>
+                    <div id="kResult" class="conv-result" style="color:var(--success); margin-top: 8px;">K = --</div>
                 </div>
             </div>
         </div>
@@ -1056,11 +1366,25 @@
             let lenHTML = '<option disabled selected>Select mm...</option>'; for(let i=10; i<=1000; i+=10) lenHTML += `<option value="${i}">${i} mm</option>`; document.getElementById('lenConv').innerHTML = lenHTML;
             let tmpHTML = '<option disabled selected>Select °C...</option>'; for(let i=-5; i<=35; i+=1) tmpHTML += `<option value="${i}">${i} °C</option>`; document.getElementById('tempConv').innerHTML = tmpHTML;
             initChart();
+            initLFChart();
             updateHUD();
         }
 
         function calcLen() { let v = document.getElementById('lenConv').value; document.getElementById('lenResult').innerText = `${v} mm = ${(v / 25.4).toFixed(2)} in`; sfxClick(); }
         function calcTemp() { let v = document.getElementById('tempConv').value; document.getElementById('tempResult').innerText = `${v} °C = ${((v * 1.8) + 32).toFixed(1)} °F`; sfxClick(); }
+        function calcK() {
+            const l = parseFloat(document.getElementById('kLength').value);
+            const w = parseFloat(document.getElementById('kWeight').value);
+            if(!l || !w || l <= 0) { document.getElementById('kResult').innerText = 'K = --'; return; }
+            const k = (w / Math.pow(l, 3)) * 100000;
+            let rating = '';
+            if(k < 0.80) rating = ' (Poor)';
+            else if(k <= 1.10) rating = ' (Average)';
+            else rating = ' (Excellent)';
+            document.getElementById('kResult').innerText = `K = ${k.toFixed(3)}${rating}`;
+            document.getElementById('kResult').style.color = k < 0.80 ? 'var(--danger)' : k > 1.10 ? 'var(--success)' : 'var(--warning)';
+            sfxClick();
+        }
         function updateBioDex() {
             const opt = document.getElementById('species').options[document.getElementById('species').selectedIndex];
             if(opt.value) { document.getElementById('biodex-box').style.display = 'block'; document.getElementById('biodex-sci').innerText = opt.dataset.sci; document.getElementById('biodex-traits').innerText = opt.dataset.traits; sfxClick(); }
@@ -1071,7 +1395,7 @@
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
             document.getElementById('tab-' + tId).classList.add('active'); el.classList.add('active'); window.scrollTo(0,0);
-            if(tId === 'stats') updateChart();
+            if(tId === 'stats') { updateChart(); updateLFChart(); calcSpeciesStats(); }
         }
 
         function getLocationAndWeather() {
@@ -1091,9 +1415,20 @@
         }
 
         async function saveCatch() {
-            const pass = document.getElementById('passNum').value; const spOpt = document.getElementById('species').options[document.getElementById('species').selectedIndex];
-            const spName = spOpt.value; const len = document.getElementById('length').value;
-            if(!pass || !spName || !len) return alert("⚠ Input Sweep #, Species, and Length.");
+            const pass = document.getElementById('passNum').value;
+            const siteNum = document.getElementById('siteNum').value || "1";
+            const spOpt = document.getElementById('species').options[document.getElementById('species').selectedIndex];
+            const spName = spOpt.value;
+            const isGroup = document.getElementById('groupToggle').checked;
+
+            if(isGroup) {
+                const gCount = document.getElementById('groupCount').value;
+                if(!pass || !spName || !gCount) return alert("⚠ Input Sweep #, Species, and Group Count.");
+            } else {
+                const len = document.getElementById('length').value;
+                if(!pass || !spName || !len) return alert("⚠ Input Sweep #, Species, and Length.");
+            }
+
             const btn = document.getElementById('logBtn'); btn.innerText = "⏳ PROCESSING..."; btn.style.opacity = '0.6';
 
             const pInput = document.getElementById('photo'); let pData = "N"; let pThumb = "<span style='color:var(--muted);'>—</span>";
@@ -1102,20 +1437,42 @@
                 pThumb = `<img src="${pData}" style="height:35px; width:35px; object-fit:cover; border-radius:3px; border:2px solid var(--primary); cursor:pointer; box-shadow:0 0 8px var(--glow);" onclick="openPhoto('${pData}')">`;
             }
 
-            const rec = {
-                t: new Date().toLocaleTimeString(), rLen: document.getElementById('reachLen').value||"UNK", nets: document.getElementById('blockNets').value,
-                wTmp: document.getElementById('waterTemp').value||"UNK", cnd: document.getElementById('conductivity').value||"UNK", pass: parseInt(pass), sec: document.getElementById('shockSecs').value||"UNK",
-                v: document.getElementById('volts').value||"UNK", hz: document.getElementById('freq').value||"UNK", dty: document.getElementById('duty').value||"UNK",
-                sp: spName, sci: spOpt.dataset.sci||"UNK", len, wt: document.getElementById('weight').value||"---", cond: document.getElementById('condition').value, pStat: pInput.files.length>0?"Yes":"No"
-            };
-            catchData.push(rec);
-            uniqueSpecies.add(spName);
+            if(isGroup) {
+                const gCount = parseInt(document.getElementById('groupCount').value);
+                const gWeight = document.getElementById('groupWeight').value || "---";
+                for(let i = 0; i < gCount; i++) {
+                    const rec = {
+                        t: new Date().toLocaleTimeString(), site: siteNum, rLen: document.getElementById('reachLen').value||"UNK", nets: document.getElementById('blockNets').value,
+                        wTmp: document.getElementById('waterTemp').value||"UNK", cnd: document.getElementById('conductivity').value||"UNK", pass: parseInt(pass), sec: document.getElementById('shockSecs').value||"UNK",
+                        v: document.getElementById('volts').value||"UNK", hz: document.getElementById('freq').value||"UNK", dty: document.getElementById('duty').value||"UNK",
+                        sp: spName, sci: spOpt.dataset.sci||"UNK", len: "---", wt: "---", cond: document.getElementById('condition').value, pStat: "No",
+                        isGroup: true, groupCount: gCount, groupWeight: gWeight
+                    };
+                    catchData.push(rec);
+                }
+                uniqueSpecies.add(spName);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td style="color:var(--warning); font-size:10px;">${siteNum}</td><td style="color:var(--secondary); font-weight:bold;">${pass}</td><td><strong style="color:var(--text-bright);">${spName}</strong><br><span style="font-size:10px; color:var(--secondary);">GROUP: ${gCount} fish${gWeight !== '---' ? ', '+gWeight+'g total' : ''}</span></td><td style="color:var(--primary);">—</td><td>${pThumb}</td>`;
+                document.getElementById('logBody').prepend(tr);
+                document.getElementById('groupCount').value = ''; document.getElementById('groupWeight').value = '';
+            } else {
+                const len = document.getElementById('length').value;
+                const rec = {
+                    t: new Date().toLocaleTimeString(), site: siteNum, rLen: document.getElementById('reachLen').value||"UNK", nets: document.getElementById('blockNets').value,
+                    wTmp: document.getElementById('waterTemp').value||"UNK", cnd: document.getElementById('conductivity').value||"UNK", pass: parseInt(pass), sec: document.getElementById('shockSecs').value||"UNK",
+                    v: document.getElementById('volts').value||"UNK", hz: document.getElementById('freq').value||"UNK", dty: document.getElementById('duty').value||"UNK",
+                    sp: spName, sci: spOpt.dataset.sci||"UNK", len, wt: document.getElementById('weight').value||"---", cond: document.getElementById('condition').value, pStat: pInput.files.length>0?"Yes":"No",
+                    isGroup: false
+                };
+                catchData.push(rec);
+                uniqueSpecies.add(spName);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td style="color:var(--warning); font-size:10px;">${siteNum}</td><td style="color:var(--secondary); font-weight:bold;">${pass}</td><td><strong style="color:var(--text-bright);">${spName}</strong><br><span style="font-size:10px; color:var(--muted); font-style:italic;">${rec.sci}</span></td><td style="color:var(--primary);">${len}</td><td>${pThumb}</td>`;
+                document.getElementById('logBody').prepend(tr);
+                document.getElementById('length').value = ''; document.getElementById('weight').value = '';
+            }
 
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td style="color:var(--secondary); font-weight:bold;">${pass}</td><td><strong style="color:var(--text-bright);">${spName}</strong><br><span style="font-size:10px; color:var(--muted); font-style:italic;">${rec.sci}</span></td><td style="color:var(--primary);">${len}</td><td>${pThumb}</td>`;
-            document.getElementById('logBody').prepend(tr);
-
-            document.getElementById('length').value = ''; document.getElementById('weight').value = ''; document.getElementById('photo').value = ''; document.getElementById('condition').value = 'Vigorous'; document.getElementById('biodex-box').style.display = 'none'; document.getElementById('species').selectedIndex = 0;
+            document.getElementById('photo').value = ''; document.getElementById('condition').value = 'Vigorous'; document.getElementById('biodex-box').style.display = 'none'; document.getElementById('species').selectedIndex = 0;
 
             sfxLog();
             addXP(25);
@@ -1253,31 +1610,56 @@
         function calcEval() { try { cV = eval(cV).toString(); document.getElementById('calcDisplay').value = cV; sfxClick(); } catch { document.getElementById('calcDisplay').value = "ERR"; cV=""; } }
 
         /* ===========================
-           EXPORT FUNCTIONS (unchanged logic)
+           EXPORT FUNCTIONS
            =========================== */
+        // Helper: convert string to number for Excel, return '' for non-numeric
+        function toNum(v) { if(v === '' || v === '---' || v === 'UNK' || v === undefined || v === null) return ''; const n = parseFloat(v); return isNaN(n) ? v : n; }
+
         async function exportXLSX() {
             if(catchData.length === 0) return alert("No database records to export.");
             sfxClick();
 
-            let csv = `"Time","Stream","Crew","Lat","Lon","AirTempC","WaterTempC","Cond_uS","Reach_m","BlockNets","Weather","Clarity","Flow","Substrate","Net_Int","Efficiency","Sweep","Secs","Model","Volts","Hz","Duty%","Common_Name","Scientific","Length_mm","Weight_g","Condition","Photo"\n`;
+            let csv = `"Time","Site","Stream","Crew","Lat","Lon","AirTempC","WaterTempC","Cond_uS","Reach_m","BlockNets","Weather","Clarity","Flow","Substrate","Net_Int","Efficiency","Sweep","Secs","Model","Volts","Hz","Duty%","Common_Name","Scientific","Length_mm","Weight_g","Condition","Photo"\n`;
             const strm = (document.getElementById('streamName').value||"Unk").replace(/"/g, '""'); const crw = (document.getElementById('crewNames').value||"Unk").replace(/"/g, '""'); const eq = (document.getElementById('equipModel').value||"Unk").replace(/"/g, '""');
             const wth = document.getElementById('rptWeather').value; const clr = document.getElementById('rptClarity').value; const flw = document.getElementById('rptFlow').value; const sub = document.getElementById('rptSubstrate').value; const netI = document.getElementById('rptNets').value; const eff = document.getElementById('rptEfficiency').value;
 
-            catchData.forEach(d => { csv += `"${d.t}","${strm}","${crw}","${siteLat}","${siteLon}","${airTemp}","${d.wTmp}","${d.cnd}","${d.rLen}","${d.nets}","${wth}","${clr}","${flw}","${sub}","${netI}","${eff}","${d.pass}","${d.sec}","${eq}","${d.v}","${d.hz}","${d.dty}","${d.sp}","${d.sci}","${d.len}","${d.wt}","${d.cond}","${d.pStat}"\n`; });
+            catchData.forEach(d => { csv += `"${d.t}","${d.site||'1'}","${strm}","${crw}","${siteLat}","${siteLon}","${airTemp}","${d.wTmp}","${d.cnd}","${d.rLen}","${d.nets}","${wth}","${clr}","${flw}","${sub}","${netI}","${eff}","${d.pass}","${d.sec}","${eq}","${d.v}","${d.hz}","${d.dty}","${d.sp}","${d.sci}","${d.len}","${d.wt}","${d.cond}","${d.pStat}"\n`; });
             document.getElementById('rawDataBox').value = csv;
 
             const wb = new ExcelJS.Workbook();
+            const widths = getWidthData();
+            const doVal = document.getElementById('dissolvedO2').value || '';
+            const phVal = document.getElementById('phLevel').value || '';
+            const turbVal = document.getElementById('turbidity').value || '';
+
             const ws = wb.addWorksheet('Raw Data Log');
             ws.columns =[
-                { header: 'Time', key: 't', width: 12 }, { header: 'Sweep', key: 'pass', width: 10 },
+                { header: 'Time', key: 't', width: 12 }, { header: 'Site', key: 'site', width: 8 }, { header: 'Sweep', key: 'pass', width: 10 },
+                { header: 'Pass Start', key: 'pStart', width: 12 }, { header: 'Pass End', key: 'pEnd', width: 12 }, { header: 'Shock Secs', key: 'sec', width: 10 },
                 { header: 'Species', key: 'sp', width: 22 }, { header: 'Scientific Name', key: 'sci', width: 25 },
                 { header: 'Length (mm)', key: 'len', width: 15 }, { header: 'Weight (g)', key: 'wt', width: 15 },
+                { header: 'Group Count', key: 'gc', width: 14 }, { header: 'Group Weight (g)', key: 'gw', width: 16 },
                 { header: 'Condition', key: 'cond', width: 15 }, { header: 'Volts', key: 'v', width: 10 },
                 { header: 'Hz', key: 'hz', width: 10 }, { header: 'Duty %', key: 'dty', width: 10 },
                 { header: 'Water Temp', key: 'wTmp', width: 12 }, { header: 'Cond (uS)', key: 'cnd', width: 12 },
+                { header: 'DO (mg/L)', key: 'doVal', width: 12 }, { header: 'pH', key: 'ph', width: 8 }, { header: 'Turbidity (NTU)', key: 'turb', width: 14 },
+                { header: 'Avg Wetted W (m)', key: 'wetW', width: 16 }, { header: 'Avg Bankfull W (m)', key: 'bfW', width: 18 },
                 { header: 'Stream', key: 'strm', width: 20 }, { header: 'Crew', key: 'crw', width: 20 }
             ];
-            catchData.forEach(d => { ws.addRow({ t: d.t, pass: d.pass, sp: d.sp, sci: d.sci, len: d.len, wt: d.wt, cond: d.cond, v: d.v, hz: d.hz, dty: d.dty, wTmp: d.wTmp, cnd: d.cnd, strm: strm, crw: crw }); });
+            catchData.forEach(d => {
+                let gc = '', gw = '';
+                if(d.isGroup) { gc = toNum(d.groupCount) || ''; gw = (d.groupWeight && d.groupWeight !== '---') ? toNum(d.groupWeight) : ''; }
+                // Find pass time log for this pass
+                let ptLog = passTimeLogs.find(pt => pt.pass === d.pass && pt.site === parseInt(d.site||'1'));
+                ws.addRow({ t: d.t, site: toNum(d.site||"1"), pass: toNum(d.pass),
+                    pStart: ptLog ? ptLog.startTime : '', pEnd: ptLog ? ptLog.endTime : '', sec: toNum(d.sec),
+                    sp: d.sp, sci: d.sci, len: toNum(d.len), wt: toNum(d.wt), gc: gc, gw: gw,
+                    cond: d.cond, v: toNum(d.v), hz: toNum(d.hz), dty: toNum(d.dty),
+                    wTmp: toNum(d.wTmp), cnd: toNum(d.cnd),
+                    doVal: toNum(doVal), ph: toNum(phVal), turb: toNum(turbVal),
+                    wetW: widths.avgWetted || '', bfW: widths.avgBankfull || '',
+                    strm: strm, crw: crw });
+            });
             ws.getRow(1).font = { bold: true };
 
             if(chartInstance) {
@@ -1305,7 +1687,7 @@
                     let xVal = parseFloat(i.toFixed(1));
                     let expY = reg.a * Math.exp(reg.b * xVal);
                     let actY = (Number.isInteger(xVal) && p[xVal] !== undefined) ? p[xVal] : "";
-                    wsChart.addRow({ x: xVal, y1: actY, y2: Math.max(0, expY).toFixed(2) });
+                    wsChart.addRow({ x: xVal, y1: actY, y2: parseFloat(Math.max(0, expY).toFixed(2)) });
                 }
             } else {
                 sortedKeys.forEach(k => { wsChart.addRow({ x: k, y1: p[k], y2: p[k] }); });
@@ -1316,6 +1698,353 @@
             wsChart.addRow(['1. Highlight the 3 columns of data above.']);
             wsChart.addRow(['2. Go to Insert -> Chart -> Scatter with Smooth Lines.']);
             wsChart.getRow(wsChart.rowCount - 3).font = { bold: true, color: { arg: 'FF0F4C81' } };
+
+            /* --- MLE Population Estimate Sheet --- */
+            const wsMLE = wb.addWorksheet('MLE Population Estimate');
+
+            // Compute catches per pass
+            let mlePasses = {};
+            catchData.forEach(d => { mlePasses[d.pass] = (mlePasses[d.pass] || 0) + 1; });
+            let mleSorted = Object.keys(mlePasses).sort((a,b) => a - b).map(Number);
+            let mleCatches = mleSorted.map(k => mlePasses[k]);
+            let mleTotal = mleCatches.reduce((a,b) => a + b, 0);
+            let mleK = mleCatches.length;
+
+            // Catch per pass table
+            wsMLE.columns = [
+                { header: 'Pass', key: 'pass', width: 10 },
+                { header: 'Catch', key: 'catch', width: 10 },
+                { header: 'Cumulative Catch', key: 'cum', width: 18 },
+                { header: '', key: 'blank', width: 4 },
+                { header: 'Metric', key: 'metric', width: 28 },
+                { header: 'Value', key: 'value', width: 20 }
+            ];
+
+            let cumCatch = 0;
+            mleSorted.forEach((passNum, i) => {
+                let c = mlePasses[passNum];
+                wsMLE.addRow({ pass: passNum, catch: c, cum: cumCatch, blank: '', metric: i === 0 ? '' : '', value: '' });
+                cumCatch += c;
+            });
+            // Add total row
+            wsMLE.addRow({ pass: 'TOTAL', catch: mleTotal, cum: cumCatch });
+
+            // Check non-descending
+            let mleNonDesc = false;
+            for(let i = 1; i < mleCatches.length; i++) {
+                if(mleCatches[i] > mleCatches[i-1]) { mleNonDesc = true; break; }
+            }
+
+            // Run MLE calculation (same logic as runMLE)
+            let mleNhat = '', mlePhat = '', mleSE = '', mleCIlow = '', mleCIhigh = '', mleStatus = '';
+
+            if(mleK >= 2 && mleTotal > 0) {
+                let validCatches = mleCatches.filter(c => c > 0);
+                if(validCatches.length >= 2 && mleCatches[0] > 0) {
+                    // Estimate p from successive catch ratios
+                    let ratios = [];
+                    for(let i = 1; i < mleCatches.length; i++) {
+                        if(mleCatches[i-1] > 0 && mleCatches[i] > 0) {
+                            ratios.push(mleCatches[i] / mleCatches[i-1]);
+                        }
+                    }
+                    let qHat = ratios.length > 0 ? ratios.reduce((a,b) => a+b, 0) / ratios.length : 0.5;
+                    qHat = Math.min(Math.max(qHat, 0.01), 0.99);
+                    let pEst = 1 - qHat;
+
+                    // Newton-Raphson refinement
+                    for(let iter = 0; iter < 50; iter++) {
+                        let q = 1 - pEst;
+                        let qk = Math.pow(q, mleK);
+                        let nEst = mleTotal / (1 - qk);
+                        if(!isFinite(nEst) || nEst < mleTotal) { nEst = mleTotal; break; }
+                        let expectedR = 0;
+                        for(let i = 0; i < mleK; i++) { expectedR += i * nEst * pEst * Math.pow(q, i); }
+                        let actualR = 0;
+                        for(let i = 0; i < mleK; i++) { actualR += i * mleCatches[i]; }
+                        let diff = actualR - expectedR;
+                        let step = diff * 0.001;
+                        let newP = pEst - step;
+                        newP = Math.min(Math.max(newP, 0.01), 0.99);
+                        if(Math.abs(newP - pEst) < 0.0001) break;
+                        pEst = newP;
+                    }
+
+                    qHat = 1 - pEst;
+                    let qk = Math.pow(qHat, mleK);
+                    let nFinal = mleTotal / (1 - qk);
+                    if(!isFinite(nFinal) || nFinal < mleTotal) nFinal = mleTotal;
+
+                    // Standard Error (Zippin)
+                    let seVal = NaN;
+                    let num = nFinal * (nFinal - mleTotal);
+                    let den = mleTotal * mleTotal - nFinal * (nFinal - mleTotal) * mleK * mleK * pEst * pEst * Math.pow(qHat, 2*mleK - 2) / Math.pow(1 - qk, 2);
+                    if(den > 0) { seVal = Math.sqrt(Math.max(0, num / den)); }
+
+                    let ciL = isNaN(seVal) ? Math.floor(nFinal) : Math.max(mleTotal, Math.floor(nFinal - 1.96 * seVal));
+                    let ciH = isNaN(seVal) ? Math.ceil(nFinal) : Math.ceil(nFinal + 1.96 * seVal);
+
+                    mleNhat = Math.round(nFinal);
+                    mlePhat = parseFloat(pEst.toFixed(4));
+                    mleSE = isNaN(seVal) ? 'N/A' : parseFloat(seVal.toFixed(2));
+                    mleCIlow = ciL;
+                    mleCIhigh = ciH;
+                    mleStatus = mleNonDesc ? 'WARNING: Non-descending removal pattern detected' : 'Valid descending pattern';
+                } else {
+                    mleStatus = 'Insufficient data for MLE (need 2+ passes with positive catches)';
+                    mleNhat = mleTotal;
+                }
+            } else {
+                mleStatus = 'Insufficient data (need 2+ passes)';
+            }
+
+            // Write results to the right side of the sheet
+            let rStart = 2; // row 2 (after header)
+            const setCell = (row, col, val, bold, color) => {
+                const cell = wsMLE.getRow(row).getCell(col);
+                cell.value = val;
+                if(bold) cell.font = { bold: true, color: color ? { argb: color } : undefined };
+            };
+
+            setCell(rStart, 5, 'MLE POPULATION ESTIMATE', true, 'FF0F4C81');
+            setCell(rStart + 1, 5, 'Population Estimate (N̂)', true); setCell(rStart + 1, 6, mleNhat);
+            setCell(rStart + 2, 5, 'Total Catch', true); setCell(rStart + 2, 6, mleTotal);
+            setCell(rStart + 3, 5, 'Number of Passes', true); setCell(rStart + 3, 6, mleK);
+            setCell(rStart + 4, 5, 'Capture Probability (p̂)', true); setCell(rStart + 4, 6, mlePhat || 'N/A');
+            setCell(rStart + 5, 5, 'Standard Error', true); setCell(rStart + 5, 6, mleSE || 'N/A');
+            setCell(rStart + 6, 5, '95% CI — Lower', true); setCell(rStart + 6, 6, mleCIlow || 'N/A');
+            setCell(rStart + 7, 5, '95% CI — Upper', true); setCell(rStart + 7, 6, mleCIhigh || 'N/A');
+            setCell(rStart + 8, 5, 'Status', true); setCell(rStart + 8, 6, mleStatus);
+
+            if(mleNonDesc) {
+                setCell(rStart + 10, 5, '⚠ Catches increased between passes.', true, 'FFFF0000');
+                setCell(rStart + 11, 5, 'Check net integrity and effort consistency.');
+            }
+
+            wsMLE.getRow(1).font = { bold: true };
+
+            /* --- Fulton's Condition Factor (K) Sheet --- */
+            const wsK = wb.addWorksheet("Condition Factor (K)");
+            wsK.columns = [
+                { header: 'Sweep', key: 'pass', width: 10 },
+                { header: 'Species', key: 'sp', width: 22 },
+                { header: 'Scientific Name', key: 'sci', width: 25 },
+                { header: 'Length (mm)', key: 'len', width: 14 },
+                { header: 'Weight (g)', key: 'wt', width: 12 },
+                { header: 'K Factor', key: 'k', width: 12 },
+                { header: 'Rating', key: 'rating', width: 14 }
+            ];
+
+            let kCount = 0, kSum = 0;
+            let speciesK = {}; // track per-species averages
+
+            catchData.forEach(d => {
+                let l = parseFloat(d.len);
+                let w = parseFloat(d.wt);
+                if(!l || !w || l <= 0 || w <= 0 || d.len === '---' || d.wt === '---') return;
+                let kVal = (w / Math.pow(l, 3)) * 100000;
+                let rating = kVal < 0.80 ? 'Poor' : kVal <= 1.10 ? 'Average' : 'Excellent';
+                wsK.addRow({ pass: toNum(d.pass), sp: d.sp, sci: d.sci, len: l, wt: w, k: parseFloat(kVal.toFixed(4)), rating: rating });
+                kCount++;
+                kSum += kVal;
+
+                if(!speciesK[d.sp]) speciesK[d.sp] = { sum: 0, count: 0, sci: d.sci };
+                speciesK[d.sp].sum += kVal;
+                speciesK[d.sp].count++;
+            });
+
+            wsK.getRow(1).font = { bold: true };
+
+            // Add summary section below
+            let gapRow = wsK.rowCount + 2;
+            wsK.getRow(gapRow).getCell(1).value = 'CONDITION FACTOR SUMMARY';
+            wsK.getRow(gapRow).getCell(1).font = { bold: true, color: { argb: 'FF0F4C81' } };
+
+            wsK.getRow(gapRow + 1).values = ['', 'Species', 'Scientific Name', 'Avg K', 'Count', 'Rating'];
+            wsK.getRow(gapRow + 1).font = { bold: true };
+
+            let sumRow = gapRow + 2;
+            Object.keys(speciesK).sort().forEach(sp => {
+                let avg = speciesK[sp].sum / speciesK[sp].count;
+                let rating = avg < 0.80 ? 'Poor' : avg <= 1.10 ? 'Average' : 'Excellent';
+                wsK.getRow(sumRow).values = ['', sp, speciesK[sp].sci, parseFloat(avg.toFixed(4)), speciesK[sp].count, rating];
+                sumRow++;
+            });
+
+            if(kCount > 0) {
+                let overallAvg = kSum / kCount;
+                let overallRating = overallAvg < 0.80 ? 'Poor' : overallAvg <= 1.10 ? 'Average' : 'Excellent';
+                sumRow++;
+                wsK.getRow(sumRow).values = ['', 'ALL SPECIES', '', parseFloat(overallAvg.toFixed(4)), kCount, overallRating];
+                wsK.getRow(sumRow).font = { bold: true };
+            }
+
+            if(kCount === 0) {
+                wsK.addRow([]);
+                wsK.addRow(['No fish with both length and weight data were found.']);
+            }
+
+            // Reference guide
+            sumRow += 2;
+            wsK.getRow(sumRow).getCell(1).value = 'REFERENCE: K = (Weight / Length³) × 100,000';
+            wsK.getRow(sumRow).getCell(1).font = { bold: true, color: { argb: 'FF0F4C81' } };
+            wsK.getRow(sumRow + 1).getCell(1).value = 'K < 0.80 = Poor  |  K 0.80–1.10 = Average  |  K > 1.10 = Excellent (general salmonid ranges)';
+
+            /* --- Per-Species MLE Sheet --- */
+            const wsSp = wb.addWorksheet('Per-Species MLE');
+            wsSp.columns = [
+                { header: 'Species', key: 'sp', width: 24 },
+                { header: 'Total Caught', key: 'caught', width: 14 },
+                { header: 'Population Est (N̂)', key: 'nHat', width: 20 },
+                { header: 'Capture Prob (p̂)', key: 'pHat', width: 18 },
+                { header: 'Std Error', key: 'se', width: 12 },
+                { header: '95% CI Lower', key: 'ciL', width: 14 },
+                { header: '95% CI Upper', key: 'ciH', width: 14 },
+                { header: 'Pattern', key: 'pattern', width: 20 }
+            ];
+
+            const allSpecies = [...new Set(catchData.map(d => d.sp))];
+            const allPasses = [...new Set(catchData.map(d => d.pass))].sort((a,b) => a - b);
+
+            allSpecies.forEach(sp => {
+                const perPass = allPasses.map(p => catchData.filter(d => d.sp === sp && d.pass === p).length);
+                const mleR = computeSpeciesMLE(perPass);
+                let nonDesc = false;
+                for(let i = 1; i < perPass.length; i++) { if(perPass[i] > perPass[i-1]) { nonDesc = true; break; } }
+                wsSp.addRow({
+                    sp, caught: perPass.reduce((a,b) => a+b, 0), nHat: mleR.nHat,
+                    pHat: mleR.pHat > 0 ? mleR.pHat : 'N/A',
+                    se: !isNaN(mleR.se) ? mleR.se : 'N/A',
+                    ciL: mleR.ciLow, ciH: mleR.ciHigh,
+                    pattern: nonDesc ? '⚠ Non-descending' : 'Valid'
+                });
+            });
+            wsSp.getRow(1).font = { bold: true };
+
+            // Add per-pass breakdown below
+            let spGap = wsSp.rowCount + 2;
+            wsSp.getRow(spGap).getCell(1).value = 'CATCH PER PASS BREAKDOWN';
+            wsSp.getRow(spGap).getCell(1).font = { bold: true, color: { argb: 'FF0F4C81' } };
+            let hdrRow = wsSp.getRow(spGap + 1);
+            hdrRow.getCell(1).value = 'Species'; hdrRow.font = { bold: true };
+            allPasses.forEach((p, i) => { hdrRow.getCell(i + 2).value = 'Pass ' + p; });
+            allSpecies.forEach((sp, si) => {
+                let row = wsSp.getRow(spGap + 2 + si);
+                row.getCell(1).value = sp;
+                allPasses.forEach((p, pi) => {
+                    row.getCell(pi + 2).value = catchData.filter(d => d.sp === sp && d.pass === p).length;
+                });
+            });
+
+            /* --- Biomass & Density Sheet --- */
+            const wsBD = wb.addWorksheet('Biomass & Density');
+            const reachLen = parseFloat(document.getElementById('reachLen').value) || 0;
+            const reachArea = reachLen * (widths.avgWetted || 0);
+
+            wsBD.columns = [
+                { header: 'Species', key: 'sp', width: 24 },
+                { header: 'Est Pop (N̂)', key: 'nHat', width: 14 },
+                { header: 'Avg Weight (g)', key: 'avgWt', width: 14 },
+                { header: 'Est Biomass (g)', key: 'biomass', width: 16 },
+                { header: 'Biomass (kg)', key: 'biomassKg', width: 14 },
+                { header: 'Density (#/100m²)', key: 'numDens', width: 18 },
+                { header: 'Density (g/m²)', key: 'wtDens', width: 14 },
+                { header: 'Density (kg/ha)', key: 'kgHa', width: 14 }
+            ];
+
+            let totalNhat = 0, totalBiomass = 0;
+            allSpecies.forEach(sp => {
+                const spData = catchData.filter(d => d.sp === sp);
+                const perPass = allPasses.map(p => spData.filter(d => d.pass === p).length);
+                const mleR = computeSpeciesMLE(perPass);
+                const withWt = spData.filter(d => d.wt && d.wt !== '---' && parseFloat(d.wt) > 0);
+                const avgWt = withWt.length > 0 ? withWt.reduce((a,d) => a + parseFloat(d.wt), 0) / withWt.length : 0;
+                const biomass = mleR.nHat * avgWt;
+                totalNhat += mleR.nHat;
+                totalBiomass += biomass;
+
+                wsBD.addRow({
+                    sp, nHat: mleR.nHat,
+                    avgWt: avgWt > 0 ? parseFloat(avgWt.toFixed(1)) : 'N/A',
+                    biomass: biomass > 0 ? parseFloat(biomass.toFixed(0)) : 'N/A',
+                    biomassKg: biomass > 0 ? parseFloat((biomass / 1000).toFixed(3)) : 'N/A',
+                    numDens: reachArea > 0 ? parseFloat(((mleR.nHat / reachArea) * 100).toFixed(2)) : 'N/A',
+                    wtDens: reachArea > 0 && biomass > 0 ? parseFloat((biomass / reachArea).toFixed(2)) : 'N/A',
+                    kgHa: reachArea > 0 && biomass > 0 ? parseFloat(((biomass / reachArea) * 10).toFixed(2)) : 'N/A'
+                });
+            });
+
+            // Totals row
+            wsBD.addRow({
+                sp: 'ALL SPECIES', nHat: totalNhat, avgWt: '',
+                biomass: totalBiomass > 0 ? parseFloat(totalBiomass.toFixed(0)) : 'N/A',
+                biomassKg: totalBiomass > 0 ? parseFloat((totalBiomass / 1000).toFixed(3)) : 'N/A',
+                numDens: reachArea > 0 ? parseFloat(((totalNhat / reachArea) * 100).toFixed(2)) : 'N/A',
+                wtDens: reachArea > 0 && totalBiomass > 0 ? parseFloat((totalBiomass / reachArea).toFixed(2)) : 'N/A',
+                kgHa: reachArea > 0 && totalBiomass > 0 ? parseFloat(((totalBiomass / reachArea) * 10).toFixed(2)) : 'N/A'
+            });
+            wsBD.getRow(1).font = { bold: true };
+            wsBD.getRow(wsBD.rowCount).font = { bold: true };
+
+            // Site info
+            let bdInfo = wsBD.rowCount + 2;
+            wsBD.getRow(bdInfo).getCell(1).value = 'SITE PARAMETERS';
+            wsBD.getRow(bdInfo).getCell(1).font = { bold: true, color: { argb: 'FF0F4C81' } };
+            wsBD.getRow(bdInfo+1).values = ['Reach Length (m)', reachLen || 'Not entered'];
+            wsBD.getRow(bdInfo+2).values = ['Avg Wetted Width (m)', widths.avgWetted || 'Not entered'];
+            wsBD.getRow(bdInfo+3).values = ['Avg Bankfull Width (m)', widths.avgBankfull || 'Not entered'];
+            wsBD.getRow(bdInfo+4).values = ['Reach Area (m²)', reachArea > 0 ? parseFloat(reachArea.toFixed(1)) : 'Requires length + width'];
+            wsBD.getRow(bdInfo+5).values = ['DO (mg/L)', toNum(doVal) || 'Not entered'];
+            wsBD.getRow(bdInfo+6).values = ['pH', toNum(phVal) || 'Not entered'];
+            wsBD.getRow(bdInfo+7).values = ['Turbidity (NTU)', toNum(turbVal) || 'Not entered'];
+
+            /* --- Length-Frequency Sheet --- */
+            const wsLF = wb.addWorksheet('Length-Frequency');
+            const validLF = catchData.filter(d => d.len && d.len !== '---' && parseFloat(d.len) > 0);
+
+            if(validLF.length > 0) {
+                const allLens = validLF.map(d => parseFloat(d.len));
+                const minBin = Math.floor(Math.min(...allLens) / 10) * 10;
+                const maxBin = Math.ceil(Math.max(...allLens) / 10) * 10;
+                const lfBins = [];
+                for(let b = minBin; b < maxBin; b += 10) lfBins.push(b);
+
+                let lfCols = [{ header: 'Size Class (mm)', key: 'bin', width: 16 }];
+                allSpecies.forEach(sp => { lfCols.push({ header: sp, key: sp.replace(/\s/g,'_'), width: 16 }); });
+                lfCols.push({ header: 'Total', key: 'total', width: 10 });
+                wsLF.columns = lfCols;
+
+                lfBins.forEach(b => {
+                    let row = { bin: `${b}-${b+9}` };
+                    let rowTotal = 0;
+                    allSpecies.forEach(sp => {
+                        let count = validLF.filter(d => d.sp === sp && parseFloat(d.len) >= b && parseFloat(d.len) < b + 10).length;
+                        row[sp.replace(/\s/g,'_')] = count > 0 ? count : '';
+                        rowTotal += count;
+                    });
+                    row.total = rowTotal;
+                    wsLF.addRow(row);
+                });
+                wsLF.getRow(1).font = { bold: true };
+            } else {
+                wsLF.addRow(['No fish with length data were found.']);
+            }
+
+            /* --- Pass Times Sheet --- */
+            if(passTimeLogs.length > 0) {
+                const wsPT = wb.addWorksheet('Pass Times');
+                wsPT.columns = [
+                    { header: 'Site', key: 'site', width: 8 },
+                    { header: 'Pass', key: 'pass', width: 8 },
+                    { header: 'Start Time', key: 'start', width: 14 },
+                    { header: 'End Time', key: 'end', width: 14 },
+                    { header: 'Elapsed (sec)', key: 'secs', width: 14 }
+                ];
+                passTimeLogs.forEach(pt => {
+                    wsPT.addRow({ site: pt.site, pass: pt.pass, start: pt.startTime, end: pt.endTime, secs: pt.elapsedSec });
+                });
+                wsPT.getRow(1).font = { bold: true };
+            }
 
             const buffer = await wb.xlsx.writeBuffer();
             const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -1330,13 +2059,18 @@
             const d0 = catchData[0]; const strm = document.getElementById('streamName').value||"Unnamed"; const crw = document.getElementById('crewNames').value||"N/A"; const eq = document.getElementById('equipModel').value||"N/A";
             const hNts = document.getElementById('habitatNotes').value||"None"; const cNts = document.getElementById('surveyComments').value||"None";
             const wth = document.getElementById('rptWeather').value; const clr = document.getElementById('rptClarity').value; const flw = document.getElementById('rptFlow').value; const sub = document.getElementById('rptSubstrate').value; const netI = document.getElementById('rptNets').value; const eff = document.getElementById('rptEfficiency').value;
+            const docWidths = getWidthData();
+            const docDO = document.getElementById('dissolvedO2').value || 'N/A';
+            const docPH = document.getElementById('phLevel').value || 'N/A';
+            const docTurb = document.getElementById('turbidity').value || 'N/A';
+            const docArea = (parseFloat(d0.rLen) || 0) * (docWidths.avgWetted || 0);
 
             let p = {}; catchData.forEach(d => { if(!p[d.pass]) p[d.pass] = { c:0, s:d.sec, v:d.v, hz:d.hz }; p[d.pass].c++; });
             let sH = ""; let sT = ""; Object.keys(p).sort((a,b)=>a-b).forEach(k => { sH += `<tr><td>Pass ${k}</td><td>${p[k].s} s</td><td>${p[k].v}V, ${p[k].hz}Hz</td><td><strong>${p[k].c}</strong></td></tr>`; sT += `Pass ${k} | ${p[k].s}s | ${p[k].v}V, ${p[k].hz}Hz | Caught: ${p[k].c}\n`; });
 
             let html = `<html><head><meta charset="UTF-8"><style>body{font-family:Arial;} table{border-collapse:collapse;width:100%;margin-bottom:20px;} th,td{border:1px solid #ddd;padding:8px;text-align:left;} th{background:#f2f2f2;} h2{color:#0F4C81;border-bottom:2px solid #0F4C81;}</style></head><body>
                 <h1 style="text-align:center;">DEPLETION SURVEY REPORT</h1><p><strong>Stream:</strong> ${strm}</p><p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p><p><strong>Crew:</strong> ${crw}</p>
-                <h2>1. Environment & Site</h2><p><strong>GPS:</strong> ${siteLat}, ${siteLon} | <strong>Weather:</strong> ${wth}, Air ${airTemp}°C</p><p><strong>Water:</strong> ${d0.wTmp}°C, Cond ${d0.cnd}µS/cm, ${clr}</p><p><strong>Reach:</strong> ${d0.rLen}m | <strong>Flow:</strong> ${flw} | <strong>Substrate:</strong> ${sub}</p><p><strong>Nets:</strong> ${d0.nets} (${netI}) | <strong>Efficiency:</strong> ${eff}</p>
+                <h2>1. Environment & Site</h2><p><strong>GPS:</strong> ${siteLat}, ${siteLon} | <strong>Weather:</strong> ${wth}, Air ${airTemp}°C</p><p><strong>Water:</strong> ${d0.wTmp}°C, Cond ${d0.cnd}µS/cm, ${clr}</p><p><strong>Water Quality:</strong> DO ${docDO} mg/L, pH ${docPH}, Turbidity ${docTurb} NTU</p><p><strong>Reach:</strong> ${d0.rLen}m | <strong>Avg Wetted Width:</strong> ${docWidths.avgWetted || 'N/A'}m | <strong>Avg Bankfull Width:</strong> ${docWidths.avgBankfull || 'N/A'}m | <strong>Area:</strong> ${docArea > 0 ? docArea.toFixed(1) : 'N/A'}m²</p><p><strong>Flow:</strong> ${flw} | <strong>Substrate:</strong> ${sub}</p><p><strong>Nets:</strong> ${d0.nets} (${netI}) | <strong>Efficiency:</strong> ${eff}</p>
                 <h2>2. Notes</h2><p><strong>Habitat:</strong><br>${hNts}</p><p><strong>Comments:</strong><br>${cNts}</p>
                 <h2>3. Effort</h2><p><strong>Gear:</strong> ${eq}</p><table><tr><th>Sweep</th><th>Effort</th><th>Settings</th><th>Catch</th></tr>${sH}</table>
                 <h2>4. Specimen Log</h2><table><tr><th>Pass</th><th>Species</th><th>Sci Name</th><th>L(mm)</th><th>W(g)</th><th>Cond</th></tr>`;
@@ -1350,6 +2084,409 @@
         }
 
         function copyRawData() { const b = document.getElementById('rawDataBox'); if(!b.value) return alert("Generate export first."); b.select(); b.setSelectionRange(0, 99999); navigator.clipboard.writeText(b.value).then(() => alert("Copied!")).catch(() => alert("Copy failed.")); sfxClick(); }
+
+        /* ===========================
+           GROUP CATCH TOGGLE
+           =========================== */
+        function toggleGroupCatch() {
+            const isGroup = document.getElementById('groupToggle').checked;
+            document.getElementById('groupCatchFields').style.display = isGroup ? 'block' : 'none';
+            document.getElementById('individualFields').style.display = isGroup ? 'none' : 'block';
+            sfxClick();
+        }
+
+        /* ===========================
+           PASS TIMER
+           =========================== */
+        let timerInterval = null;
+        let timerStart = null;
+        let timerElapsed = 0;
+        let passTimeLogs = []; // {pass, site, startTime, endTime, elapsedSec}
+
+        function startTimer() {
+            if(timerInterval) return; // already running
+            timerStart = Date.now() - (timerElapsed * 1000);
+            timerInterval = setInterval(() => {
+                timerElapsed = (Date.now() - timerStart) / 1000;
+                updateTimerDisplay();
+            }, 100);
+            document.getElementById('timerDisplay').classList.add('running');
+            document.getElementById('timerStartBtn').innerText = '● RUNNING';
+            sfxClick();
+        }
+
+        function stopTimer() {
+            if(!timerInterval) return;
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerElapsed = (Date.now() - timerStart) / 1000;
+            updateTimerDisplay();
+            document.getElementById('timerDisplay').classList.remove('running');
+            document.getElementById('timerStartBtn').innerText = '▶ START';
+
+            // Log this pass time
+            const pass = document.getElementById('passNum').value || '?';
+            const site = document.getElementById('siteNum').value || '1';
+            const secs = Math.round(timerElapsed);
+            const startT = new Date(timerStart).toLocaleTimeString();
+            const endT = new Date().toLocaleTimeString();
+            passTimeLogs.push({ pass: parseInt(pass), site: parseInt(site), startTime: startT, endTime: endT, elapsedSec: secs });
+
+            // Auto-fill shock seconds
+            document.getElementById('shockSecs').value = secs;
+
+            // Show log
+            const logEl = document.getElementById('passTimeLog');
+            logEl.style.display = 'block';
+            const entry = document.createElement('div');
+            entry.innerHTML = `<span style="color:var(--secondary);">Site ${site} Pass ${pass}</span> — ${startT} → ${endT} — <strong style="color:var(--primary);">${secs}s</strong>`;
+            logEl.prepend(entry);
+            sfxClick();
+        }
+
+        function resetTimer() {
+            if(timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+            timerElapsed = 0; timerStart = null;
+            updateTimerDisplay();
+            document.getElementById('timerDisplay').classList.remove('running');
+            document.getElementById('timerStartBtn').innerText = '▶ START';
+            sfxClick();
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerElapsed / 60);
+            const secs = Math.floor(timerElapsed % 60);
+            document.getElementById('timerDisplay').textContent = String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+        }
+
+        /* ===========================
+           WIDTH TRANSECTS
+           =========================== */
+        let transectCount = 3;
+        function addTransect() {
+            transectCount++;
+            const div = document.createElement('div');
+            div.className = 'transect-row';
+            div.innerHTML = `<span>T${transectCount}</span><input type="number" step="0.1" class="wettedW" placeholder="Wetted"><input type="number" step="0.1" class="bankfullW" placeholder="Bankfull"><span style="font-size:9px;">m</span>`;
+            document.getElementById('transectInputs').appendChild(div);
+            sfxClick();
+        }
+
+        function getWidthData() {
+            const wetted = [...document.querySelectorAll('.wettedW')].map(i => parseFloat(i.value)).filter(v => !isNaN(v) && v > 0);
+            const bankfull = [...document.querySelectorAll('.bankfullW')].map(i => parseFloat(i.value)).filter(v => !isNaN(v) && v > 0);
+            const avgWetted = wetted.length > 0 ? wetted.reduce((a,b) => a+b, 0) / wetted.length : 0;
+            const avgBankfull = bankfull.length > 0 ? bankfull.reduce((a,b) => a+b, 0) / bankfull.length : 0;
+            return { avgWetted: parseFloat(avgWetted.toFixed(2)), avgBankfull: parseFloat(avgBankfull.toFixed(2)), wettedVals: wetted, bankfullVals: bankfull };
+        }
+
+        function getReachArea() {
+            const len = parseFloat(document.getElementById('reachLen').value) || 0;
+            const w = getWidthData();
+            return len * w.avgWetted; // m²
+        }
+
+        /* ===========================
+           LENGTH-FREQUENCY CHART
+           =========================== */
+        let lfChartInstance = null;
+
+        function initLFChart() {
+            const ctx = document.getElementById('lengthFreqChart').getContext('2d');
+            lfChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: { labels: [], datasets: [] },
+                options: {
+                    layout: { padding: { top: 10, right: 10 } },
+                    scales: {
+                        x: { title: { display: true, text: 'LENGTH CLASS (mm)', font: { weight: 'bold', size: 10, family: "'Orbitron', sans-serif" }, color: '#546e8a' }, grid: { color: 'rgba(30,48,80,0.5)' }, border: { color: '#1e3050' } },
+                        y: { beginAtZero: true, title: { display: true, text: 'COUNT', font: { weight: 'bold', size: 10, family: "'Orbitron', sans-serif" }, color: '#546e8a' }, grid: { color: 'rgba(30,48,80,0.5)' }, border: { color: '#1e3050' } }
+                    },
+                    plugins: {
+                        legend: { display: true, position: 'bottom', labels: { color: '#546e8a', font: { size: 10 }, usePointStyle: true, padding: 15 } },
+                        title: { display: true, text: 'LENGTH-FREQUENCY DISTRIBUTION', font: { size: 12, weight: 'bold', family: "'Orbitron', sans-serif" }, color: '#00e5ff', padding: { bottom: 10 } }
+                    }
+                }
+            });
+        }
+
+        function updateLFChart() {
+            if(!lfChartInstance) return;
+            const validFish = catchData.filter(d => d.len && d.len !== '---' && parseFloat(d.len) > 0);
+            if(validFish.length === 0) { lfChartInstance.data = { labels: [], datasets: [] }; lfChartInstance.update(); return; }
+
+            // Build 10mm bins
+            const lengths = validFish.map(d => parseFloat(d.len));
+            const minL = Math.floor(Math.min(...lengths) / 10) * 10;
+            const maxL = Math.ceil(Math.max(...lengths) / 10) * 10;
+            const bins = [];
+            for(let b = minL; b < maxL; b += 10) bins.push(b);
+
+            // Group by species
+            const speciesList = [...new Set(validFish.map(d => d.sp))];
+            const colors = ['#00e5ff','#7c4dff','#00e676','#ffab00','#ff1744','#ce93d8','#4fc3f7','#ffcc80'];
+            const datasets = speciesList.map((sp, si) => {
+                const spFish = validFish.filter(d => d.sp === sp);
+                const counts = bins.map(b => spFish.filter(d => { let l = parseFloat(d.len); return l >= b && l < b + 10; }).length);
+                return { label: sp, data: counts, backgroundColor: colors[si % colors.length] + '99', borderColor: colors[si % colors.length], borderWidth: 1 };
+            });
+
+            lfChartInstance.data = { labels: bins.map(b => `${b}-${b+9}`), datasets };
+            lfChartInstance.update();
+        }
+
+        function downloadLFChart() {
+            if(!lfChartInstance) return;
+            sfxClick();
+            const cvs = document.getElementById('lengthFreqChart');
+            const tCvs = document.createElement('canvas'); tCvs.width = cvs.width; tCvs.height = cvs.height;
+            const ctx = tCvs.getContext('2d'); ctx.fillStyle = '#0d1225'; ctx.fillRect(0, 0, tCvs.width, tCvs.height); ctx.drawImage(cvs, 0, 0);
+            const link = document.createElement('a'); link.download = 'Length_Frequency.jpg'; link.href = tCvs.toDataURL('image/jpeg', 0.95); link.click();
+        }
+
+        /* ===========================
+           PER-SPECIES MLE & BIOMASS
+           =========================== */
+        function computeSpeciesMLE(catches) {
+            // catches = array of per-pass counts for one species
+            let k = catches.length;
+            let T = catches.reduce((a,b) => a+b, 0);
+            if(k < 2 || T === 0) return { nHat: T, pHat: 0, se: NaN, ciLow: T, ciHigh: T };
+            let valid = catches.filter(c => c > 0);
+            if(valid.length < 2 || catches[0] === 0) return { nHat: T, pHat: 0, se: NaN, ciLow: T, ciHigh: T };
+
+            let ratios = [];
+            for(let i = 1; i < catches.length; i++) {
+                if(catches[i-1] > 0 && catches[i] > 0) ratios.push(catches[i] / catches[i-1]);
+            }
+            let qH = ratios.length > 0 ? ratios.reduce((a,b) => a+b, 0) / ratios.length : 0.5;
+            qH = Math.min(Math.max(qH, 0.01), 0.99);
+            let pH = 1 - qH;
+
+            for(let iter = 0; iter < 50; iter++) {
+                let q = 1 - pH, qk = Math.pow(q, k), nE = T / (1 - qk);
+                if(!isFinite(nE) || nE < T) break;
+                let expR = 0, actR = 0;
+                for(let i = 0; i < k; i++) { expR += i * nE * pH * Math.pow(q, i); actR += i * catches[i]; }
+                let nP = pH - (actR - expR) * 0.001;
+                nP = Math.min(Math.max(nP, 0.01), 0.99);
+                if(Math.abs(nP - pH) < 0.0001) break;
+                pH = nP;
+            }
+
+            qH = 1 - pH;
+            let qk = Math.pow(qH, k), nH = T / (1 - qk);
+            if(!isFinite(nH) || nH < T) nH = T;
+
+            let se = NaN;
+            let num = nH * (nH - T);
+            let den = T*T - nH*(nH - T)*k*k*pH*pH*Math.pow(qH, 2*k-2)/Math.pow(1-qk, 2);
+            if(den > 0) se = Math.sqrt(Math.max(0, num / den));
+
+            let ciL = isNaN(se) ? Math.floor(nH) : Math.max(T, Math.floor(nH - 1.96*se));
+            let ciH = isNaN(se) ? Math.ceil(nH) : Math.ceil(nH + 1.96*se);
+
+            return { nHat: Math.round(nH), pHat: parseFloat(pH.toFixed(4)), se: isNaN(se) ? NaN : parseFloat(se.toFixed(2)), ciLow: ciL, ciHigh: ciH };
+        }
+
+        function calcSpeciesStats() {
+            sfxClick();
+            const body = document.getElementById('speciesBody');
+            body.innerHTML = '';
+            if(catchData.length === 0) return;
+
+            const area = getReachArea(); // m²
+            const species = [...new Set(catchData.map(d => d.sp))];
+            const passes = [...new Set(catchData.map(d => d.pass))].sort((a,b) => a - b);
+
+            species.forEach(sp => {
+                const spData = catchData.filter(d => d.sp === sp);
+                const perPass = passes.map(p => spData.filter(d => d.pass === p).length);
+                const mle = computeSpeciesMLE(perPass);
+                const totalCaught = spData.length;
+
+                // Average weight from fish with weight data
+                const withWt = spData.filter(d => d.wt && d.wt !== '---' && parseFloat(d.wt) > 0);
+                const avgWt = withWt.length > 0 ? withWt.reduce((a,d) => a + parseFloat(d.wt), 0) / withWt.length : 0;
+                const biomass = mle.nHat * avgWt;
+
+                let density = '—';
+                if(area > 0 && mle.nHat > 0) {
+                    const per100m2 = (mle.nHat / area) * 100;
+                    density = per100m2.toFixed(2) + ' /100m²';
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td><strong style="color:var(--text-bright);">${sp}</strong></td>
+                    <td>${totalCaught}</td>
+                    <td style="color:var(--success);">${mle.nHat}</td>
+                    <td>${mle.pHat > 0 ? mle.pHat : '—'}</td>
+                    <td>${avgWt > 0 ? avgWt.toFixed(1) : '—'}</td>
+                    <td>${biomass > 0 ? biomass.toFixed(0) : '—'}</td>
+                    <td style="color:var(--primary);">${density}</td>`;
+                body.appendChild(tr);
+            });
+        }
+
+        /* ===========================
+           MLE POPULATION ESTIMATE
+           =========================== */
+        let mlePassCount = 4;
+
+        function addMLEPass() {
+            mlePassCount++;
+            const div = document.createElement('div');
+            div.innerHTML = `<input type="number" id="mleP${mlePassCount}" min="0" placeholder="0" oninput="runMLE()"><span class="mle-pass-label">Pass ${mlePassCount}</span>`;
+            document.getElementById('mleInputs').appendChild(div);
+            sfxClick();
+        }
+
+        function autoFillMLE() {
+            if(catchData.length === 0) return alert("No data logged yet.");
+            let p = {};
+            catchData.forEach(d => { p[d.pass] = (p[d.pass] || 0) + 1; });
+            const sortedPasses = Object.keys(p).sort((a,b) => a - b);
+            while(mlePassCount < sortedPasses.length) addMLEPass();
+            sortedPasses.forEach((k, i) => {
+                const input = document.getElementById(`mleP${i+1}`);
+                if(input) input.value = p[k];
+            });
+            for(let i = sortedPasses.length + 1; i <= mlePassCount; i++) {
+                const input = document.getElementById(`mleP${i}`);
+                if(input) input.value = '';
+            }
+            runMLE();
+            sfxClick();
+        }
+
+        function runMLE() {
+            let catches = [];
+            for(let i = 1; i <= mlePassCount; i++) {
+                const el = document.getElementById(`mleP${i}`);
+                if(el && el.value !== '' && el.value !== undefined) {
+                    const v = parseInt(el.value);
+                    if(!isNaN(v) && v >= 0) catches.push(v);
+                }
+            }
+            const resultsDiv = document.getElementById('mleResults');
+            const warningDiv = document.getElementById('mleWarning');
+
+            if(catches.length < 2) { resultsDiv.style.display = 'none'; return; }
+
+            const k = catches.length;
+            const T = catches.reduce((a, b) => a + b, 0);
+            if(T === 0) { resultsDiv.style.display = 'none'; return; }
+
+            resultsDiv.style.display = 'block';
+            warningDiv.style.display = 'none';
+
+            // Check for non-descending pattern
+            let nonDesc = false;
+            for(let i = 1; i < catches.length; i++) {
+                if(catches[i] > catches[i-1]) { nonDesc = true; break; }
+            }
+
+            // Estimate capture probability from exponential decay
+            // Using regression of ln(catch) vs pass number
+            let validCatches = catches.filter(c => c > 0);
+            let pHat, nHat, se, ciLow, ciHigh;
+
+            if(validCatches.length < 2 || catches[0] === 0) {
+                // Can't compute MLE
+                document.getElementById('mleN').textContent = T + ' (total only)';
+                document.getElementById('mleN').className = 'mle-stat-value warn';
+                document.getElementById('mleT').textContent = T;
+                document.getElementById('mleP').textContent = '—';
+                document.getElementById('mleCI').textContent = '—';
+                document.getElementById('mleSE').textContent = '—';
+                warningDiv.style.display = 'block';
+                warningDiv.textContent = '⚠ Cannot compute MLE: insufficient decreasing catch data. Need at least 2 passes with positive catches.';
+                return;
+            }
+
+            // MLE using iterative approach
+            // Estimate p from successive catch ratios
+            let ratios = [];
+            for(let i = 1; i < catches.length; i++) {
+                if(catches[i-1] > 0 && catches[i] > 0) {
+                    ratios.push(catches[i] / catches[i-1]);
+                }
+            }
+
+            let qHat; // q = 1-p (probability of escaping)
+            if(ratios.length > 0) {
+                // Average ratio gives estimate of q
+                qHat = ratios.reduce((a,b) => a + b, 0) / ratios.length;
+                qHat = Math.min(Math.max(qHat, 0.01), 0.99); // clamp
+            } else {
+                qHat = 0.5;
+            }
+            pHat = 1 - qHat;
+
+            // Refine using Newton-Raphson on the MLE equations
+            // E[ci] = N * p * (1-p)^(i-1)
+            // Sum of catches = N * (1 - (1-p)^k)
+            // So N = T / (1 - q^k)
+            for(let iter = 0; iter < 50; iter++) {
+                let q = 1 - pHat;
+                let qk = Math.pow(q, k);
+                nHat = T / (1 - qk);
+                if(!isFinite(nHat) || nHat < T) { nHat = T; break; }
+
+                // Compute expected weighted sum: sum of i*ci = N*p * sum((i)*(1-p)^(i-1)) for i=0..k-1
+                let expectedR = 0;
+                for(let i = 0; i < k; i++) { expectedR += i * nHat * pHat * Math.pow(q, i); }
+                let actualR = 0;
+                for(let i = 0; i < k; i++) { actualR += i * catches[i]; }
+
+                // Gradient step
+                let diff = actualR - expectedR;
+                let step = diff * 0.001;
+                let newP = pHat - step;
+                newP = Math.min(Math.max(newP, 0.01), 0.99);
+                if(Math.abs(newP - pHat) < 0.0001) break;
+                pHat = newP;
+            }
+
+            qHat = 1 - pHat;
+            let qk = Math.pow(qHat, k);
+            nHat = T / (1 - qk);
+            if(!isFinite(nHat) || nHat < T) nHat = T;
+
+            // Standard Error approximation (Zippin variance)
+            let numerator = nHat * (nHat - T);
+            let denom = T * T - nHat * (nHat - T) * k * k * pHat * pHat * Math.pow(qHat, 2*k - 2) / Math.pow(1 - qk, 2);
+            if(denom > 0) {
+                let variance = numerator / denom;
+                se = Math.sqrt(Math.max(0, variance));
+            } else {
+                se = NaN;
+            }
+
+            ciLow = isNaN(se) ? Math.floor(nHat) : Math.max(T, Math.floor(nHat - 1.96 * se));
+            ciHigh = isNaN(se) ? Math.ceil(nHat) : Math.ceil(nHat + 1.96 * se);
+            nHat = Math.round(nHat);
+
+            document.getElementById('mleN').textContent = nHat;
+            document.getElementById('mleN').className = 'mle-stat-value good';
+            document.getElementById('mleT').textContent = T;
+            document.getElementById('mleP').textContent = pHat.toFixed(3);
+            document.getElementById('mleCI').textContent = ciLow + ' – ' + ciHigh;
+            document.getElementById('mleSE').textContent = isNaN(se) ? '—' : se.toFixed(1);
+
+            // Warnings
+            let warnings = [];
+            if(nonDesc) warnings.push('⚠ NON-DESCENDING PATTERN: Catch increased between passes. Population estimate may be unreliable. Check net integrity and effort consistency.');
+            if(catches[catches.length-1] === 0) warnings.push('✓ Zero catch on final pass — strong depletion evidence.');
+            if(pHat < 0.20) warnings.push('⚠ LOW CAPTURE PROBABILITY (p < 0.20): Consider additional passes to improve precision.');
+            if(pHat > 0.70) warnings.push('✓ HIGH CAPTURE PROBABILITY: Excellent sampling efficiency.');
+
+            if(warnings.length > 0) {
+                warningDiv.style.display = 'block';
+                warningDiv.innerHTML = warnings.join('<br>');
+            }
+        }
+
     </script>
 </body>
 </html>
