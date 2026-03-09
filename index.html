@@ -1070,6 +1070,80 @@
             </div>
 
             <div class="card manual-section">
+                <h3>Length-Frequency Distribution</h3>
+
+                <h5 style="margin-top:0;">What Is It?</h5>
+                <p>A length-frequency histogram groups every fish you caught into size classes (typically 10mm bins) and counts how many fish fall into each bin. This simple chart reveals the <strong style="color:var(--primary);">age structure</strong> of the population — each peak usually represents a different year-class (age group) of fish.</p>
+
+                <h5>Why It Matters</h5>
+                <p>A healthy stream population should show multiple distinct peaks across the size range, meaning fish of all ages are present — young-of-year, juveniles, and adults. A distribution with only one peak, or with gaps, can signal recruitment failure (no new fish being born), overharvest of large fish, or a recent disturbance event.</p>
+                <div class="example-box">
+                    <strong style="color:var(--secondary);">Reading a Length-Frequency Chart:</strong><br><br>
+                    Imagine you caught 40 Rainbow Trout. Your chart shows:<br>
+                    • <strong>Peak at 40-69mm</strong> — These are young-of-year (age 0+). A strong peak here means good spawning success this year.<br>
+                    • <strong>Peak at 110-139mm</strong> — These are age 1+ juveniles from last year's spawn.<br>
+                    • <strong>Scattered fish at 180-250mm</strong> — These are adults (age 2-3+). Fewer fish here is normal because not all juveniles survive to adulthood.<br><br>
+                    <strong style="color:var(--warning);">Red Flag Example:</strong> If your chart only shows fish in the 150-250mm range with zero fish under 100mm, it likely means spawning failed this year — no juveniles recruited into the population. This is critical information for managers.<br><br>
+                    <em style="color:var(--muted);">The Length-Frequency chart is auto-generated on the Stats tab (📈) and exported to the Excel download as its own sheet with a per-species size class matrix.</em>
+                </div>
+            </div>
+
+            <div class="card manual-section">
+                <h3>Channel Width Transects</h3>
+
+                <h5 style="margin-top:0;">What Are Transects?</h5>
+                <p>A transect is a straight-line measurement across the stream channel from one bank to the other. You measure two things at each transect: <strong style="color:var(--primary);">wetted width</strong> (the actual water surface) and <strong style="color:var(--primary);">bankfull width</strong> (the width at the level where water would just start to overflow onto the floodplain).</p>
+
+                <h5>Why Multiple Transects?</h5>
+                <p>Streams are never uniform — they have pools, riffles, and bends. A single width measurement is misleading. Standard practice is to measure at <strong style="color:var(--warning);">3 to 5 evenly spaced transects</strong> across the reach and average them. This gives you a representative mean width for calculating reach area.</p>
+
+                <h5>Calculating Reach Area</h5>
+                <p><strong style="color:var(--primary);">Formula: Area (m²) = Reach Length (m) × Average Wetted Width (m)</strong><br>
+                This area is the denominator for every density calculation — fish per 100m², grams per m², kg per hectare. Without it, you have a population estimate but no way to compare between sites of different sizes.</p>
+                <div class="example-box">
+                    <strong style="color:var(--secondary);">Step-by-Step Example:</strong><br><br>
+                    Your reach is <strong>50m</strong> long. You measure wetted width at 3 transects:<br>
+                    • T1 (upstream): <strong>3.2m</strong><br>
+                    • T2 (mid-reach): <strong>4.8m</strong> (wider pool section)<br>
+                    • T3 (downstream): <strong>3.5m</strong><br><br>
+                    <strong>Step 1:</strong> Average the wetted widths → (3.2 + 4.8 + 3.5) ÷ 3 = <strong style="color:var(--primary);">3.83m</strong><br>
+                    <strong>Step 2:</strong> Calculate area → 50m × 3.83m = <strong style="color:var(--success);">191.7 m²</strong><br><br>
+                    Now if your MLE population estimate is N̂ = 90 fish:<br>
+                    <strong>Density</strong> = (90 ÷ 191.7) × 100 = <strong style="color:var(--success);">46.9 fish per 100m²</strong><br><br>
+                    <em style="color:var(--muted);">Bankfull width is recorded for habitat characterization but is NOT used in density calculations — only wetted width counts because that's where the fish actually live during sampling.</em>
+                </div>
+            </div>
+
+            <div class="card manual-section">
+                <h3>Per-Species Population &amp; Biomass</h3>
+
+                <h5 style="margin-top:0;">Why Per-Species?</h5>
+                <p>The overall MLE lumps all fish together, but species behave differently in an electric field. Sculpin hide under rocks and have low capture probability. Trout are stunned more easily. Running MLE <strong style="color:var(--primary);">separately for each species</strong> produces more accurate population estimates because each species gets its own capture probability (p̂).</p>
+
+                <h5>Estimated Biomass</h5>
+                <p><strong style="color:var(--primary);">Formula: Biomass = N̂ × Average Weight</strong><br>
+                Biomass is the total estimated weight of a species in the reach. It combines your population estimate with the average weight of fish you actually weighed. This is often more ecologically meaningful than raw count because a reach with 20 large trout may hold more biomass than one with 100 tiny minnows.</p>
+
+                <h5>Density Metrics</h5>
+                <p>Three standard ways to express density (all require reach area from your width transects):</p>
+                <div class="example-box">
+                    <strong style="color:var(--secondary);">Worked Example — Chinook Salmon in a 50m × 3.83m reach (191.7 m²):</strong><br><br>
+                    You estimate N̂ = 25 Chinook with an average weight of 12.5g.<br><br>
+                    <strong>1. Numeric Density (#/100m²)</strong><br>
+                    (25 ÷ 191.7) × 100 = <strong style="color:var(--primary);">13.04 fish per 100m²</strong><br>
+                    <em>Best for comparing fish abundance between sites of different sizes.</em><br><br>
+                    <strong>2. Weight Density (g/m²)</strong><br>
+                    Biomass = 25 × 12.5 = 312.5g<br>
+                    312.5 ÷ 191.7 = <strong style="color:var(--primary);">1.63 g/m²</strong><br>
+                    <em>Shows how much fish biomass each square meter of stream supports.</em><br><br>
+                    <strong>3. Biomass per Hectare (kg/ha)</strong><br>
+                    1.63 g/m² × 10 = <strong style="color:var(--primary);">16.3 kg/ha</strong><br>
+                    <em>Standard unit for comparing across watersheds and in published literature. Productive salmonid streams typically range from 20–80 kg/ha.</em><br><br>
+                    <em style="color:var(--muted);">These values auto-calculate on the Stats tab (📈) when you click "Refresh Estimates" and appear in the Biomass & Density sheet of the Excel export.</em>
+                </div>
+            </div>
+
+            <div class="card manual-section">
                 <h3>Condition Factor &amp; Weight Estimation</h3>
 
                 <h5 style="margin-top:0;">Fulton's Condition Factor (K)</h5>
