@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ElectroFry Pro 1.0 | NMFS Standard</title>
+    <title>ElectroFry Pro 1.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
@@ -513,6 +513,32 @@
         }
         .app-footer a { color: var(--primary); text-decoration: none; }
 
+        /* SAVE STATUS */
+        .save-status {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .save-status.saved { color: var(--success); background: rgba(0,230,118,0.06); border: 1px solid rgba(0,230,118,0.2); }
+        .save-status.empty { color: var(--muted); background: rgba(0,229,255,0.03); border: 1px solid var(--border); }
+        .save-slot {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 12px;
+            background: rgba(0,229,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
+        }
+        .save-slot .slot-info { color: var(--text); }
+        .save-slot .slot-meta { color: var(--muted); font-size: 10px; }
+        .save-slot-btns { display: flex; gap: 6px; }
+        .save-slot-btns button { padding: 6px 12px; font-size: 10px; }
+
         /* ACHIEVEMENT TOAST */
         .achievement-toast {
             position: fixed;
@@ -779,9 +805,18 @@
         </div>
     </div>
 
+    <div id="restore-modal" class="modal-overlay blur" style="display: none;">
+        <div class="modal-card" style="text-align: center;">
+            <h2 style="margin-top:0; font-size: 16px;">📂 Saved Survey Found</h2>
+            <div id="restore-info" style="font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--text); margin-bottom: 15px; text-align: left; padding: 10px; background: rgba(0,229,255,0.04); border-radius: 4px; border: 1px solid var(--border);"></div>
+            <button class="btn btn-success" onclick="restoreSurvey()" style="margin-bottom: 10px;">↻ RESTORE &amp; CONTINUE</button>
+            <button class="btn btn-outline" onclick="skipRestore()">START NEW SURVEY</button>
+        </div>
+    </div>
+
     <div id="splash-screen" class="modal-overlay">
         <div class="splash-title">ELECTROFRY</div>
-        <div class="splash-sub">PRO 1.0 — NMFS PROTOCOL EDITION</div>
+        <div class="splash-sub">PRO 1.0</div>
         <div class="modal-card">
             <h3 style="margin-top:0; font-size: 12px;">System Modules</h3>
             <ul class="splash-features">
@@ -898,7 +933,20 @@
                         <div class="row"><div class="col"><label>Group Count</label><input type="number" id="groupCount" min="1" placeholder="# of fish"></div><div class="col"><label>Group Weight (g)</label><input type="number" step="0.1" id="groupWeight" placeholder="Total weight"></div></div>
                         <p style="font-size:11px; color:var(--muted); margin-top:4px;">Log a group of same-species fish counted and weighed collectively.</p>
                     </div>
-                    <div class="row"><div class="col"><label>Condition</label><select id="condition"><option>Vigorous</option><option>Lethargic</option><option>Mortality</option></select></div><div class="col"><label>Photo Doc</label><input type="file" id="photo" accept="image/*" capture="environment" style="padding: 9px;"></div></div>
+                    <div class="row"><div class="col"><label>Condition</label><select id="condition"><option>Vigorous</option><option>Lethargic</option><option>Mortality</option></select></div>
+                    <div class="col">
+                        <label>Photo Doc</label>
+                        <input type="file" id="photo" accept="image/*" capture="environment" style="display:none;" onchange="previewPhoto()">
+                        <input type="file" id="photoGallery" accept="image/*" style="display:none;" onchange="galleryPicked()">
+                        <div style="display:flex; gap:6px;">
+                            <button type="button" class="btn btn-outline" onclick="document.getElementById('photo').click()" style="flex:1; padding:10px; font-size:11px;">📷 CAMERA</button>
+                            <button type="button" class="btn btn-outline" onclick="document.getElementById('photoGallery').click()" style="flex:1; padding:10px; font-size:11px;">🖼 GALLERY</button>
+                        </div>
+                        <div id="photoPreview" style="display:none; margin-top:8px; position:relative;">
+                            <img id="photoThumb" src="" style="width:100%; max-height:120px; object-fit:cover; border-radius:4px; border:2px solid var(--primary); box-shadow:0 0 10px var(--glow);">
+                            <button type="button" onclick="clearPhoto()" style="position:absolute; top:4px; right:4px; background:rgba(255,23,68,0.8); color:white; border:none; border-radius:3px; padding:2px 6px; font-size:10px; cursor:pointer; font-family:'Share Tech Mono',monospace;">✕</button>
+                        </div>
+                    </div></div>
                     <button type="button" class="btn btn-success" id="logBtn" onclick="saveCatch()" style="margin-top: 10px;">⚡ LOG SPECIMEN</button>
                 </form>
             </div>
@@ -1234,6 +1282,20 @@
                 <button class="btn btn-success" onclick="exportXLSX()" style="margin-bottom: 15px;">📊 DOWNLOAD EXCEL DATA W/ CHART</button>
                 <button class="btn btn-primary" onclick="exportDOC()">📄 DOWNLOAD FORMAL REPORT (.DOC)</button>
             </div>
+            <div class="card" style="border-top: 2px solid var(--secondary);">
+                <h3>💾 Survey Data Management</h3>
+                <div id="saveStatus" class="save-status empty">No saved data</div>
+                <button class="btn btn-success" onclick="saveSurvey()" style="margin-bottom: 10px;">💾 SAVE SURVEY TO BROWSER</button>
+                <p style="font-size:11px; color:var(--muted); margin-bottom: 12px;">Auto-saves after every logged specimen. Data persists even if you close the tab. To be safe, also download a backup file below.</p>
+                <div class="row" style="margin-bottom: 0;">
+                    <div class="col"><button class="btn btn-outline" onclick="exportSurveyJSON()">📥 DOWNLOAD BACKUP (.JSON)</button></div>
+                    <div class="col">
+                        <input type="file" id="importJSON" accept=".json" style="display:none;" onchange="importSurveyJSON()">
+                        <button class="btn btn-outline" onclick="document.getElementById('importJSON').click()">📤 LOAD BACKUP (.JSON)</button>
+                    </div>
+                </div>
+                <button class="btn btn-outline" onclick="confirmClearSurvey()" style="margin-top: 10px; color: var(--danger); border-color: rgba(255,23,68,0.3);">🗑 CLEAR ALL DATA &amp; START NEW</button>
+            </div>
             <div class="card" style="border-left: 3px solid var(--danger);">
                 <h3 style="color: var(--danger);">Emergency Text Fallback</h3>
                 <textarea id="rawDataBox" class="code-textarea" readonly placeholder="Text fallback will populate here..."></textarea>
@@ -1470,6 +1532,7 @@
             document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
             document.getElementById('tab-' + tId).classList.add('active'); el.classList.add('active'); window.scrollTo(0,0);
             if(tId === 'stats') { updateChart(); updateLFChart(); calcSpeciesStats(); }
+            if(tId === 'save') { updateSaveStatus(); }
         }
 
         function getLocationAndWeather() {
@@ -1546,11 +1609,12 @@
                 document.getElementById('length').value = ''; document.getElementById('weight').value = '';
             }
 
-            document.getElementById('photo').value = ''; document.getElementById('condition').value = 'Vigorous'; document.getElementById('biodex-box').style.display = 'none'; document.getElementById('species').selectedIndex = 0;
+            document.getElementById('photo').value = ''; document.getElementById('photoGallery').value = ''; document.getElementById('photoPreview').style.display = 'none'; document.getElementById('photoThumb').src = ''; activePhotoFile = null; document.getElementById('condition').value = 'Vigorous'; document.getElementById('biodex-box').style.display = 'none'; document.getElementById('species').selectedIndex = 0;
 
             sfxLog();
             addXP(25);
             checkAchievements();
+            autoSave();
 
             btn.style.opacity = '1';
             btn.style.background = 'linear-gradient(135deg, #1b5e20, #2e7d32)';
@@ -2160,12 +2224,301 @@
         function copyRawData() { const b = document.getElementById('rawDataBox'); if(!b.value) return alert("Generate export first."); b.select(); b.setSelectionRange(0, 99999); navigator.clipboard.writeText(b.value).then(() => alert("Copied!")).catch(() => alert("Copy failed.")); sfxClick(); }
 
         /* ===========================
+           SURVEY SAVE / LOAD
+           =========================== */
+        const SAVE_KEY = 'electrofry_survey_v1';
+
+        function gatherSurveyState() {
+            return {
+                version: 1,
+                savedAt: new Date().toISOString(),
+                catchData: catchData,
+                passTimeLogs: passTimeLogs,
+                uniqueSpecies: [...uniqueSpecies],
+                playerXP: playerXP,
+                playerLevel: playerLevel,
+                achievements: achievements,
+                fields: {
+                    streamName: document.getElementById('streamName').value,
+                    crewNames: document.getElementById('crewNames').value,
+                    reachLen: document.getElementById('reachLen').value,
+                    blockNets: document.getElementById('blockNets').value,
+                    waterTemp: document.getElementById('waterTemp').value,
+                    conductivity: document.getElementById('conductivity').value,
+                    dissolvedO2: document.getElementById('dissolvedO2').value,
+                    phLevel: document.getElementById('phLevel').value,
+                    turbidity: document.getElementById('turbidity').value,
+                    equipModel: document.getElementById('equipModel').value,
+                    siteNum: document.getElementById('siteNum').value,
+                    passNum: document.getElementById('passNum').value,
+                    volts: document.getElementById('volts').value,
+                    freq: document.getElementById('freq').value,
+                    duty: document.getElementById('duty').value,
+                    rptWeather: document.getElementById('rptWeather').value,
+                    rptClarity: document.getElementById('rptClarity').value,
+                    rptFlow: document.getElementById('rptFlow').value,
+                    rptSubstrate: document.getElementById('rptSubstrate').value,
+                    rptNets: document.getElementById('rptNets').value,
+                    rptEfficiency: document.getElementById('rptEfficiency').value,
+                    habitatNotes: document.getElementById('habitatNotes').value,
+                    surveyComments: document.getElementById('surveyComments').value,
+                },
+                widthTransects: {
+                    wetted: [...document.querySelectorAll('.wettedW')].map(i => i.value),
+                    bankfull: [...document.querySelectorAll('.bankfullW')].map(i => i.value)
+                },
+                env: { siteLat, siteLon, airTemp, weatherCode }
+            };
+        }
+
+        function applySurveyState(state) {
+            catchData = state.catchData || [];
+            passTimeLogs = state.passTimeLogs || [];
+            uniqueSpecies = new Set(state.uniqueSpecies || []);
+            playerXP = state.playerXP || 0;
+            playerLevel = state.playerLevel || 1;
+            if(state.achievements) { Object.keys(state.achievements).forEach(k => { if(achievements[k]) achievements[k].done = state.achievements[k].done; }); }
+
+            // Restore form fields
+            const f = state.fields || {};
+            Object.keys(f).forEach(k => {
+                const el = document.getElementById(k);
+                if(el) el.value = f[k] || '';
+            });
+
+            // Restore width transects
+            if(state.widthTransects) {
+                const wettedInputs = document.querySelectorAll('.wettedW');
+                const bankfullInputs = document.querySelectorAll('.bankfullW');
+                const wVals = state.widthTransects.wetted || [];
+                const bVals = state.widthTransects.bankfull || [];
+                const needed = Math.max(wVals.length, bVals.length);
+                while(transectCount < needed) addTransect();
+                const wI = document.querySelectorAll('.wettedW');
+                const bI = document.querySelectorAll('.bankfullW');
+                wVals.forEach((v, i) => { if(wI[i]) wI[i].value = v; });
+                bVals.forEach((v, i) => { if(bI[i]) bI[i].value = v; });
+            }
+
+            // Restore env
+            if(state.env) { siteLat = state.env.siteLat; siteLon = state.env.siteLon; airTemp = state.env.airTemp; weatherCode = state.env.weatherCode; }
+
+            // Rebuild log table
+            const logBody = document.getElementById('logBody');
+            logBody.innerHTML = '';
+            catchData.forEach(d => {
+                const tr = document.createElement('tr');
+                if(d.isGroup) {
+                    tr.innerHTML = `<td style="color:var(--warning); font-size:10px;">${d.site||'1'}</td><td style="color:var(--secondary); font-weight:bold;">${d.pass}</td><td><strong style="color:var(--text-bright);">${d.sp}</strong><br><span style="font-size:10px; color:var(--secondary);">GROUP</span></td><td style="color:var(--primary);">—</td><td><span style="color:var(--muted);">—</span></td>`;
+                } else {
+                    tr.innerHTML = `<td style="color:var(--warning); font-size:10px;">${d.site||'1'}</td><td style="color:var(--secondary); font-weight:bold;">${d.pass}</td><td><strong style="color:var(--text-bright);">${d.sp}</strong><br><span style="font-size:10px; color:var(--muted); font-style:italic;">${d.sci||''}</span></td><td style="color:var(--primary);">${d.len||'—'}</td><td><span style="color:var(--muted);">—</span></td>`;
+                }
+                logBody.prepend(tr);
+            });
+
+            // Rebuild pass time log
+            if(passTimeLogs.length > 0) {
+                const ptLog = document.getElementById('passTimeLog');
+                ptLog.style.display = 'block';
+                ptLog.innerHTML = '';
+                passTimeLogs.forEach(pt => {
+                    const entry = document.createElement('div');
+                    entry.innerHTML = `<span style="color:var(--secondary);">Site ${pt.site} Pass ${pt.pass}</span> — ${pt.startTime} → ${pt.endTime} — <strong style="color:var(--primary);">${pt.elapsedSec}s</strong>`;
+                    ptLog.prepend(entry);
+                });
+            }
+
+            updateHUD();
+            if(siteLat !== "UNK") {
+                document.getElementById('header-status').innerText = "✓ GPS LOCKED";
+                document.getElementById('header-status').classList.add('active');
+            }
+        }
+
+        function saveSurvey() {
+            try {
+                const state = gatherSurveyState();
+                localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+                updateSaveStatus();
+                sfxClick();
+            } catch(e) {
+                alert("⚠ Save failed: " + e.message);
+            }
+        }
+
+        function autoSave() {
+            try { localStorage.setItem(SAVE_KEY, JSON.stringify(gatherSurveyState())); updateSaveStatus(); } catch(e) {}
+        }
+
+        function updateSaveStatus() {
+            const el = document.getElementById('saveStatus');
+            if(!el) return;
+            try {
+                const raw = localStorage.getItem(SAVE_KEY);
+                if(raw) {
+                    const s = JSON.parse(raw);
+                    const d = new Date(s.savedAt);
+                    const count = (s.catchData || []).length;
+                    el.className = 'save-status saved';
+                    el.innerHTML = `✓ Saved: ${d.toLocaleDateString()} ${d.toLocaleTimeString()} — ${count} specimen${count !== 1 ? 's' : ''} — ${s.fields?.streamName || 'Unnamed'}`;
+                } else {
+                    el.className = 'save-status empty';
+                    el.textContent = 'No saved data';
+                }
+            } catch(e) {
+                el.className = 'save-status empty';
+                el.textContent = 'No saved data';
+            }
+        }
+
+        function exportSurveyJSON() {
+            const state = gatherSurveyState();
+            const name = (state.fields?.streamName || 'Survey').replace(/[^a-zA-Z0-9]/g, '_');
+            const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = `ElectroFry_${name}_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+            sfxClick();
+        }
+
+        function importSurveyJSON() {
+            const input = document.getElementById('importJSON');
+            if(!input.files.length) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const state = JSON.parse(e.target.result);
+                    if(!state.catchData) throw new Error("Invalid backup file");
+                    if(!confirm(`Load backup?\n\nStream: ${state.fields?.streamName || 'Unknown'}\nSpecimens: ${state.catchData.length}\nSaved: ${new Date(state.savedAt).toLocaleString()}\n\nThis will replace ALL current data.`)) return;
+                    applySurveyState(state);
+                    localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+                    updateSaveStatus();
+                    alert("✓ Survey restored successfully!");
+                    sfxClick();
+                } catch(err) {
+                    alert("⚠ Failed to load backup: " + err.message);
+                }
+            };
+            reader.readAsText(input.files[0]);
+            input.value = '';
+        }
+
+        function confirmClearSurvey() {
+            if(!confirm("⚠ This will permanently delete ALL survey data from this browser.\n\nDownload a backup first if you haven't already.\n\nAre you sure?")) return;
+            if(!confirm("FINAL WARNING: All specimen logs, form data, and XP will be erased. Continue?")) return;
+            localStorage.removeItem(SAVE_KEY);
+            catchData = []; passTimeLogs = []; uniqueSpecies = new Set();
+            playerXP = 0; playerLevel = 1;
+            Object.keys(achievements).forEach(k => achievements[k].done = false);
+            document.getElementById('logBody').innerHTML = '';
+            document.getElementById('passTimeLog').innerHTML = ''; document.getElementById('passTimeLog').style.display = 'none';
+            // Clear form fields
+            ['streamName','crewNames','reachLen','waterTemp','conductivity','dissolvedO2','phLevel','turbidity','equipModel','shockSecs','volts','freq','duty','habitatNotes','surveyComments'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+            document.getElementById('siteNum').value = '1'; document.getElementById('passNum').value = '1';
+            document.querySelectorAll('.wettedW, .bankfullW').forEach(i => i.value = '');
+            updateHUD(); updateSaveStatus();
+            alert("✓ All data cleared.");
+            sfxClick();
+        }
+
+        function checkForSavedData() {
+            try {
+                const raw = localStorage.getItem(SAVE_KEY);
+                if(raw) {
+                    const s = JSON.parse(raw);
+                    if(s.catchData && s.catchData.length > 0) {
+                        const d = new Date(s.savedAt);
+                        document.getElementById('restore-info').innerHTML = `<strong style="color:var(--primary);">Stream:</strong> ${s.fields?.streamName || 'Unnamed'}<br><strong style="color:var(--primary);">Specimens:</strong> ${s.catchData.length}<br><strong style="color:var(--primary);">Last Saved:</strong> ${d.toLocaleDateString()} ${d.toLocaleTimeString()}<br><strong style="color:var(--primary);">Level:</strong> ${s.playerLevel || 1}`;
+                        document.getElementById('splash-screen').style.display = 'none';
+                        document.getElementById('restore-modal').style.display = 'flex';
+                        return true;
+                    }
+                }
+            } catch(e) {}
+            return false;
+        }
+
+        function restoreSurvey() {
+            sfxBoot();
+            document.getElementById('restore-modal').style.display = 'none';
+            document.getElementById('app-body').style.display = 'block';
+            document.getElementById('nav-bar').style.display = 'flex';
+            // Init species dropdown
+            const sel = document.getElementById('species');
+            if(sel.options.length <= 1) {
+                speciesDB.forEach(g => {
+                    const grp = document.createElement('optgroup'); grp.label = '— ' + g.group.toUpperCase() + ' —';
+                    g.items.forEach(i => { const opt = document.createElement('option'); opt.value = i.n; opt.dataset.sci = i.s; opt.dataset.traits = i.t; opt.textContent = i.n; grp.appendChild(opt); });
+                    sel.appendChild(grp);
+                });
+            }
+            let lenHTML = '<option disabled selected>Select mm...</option>'; for(let i=10; i<=1000; i+=10) lenHTML += `<option value="${i}">${i} mm</option>`; document.getElementById('lenConv').innerHTML = lenHTML;
+            let tmpHTML = '<option disabled selected>Select °C...</option>'; for(let i=-5; i<=35; i+=1) tmpHTML += `<option value="${i}">${i} °C</option>`; document.getElementById('tempConv').innerHTML = tmpHTML;
+            initChart(); initLFChart();
+
+            try {
+                const state = JSON.parse(localStorage.getItem(SAVE_KEY));
+                applySurveyState(state);
+            } catch(e) {}
+            updateHUD(); updateSaveStatus();
+        }
+
+        function skipRestore() {
+            document.getElementById('restore-modal').style.display = 'none';
+            document.getElementById('splash-screen').style.display = 'flex';
+        }
+
+        /* ===========================
            GROUP CATCH TOGGLE
            =========================== */
         function toggleGroupCatch() {
             const isGroup = document.getElementById('groupToggle').checked;
             document.getElementById('groupCatchFields').style.display = isGroup ? 'block' : 'none';
             document.getElementById('individualFields').style.display = isGroup ? 'none' : 'block';
+            sfxClick();
+        }
+
+        /* ===========================
+           PHOTO CAPTURE
+           =========================== */
+        let activePhotoFile = null;
+
+        function previewPhoto() {
+            const input = document.getElementById('photo');
+            if(input.files.length > 0) {
+                activePhotoFile = input.files[0];
+                showPhotoPreview(activePhotoFile);
+            }
+        }
+
+        function galleryPicked() {
+            const input = document.getElementById('photoGallery');
+            if(input.files.length > 0) {
+                activePhotoFile = input.files[0];
+                // Copy to main photo input via DataTransfer
+                const dt = new DataTransfer();
+                dt.items.add(activePhotoFile);
+                document.getElementById('photo').files = dt.files;
+                showPhotoPreview(activePhotoFile);
+            }
+        }
+
+        function showPhotoPreview(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('photoThumb').src = e.target.result;
+                document.getElementById('photoPreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+            sfxClick();
+        }
+
+        function clearPhoto() {
+            activePhotoFile = null;
+            document.getElementById('photo').value = '';
+            document.getElementById('photoGallery').value = '';
+            document.getElementById('photoPreview').style.display = 'none';
+            document.getElementById('photoThumb').src = '';
             sfxClick();
         }
 
@@ -2216,6 +2569,7 @@
             entry.innerHTML = `<span style="color:var(--secondary);">Site ${site} Pass ${pass}</span> — ${startT} → ${endT} — <strong style="color:var(--primary);">${secs}s</strong>`;
             logEl.prepend(entry);
             sfxClick();
+            autoSave();
         }
 
         function resetTimer() {
@@ -2560,6 +2914,9 @@
                 warningDiv.innerHTML = warnings.join('<br>');
             }
         }
+
+        // Check for saved survey on page load
+        window.addEventListener('DOMContentLoaded', () => { checkForSavedData(); });
 
     </script>
 </body>
