@@ -489,6 +489,40 @@
         .manual-section p { font-size: 13px; color: var(--text); margin-bottom: 10px; }
         .safety-section h5 { margin-top: 15px; margin-bottom: 4px; color: var(--danger); font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px; }
         .safety-section p { font-size: 13px; color: var(--text); margin-bottom: 10px; }
+
+        /* COLLAPSIBLE REF SECTIONS */
+        .ref-dropdown { border: none; background: none; padding: 0; margin: 0; }
+        .ref-dropdown summary {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            list-style: none;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+            text-shadow: 0 0 20px var(--glow-strong);
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .ref-dropdown summary::-webkit-details-marker { display: none; }
+        .ref-dropdown summary::before { content: '//'; color: var(--secondary); font-weight: 400; opacity: 0.6; }
+        .ref-dropdown summary::after {
+            content: '▸';
+            margin-left: auto;
+            font-size: 14px;
+            color: var(--secondary);
+            transition: transform 0.3s;
+        }
+        .ref-dropdown[open] summary::after { transform: rotate(90deg); }
+        .ref-dropdown[open] summary { margin-bottom: 16px; }
+        .ref-dropdown .ref-body { animation: biodexSlide 0.3s ease-out; }
         .ex-text { display: block; margin-top: 6px; font-size: 11.5px; color: var(--primary-dim); font-style: italic; line-height: 1.5; border-left: 2px solid var(--border); padding-left: 10px; margin-left: 4px; }
         .example-box {
             background: rgba(0, 229, 255, 0.04);
@@ -860,6 +894,43 @@
                 <label>Waterbody / Stream Name</label><input type="text" id="streamName" placeholder="e.g. Bear Creek, Reach 2" style="margin-bottom: 12px;">
                 <label>Crew Members</label><input type="text" id="crewNames" placeholder="e.g. Dr. Smith, J. Doe">
             </div>
+            <div class="card" style="border-left: 3px solid var(--secondary); background: linear-gradient(135deg, rgba(124,77,255,0.04), rgba(0,229,255,0.04));">
+                <h3 style="font-size: 0.8rem;">⚡ Smith-Root LR-24 Quick Reference</h3>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <div style="font-family: 'Orbitron', sans-serif; font-size: 9px; color: var(--secondary); letter-spacing: 2px; margin-bottom: 8px; font-weight: 700;">LR-24 QUICK SETUP</div>
+                        <div style="font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--text); line-height: 2;">
+                            <span style="color:var(--primary);">1.</span> Power on (rotate switch 90° CW)<br>
+                            <span style="color:var(--primary);">2.</span> Press <strong style="color:var(--text-bright);">MENU</strong><br>
+                            <span style="color:var(--primary);">3.</span> Arrow to <strong style="color:var(--text-bright);">Quick Setup</strong><br>
+                            <span style="color:var(--primary);">4.</span> Press <strong style="color:var(--text-bright);">ENTER</strong><br>
+                            <span style="color:var(--primary);">5.</span> Submerge anode &amp; cathode<br>
+                            <span style="color:var(--primary);">6.</span> Press <strong style="color:var(--text-bright);">anode pole switch</strong> briefly<br>
+                            <span style="color:var(--muted); font-size:10px;">→ LR-24 auto-selects voltage</span><br>
+                            <span style="color:var(--muted); font-size:10px;">→ Defaults: PDC, 30Hz, 12% duty</span>
+                        </div>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <div style="font-family: 'Orbitron', sans-serif; font-size: 9px; color: var(--secondary); letter-spacing: 2px; margin-bottom: 8px; font-weight: 700;">LR-24 RESET SHOCK TIMER</div>
+                        <div style="font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--text); line-height: 2;">
+                            <span style="color:var(--primary);">1.</span> Press <strong style="color:var(--text-bright);">MENU</strong><br>
+                            <span style="color:var(--primary);">2.</span> Arrow to <strong style="color:var(--text-bright);">Reset Timer</strong><br>
+                            <span style="color:var(--primary);">3.</span> Press <strong style="color:var(--text-bright);">ENTER</strong> to confirm<br>
+                            <span style="color:var(--muted); font-size:10px;">→ Any other key cancels reset</span><br>
+                            <span style="color:var(--muted); font-size:10px;">→ Reset between each pass</span><br>
+                            <span style="color:var(--muted); font-size:10px;">→ Record shock secs before resetting</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);">
+                    <div style="font-family: 'Orbitron', sans-serif; font-size: 9px; color: var(--secondary); letter-spacing: 2px; margin-bottom: 6px; font-weight: 700;">FISH NOT RESPONDING?</div>
+                    <div style="font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text); line-height: 1.8;">
+                        <span style="color:var(--success);">①</span> ↑ Voltage (+50V) until fish twitch →
+                        <span style="color:var(--warning);">②</span> ↑ Duty cycle (+10%) until taxis →
+                        <span style="color:var(--danger);">③</span> ↑ Frequency (+10Hz) — last resort
+                    </div>
+                </div>
+            </div>
             <div class="card corner-marks">
                 <h3>Environmental Data</h3>
                 <button class="btn btn-secondary" onclick="getLocationAndWeather()" style="margin-bottom: 15px;">📡 ACQUIRE GPS &amp; WEATHER</button>
@@ -1029,7 +1100,7 @@
             <div class="card safety-section" style="border-left: 3px solid var(--danger);">
                 <h3 style="color: var(--danger); border-bottom-color: rgba(255,23,68,0.3);">⚠ Backpack Safety Protocol</h3>
                 <h5 style="margin-top:0;">1. Personal Protective Equipment (PPE)</h5>
-                <p>All crew must wear non-leaking, non-breathable chest waders, a wading belt to prevent water entry during a fall, and high-voltage lineman's gloves (Class 0, rated to 1000V). Polarized sunglasses are required.</p>
+                <p>All crew must wear non-leaking, non-breathable chest waders, a wading belt to prevent water entry during a fall, and high-voltage lineman's gloves (Class 0, rated to 1000V).</p>
                 <h5>2. Communication ("Power On")</h5>
                 <p>The operator must loudly announce <strong style="color:var(--danger);">"POWER ON!"</strong> before pressing the anode switch. Netters must acknowledge. When releasing, announce <strong style="color:var(--success);">"POWER OFF!"</strong></p>
                 <h5>3. Fall Procedures & Immersion Switches</h5>
@@ -1039,8 +1110,106 @@
             </div>
 
             <div class="card manual-section">
-                <h3>Electrofishing Parameters</h3>
+                <details class="ref-dropdown" open>
+                <summary>Setting Up the Smith-Root LR-24 — Step by Step</summary>
+                <div class="ref-body">
 
+                <h5 style="margin-top:0;">Before You Enter the Water</h5>
+                <p><strong style="color:var(--primary);">Step 1 — Measure Water Conductivity</strong><br>
+                Use a conductivity meter and record the reading. This is the single most important number for choosing your settings — it determines everything else. Record it on the Site tab and in your report.</p>
+                <div class="example-box">
+                    <strong style="color:var(--secondary);">Conductivity Ranges (PNW Reference):</strong><br>
+                    • <strong style="color:var(--primary);">Low (&lt;100 µS/cm)</strong> — alpine/snowmelt streams, pristine headwaters<br>
+                    • <strong style="color:var(--primary);">Medium (100–300 µS/cm)</strong> — most forested Pacific Northwest streams<br>
+                    • <strong style="color:var(--primary);">High (300–800+ µS/cm)</strong> — agricultural lowlands, tidal influence, urban runoff
+                </div>
+
+                <p style="margin-top: 12px;"><strong style="color:var(--primary);">Step 2 — Check Water Temperature</strong><br>
+                Do not electrofish in excessively warm water. High temperatures reduce dissolved oxygen, and electrofishing stress on top of thermal stress can cause significant mortality. Most protocols avoid sampling above 18–20°C for salmonids.</p>
+
+                <p><strong style="color:var(--primary);">Step 3 — Visual Gear Inspection</strong><br>
+                Before powering on, check: anode ring is intact and not corroded, cathode braid is undamaged and fully extended, all cable connections are secure, battery is charged, tilt/immersion safety switches are functional. Test the emergency shutdown switch.</p>
+
+                <h5 style="margin-top:15px;">Selecting Your Starting Settings</h5>
+                <p><strong style="color:var(--primary);">Step 4 — Run LR-24 Quick Setup</strong><br>
+                The Smith-Root LR-24's Quick Setup auto-selects voltage based on the resistance between your electrodes in the water. It keeps frequency at 30 Hz and duty cycle at 12% — deliberately conservative starting values you'll adjust upward from.</p>
+                <div class="example-box">
+                    <strong style="color:var(--secondary);">LR-24 Quick Setup Procedure:</strong><br><br>
+                    <strong>1.</strong> Power on the LR-24 (rotate the emergency shutdown switch 90° clockwise).<br>
+                    <strong>2.</strong> Press <strong style="color:var(--primary);">MENU</strong>.<br>
+                    <strong>3.</strong> Use arrow keys to scroll to <strong style="color:var(--primary);">Quick Setup</strong>.<br>
+                    <strong>4.</strong> Press <strong style="color:var(--primary);">ENTER</strong>.<br>
+                    <strong>5.</strong> Make sure the cathode braid is trailing behind you in the water. Submerge the anode ring.<br>
+                    <strong>6.</strong> Press the <strong style="color:var(--primary);">anode pole switch</strong> briefly — the LR-24 sends a test pulse, measures the energy transfer between electrodes, and auto-selects an appropriate voltage.<br>
+                    <strong>7.</strong> Quick Setup is complete. Check the status screen to see the selected settings.<br><br>
+                    <strong style="color:var(--warning);">Defaults after Quick Setup:</strong> Pulsed DC, <strong style="color:var(--primary);">30 Hz</strong>, <strong style="color:var(--primary);">12% duty cycle</strong> (4ms pulse width), voltage auto-selected to achieve ~25W average power output.<br><br>
+                    <em style="color:var(--muted);">The LR-24 remembers the last-used settings on power-up. You can also store up to 10 custom setting profiles via STORE SETUP and recall them at different sites with RECALL SETUP.</em>
+                </div>
+
+                <p style="margin-top: 12px;"><strong style="color:var(--primary);">Step 5 — Manual Settings (If Skipping Quick Setup)</strong></p>
+                <div class="example-box">
+                    <strong style="color:var(--secondary);">Recommended Starting Points (Juvenile Salmonids):</strong><br><br>
+                    <strong>Voltage:</strong><br>
+                    • Low conductivity (&lt;100 µS/cm): start at <strong style="color:var(--warning);">300–500V</strong><br>
+                    • Medium conductivity (100–300 µS/cm): start at <strong style="color:var(--warning);">150–250V</strong><br>
+                    • High conductivity (300+ µS/cm): start at <strong style="color:var(--warning);">50–150V</strong><br><br>
+                    <strong>Frequency:</strong> <strong style="color:var(--warning);">30 Hz</strong> (safe for scaleless/fine-scaled fish like salmonids and sculpin)<br><br>
+                    <strong>Duty Cycle:</strong> <strong style="color:var(--warning);">10–15%</strong><br><br>
+                    <strong>Waveform:</strong> <strong style="color:var(--warning);">Pulsed DC</strong> (best capture efficiency for most situations)<br><br>
+                    <em style="color:var(--muted);">For heavily scaled fish (bass, carp, minnows), you may need to start higher: 50–60 Hz and 20–30% duty cycle.</em>
+                </div>
+
+                <h5 style="margin-top:15px;">In-Water Adjustment — Reading Fish Behavior</h5>
+                <p><strong style="color:var(--primary);">Step 6 — Start Fishing and Watch the Fish Response</strong><br>
+                Begin electrofishing with your starting settings. On the LR-24, press the anode pole switch to energize. Watch carefully how fish react — their behavior tells you exactly what to adjust. Use the LR-24's front panel keys (<strong style="color:var(--text-bright);">VOLTS</strong>, <strong style="color:var(--text-bright);">FREQ</strong>, <strong style="color:var(--text-bright);">DUTY CYCLE</strong>) with the arrow keys to make changes, then press <strong style="color:var(--text-bright);">ENTER</strong> to confirm each adjustment.</p>
+                <div class="example-box">
+                    <strong style="color:var(--secondary);">Fish Behavior Decision Tree:</strong><br><br>
+
+                    <strong style="color:var(--success);">✓ IDEAL: Fish swim toward anode, slow down, and are easily netted</strong><br>
+                    → Settings are correct. Keep fishing.<br><br>
+
+                    <strong style="color:var(--warning);">⚠ Fish TWITCH but DON'T MOVE toward anode</strong><br>
+                    → Voltage is reaching them but not enough to induce taxis (attraction). Press <strong style="color:var(--text-bright);">VOLTS</strong>, <strong>increase voltage</strong> in 50V steps, press <strong style="color:var(--text-bright);">ENTER</strong>. Stop increasing when fish begin showing a forced twitch response.<br><br>
+
+                    <strong style="color:var(--warning);">⚠ Fish TWITCH and then ESCAPE</strong><br>
+                    → Voltage is adequate — fish feel the field but aren't showing taxis. Press <strong style="color:var(--text-bright);">DUTY CYCLE</strong>, <strong>increase duty cycle</strong> by 10%, press <strong style="color:var(--text-bright);">ENTER</strong>. Repeat until taxis is achieved. If duty cycle reaches max without taxis, reset to 12% and go to frequency.<br><br>
+
+                    <strong style="color:var(--warning);">⚠ Fish SWIM AWAY (flee response, no twitching)</strong><br>
+                    → Field is too weak to stun. Press <strong style="color:var(--text-bright);">VOLTS</strong>, <strong>increase voltage</strong> by 50V. If already at max voltage, <strong>increase duty cycle</strong> by 10%. If still no response, <strong>increase frequency</strong> by 10 Hz as a last resort.<br><br>
+
+                    <strong style="color:var(--danger);">✖ Fish go RIGID / TETANY (locked up, can't move)</strong><br>
+                    → Settings are too aggressive. Press <strong style="color:var(--text-bright);">FREQ</strong>, <strong>decrease frequency immediately.</strong> Tetany causes severe spinal injuries and vertebral fractures. Net the fish quickly and back off settings. If a fish takes more than 5 seconds to recover, it was shocked too much. More than 15 seconds means settings must be reduced.<br><br>
+
+                    <strong style="color:var(--danger);">✖ No fish response at all</strong><br>
+                    → Check that the unit is outputting (look at the display). Verify cathode is submerged. Try a significant voltage increase (50–100V). If still nothing, the reach may genuinely have very few fish.
+                </div>
+
+                <h5 style="margin-top:15px;">The Adjustment Order Matters</h5>
+                <p>Settings are listed below from <strong style="color:var(--danger);">highest injury risk</strong> to lowest. Always exhaust the safer adjustments before moving to riskier ones:</p>
+                <div class="example-box">
+                    <strong style="color:var(--danger);">1. FREQUENCY (highest risk)</strong> — Most likely to cause spinal injuries. Never exceed 60 Hz for salmonids. Increase only when voltage and duty cycle changes aren't working.<br><br>
+                    <strong style="color:var(--warning);">2. VOLTAGE (moderate risk)</strong> — Adjust in small steps (5–20V). Too much voltage in high-conductivity water can overload the unit and injure fish near the anode.<br><br>
+                    <strong style="color:var(--success);">3. DUTY CYCLE (lowest risk)</strong> — Safest to adjust. Increasing duty cycle from 10% to 25% puts significantly more energy into the water without spiking the dangerous peak voltage or pulse rate.
+                </div>
+
+                <h5 style="margin-top:15px;">Special Cases</h5>
+                <p><strong style="color:var(--primary);">High Conductivity / Battery Conservation</strong><br>
+                In highly conductive water (400+ µS/cm), or when battery life is a concern, you can switch to straight DC (100% duty cycle, no pulsing). This draws less power than pulsed DC at the same capture effect. However, pulsed DC generally has better capture efficiency, so only use DC when conditions demand it.</p>
+
+                <p><strong style="color:var(--primary);">Between Passes</strong><br>
+                Keep your settings identical across all passes. If you change voltage or frequency mid-survey, capture probability changes between passes — this violates the core assumption of depletion sampling and invalidates your MLE population estimate.</p>
+
+                <p><strong style="color:var(--primary);">Reset the Shock Timer Between Passes</strong><br>
+                On the LR-24: press <strong style="color:var(--text-bright);">MENU</strong>, arrow to <strong style="color:var(--text-bright);">Reset Timer</strong>, press <strong style="color:var(--text-bright);">ENTER</strong> to confirm (any other key cancels). This zeros out the shocking seconds counter so you get a clean per-pass effort reading. Record the shock seconds from each pass before resetting — consistent effort between passes is critical for valid depletion estimates.</p>
+
+                </div>
+                </details>
+            </div>
+
+            <div class="card manual-section">
+                <details class="ref-dropdown">
+                <summary>Electrofishing Parameters</summary>
+                <div class="ref-body">
                 <h5 style="margin-top:0;">Conductivity (Cond µS/cm)</h5>
                 <p>Fish internal conductivity is roughly <strong style="color:var(--primary);">115 to 150 µS/cm</strong>. This dictates your voltage. If water conductivity is very low, it resists electricity; if very high, it conducts better than the fish.
                 <span class="ex-text">Example: Pristine alpine snowmelt streams are highly resistive (20-50 µS/cm). Lowland agricultural rivers or tidal estuaries are highly conductive (400-1000+ µS/cm).</span></p>
@@ -1056,10 +1225,14 @@
                 <h5>Duty Cycle (%)</h5>
                 <p>Percentage of time electricity is flowing during a pulse cycle. Standard is 10-25%. Higher duty cycle = more total power, but increased risk of muscular hemorrhaging.
                 <span class="ex-text">Example: If fishing at 30 Hz and fish are escaping the electric field, increasing the duty cycle from 10% to 24% will put more overall energy into the water and widen the capture zone without spiking the dangerous peak voltage.</span></p>
+                </div>
+                </details>
             </div>
 
             <div class="card manual-section">
-                <h3>Depletion Theory &amp; Formulas</h3>
+                <details class="ref-dropdown">
+                <summary>Depletion Theory &amp; Formulas</summary>
+                <div class="ref-body">
 
                 <h5 style="margin-top:0;">1. Catchability Coefficient (q)</h5>
                 <p><strong style="color:var(--primary);">Formula: q = C / (N × E)</strong><br>
@@ -1115,11 +1288,14 @@
                     • Operator inexperience — the first pass may have poor coverage.<br><br>
                     <em style="color:var(--muted);">If a non-descending pattern occurs, your population estimate may be unreliable — note it in your report.</em>
                 </div>
+                </div>
+                </details>
             </div>
 
             <div class="card manual-section">
-                <h3>Length-Frequency Distribution</h3>
-
+                <details class="ref-dropdown">
+                <summary>Length-Frequency Distribution</summary>
+                <div class="ref-body">
                 <h5 style="margin-top:0;">What Is It?</h5>
                 <p>A length-frequency histogram groups every fish you caught into size classes (typically 10mm bins) and counts how many fish fall into each bin. This simple chart reveals the <strong style="color:var(--primary);">age structure</strong> of the population — each peak usually represents a different year-class (age group) of fish.</p>
 
@@ -1134,10 +1310,14 @@
                     <strong style="color:var(--warning);">Red Flag Example:</strong> If your chart only shows fish in the 150-250mm range with zero fish under 100mm, it likely means spawning failed this year — no juveniles recruited into the population. This is critical information for managers.<br><br>
                     <em style="color:var(--muted);">The Length-Frequency chart is auto-generated on the Stats tab (📈) and exported to the Excel download as its own sheet with a per-species size class matrix.</em>
                 </div>
+                </div>
+                </details>
             </div>
 
             <div class="card manual-section">
-                <h3>Channel Width Transects</h3>
+                <details class="ref-dropdown">
+                <summary>Channel Width Transects</summary>
+                <div class="ref-body">
 
                 <h5 style="margin-top:0;">What Are Transects?</h5>
                 <p>A transect is a straight-line measurement across the stream channel from one bank to the other. You measure two things at each transect: <strong style="color:var(--primary);">wetted width</strong> (the actual water surface) and <strong style="color:var(--primary);">bankfull width</strong> (the width at the level where water would just start to overflow onto the floodplain).</p>
@@ -1160,10 +1340,14 @@
                     <strong>Density</strong> = (90 ÷ 191.7) × 100 = <strong style="color:var(--success);">46.9 fish per 100m²</strong><br><br>
                     <em style="color:var(--muted);">Bankfull width is recorded for habitat characterization but is NOT used in density calculations — only wetted width counts because that's where the fish actually live during sampling.</em>
                 </div>
+                </div>
+                </details>
             </div>
 
             <div class="card manual-section">
-                <h3>Per-Species Population &amp; Biomass</h3>
+                <details class="ref-dropdown">
+                <summary>Per-Species Population &amp; Biomass</summary>
+                <div class="ref-body">
 
                 <h5 style="margin-top:0;">Why Per-Species?</h5>
                 <p>The overall MLE lumps all fish together, but species behave differently in an electric field. Sculpin hide under rocks and have low capture probability. Trout are stunned more easily. Running MLE <strong style="color:var(--primary);">separately for each species</strong> produces more accurate population estimates because each species gets its own capture probability (p̂).</p>
@@ -1189,10 +1373,73 @@
                     <em>Standard unit for comparing across watersheds and in published literature. Productive salmonid streams typically range from 20–80 kg/ha.</em><br><br>
                     <em style="color:var(--muted);">These values auto-calculate on the Stats tab (📈) when you click "Refresh Estimates" and appear in the Biomass & Density sheet of the Excel export.</em>
                 </div>
+                </div>
+                </details>
             </div>
 
             <div class="card manual-section">
-                <h3>Condition Factor &amp; Weight Estimation</h3>
+                <details class="ref-dropdown">
+                <summary>Abundance &amp; CPUE</summary>
+                <div class="ref-body">
+
+                <h5 style="margin-top:0;">What Is Abundance?</h5>
+                <p>Abundance is simply <strong style="color:var(--primary);">how many fish are in the reach</strong>. There are two ways to express it:</p>
+                <p><strong style="color:var(--primary);">Absolute Abundance</strong> — the actual estimated number of fish (your MLE population estimate, N̂). Example: "We estimate 90 Coho Salmon in this reach."</p>
+                <p><strong style="color:var(--primary);">Relative Abundance</strong> — a standardized index that lets you compare across sites or years without needing a full population estimate. CPUE is the most common relative abundance metric.</p>
+                <div class="example-box">
+                    <strong style="color:var(--warning);">When to use which:</strong><br><br>
+                    <strong>Absolute abundance (MLE)</strong> is better when you need a real number for management decisions — harvest limits, endangered species counts, or habitat restoration targets.<br><br>
+                    <strong>Relative abundance (CPUE)</strong> is better for trend monitoring — "Are there more fish this year than last year?" You don't need to know the exact count, just whether the index is going up or down.
+                </div>
+
+                <h5 style="margin-top:15px;">What Is CPUE?</h5>
+                <p><strong style="color:var(--primary);">CPUE = Catch Per Unit Effort</strong><br>
+                It standardizes your catch by the effort you put in, so you can fairly compare surveys where effort wasn't identical. The "unit of effort" in electrofishing is usually <strong style="color:var(--warning);">seconds of shocking time</strong>, but it can also be per pass, per hour, or per meter of stream.</p>
+
+                <h5>How to Calculate CPUE</h5>
+                <p><strong style="color:var(--primary);">Formula: CPUE = Total Catch ÷ Total Effort</strong></p>
+                <div class="example-box">
+                    <strong style="color:var(--secondary);">Example 1 — CPUE per Second:</strong><br><br>
+                    You caught 45 fish over 3 passes totaling 900 shock-seconds.<br>
+                    CPUE = 45 ÷ 900 = <strong style="color:var(--success);">0.05 fish per second</strong><br><br>
+                    Next year at the same site, you caught 60 fish in 1,200 shock-seconds.<br>
+                    CPUE = 60 ÷ 1,200 = <strong style="color:var(--success);">0.05 fish per second</strong><br><br>
+                    <em style="color:var(--muted);">Even though raw catch went up (45 → 60), CPUE stayed the same — meaning the population didn't actually change, you just fished harder the second year.</em>
+                </div>
+                <div class="example-box" style="margin-top: 10px;">
+                    <strong style="color:var(--secondary);">Example 2 — CPUE per Pass:</strong><br><br>
+                    This is the simplest version and what appears on your depletion chart. Each bar on the Y-axis is literally "fish caught on that pass" — which is CPUE where effort = 1 pass.<br><br>
+                    • Pass 1: 50 fish (CPUE = 50)<br>
+                    • Pass 2: 30 fish (CPUE = 30)<br>
+                    • Pass 3: 10 fish (CPUE = 10)<br><br>
+                    <em style="color:var(--muted);">The declining CPUE across passes is the core evidence that depletion is working — you're removing fish and catching fewer each time.</em>
+                </div>
+                <div class="example-box" style="margin-top: 10px;">
+                    <strong style="color:var(--secondary);">Example 3 — CPUE per 100m of Stream:</strong><br><br>
+                    Useful when comparing reaches of different lengths.<br><br>
+                    Site A: 40 fish caught in a 50m reach → (40 ÷ 50) × 100 = <strong style="color:var(--primary);">80 fish/100m</strong><br>
+                    Site B: 60 fish caught in a 120m reach → (60 ÷ 120) × 100 = <strong style="color:var(--primary);">50 fish/100m</strong><br><br>
+                    <em style="color:var(--muted);">Even though Site B caught more total fish, Site A has higher CPUE — it's a denser population.</em>
+                </div>
+
+                <h5 style="margin-top:15px;">CPUE Assumptions &amp; Pitfalls</h5>
+                <p>CPUE only works as an abundance index if capture probability stays roughly constant. If anything changes the catchability between surveys — different gear, different crew experience, different water clarity, different flow — your CPUE comparison is compromised.</p>
+                <div class="example-box">
+                    <strong style="color:var(--danger);">⚠ Common CPUE Traps:</strong><br>
+                    • <strong>Comparing across gear types</strong> — a backpack unit and a boat shocker have totally different capture efficiency. Never compare their CPUE directly.<br>
+                    • <strong>Ignoring water conditions</strong> — high turbidity dramatically reduces capture probability. A low CPUE during a flood doesn't mean fish disappeared.<br>
+                    • <strong>Different operators</strong> — an experienced crew catches more per second than a novice crew. Standardize crew experience or note it in your report.<br>
+                    • <strong>Hyperstability</strong> — fish may aggregate in the remaining good habitat as a population declines, keeping CPUE artificially high even as abundance drops. This is especially dangerous for management decisions.<br><br>
+                    <em style="color:var(--muted);">Always record your exact effort (shock seconds, reach length, crew size, gear model) so CPUE can be properly standardized. The pass timer on the Log tab (📝) helps ensure consistent effort between passes.</em>
+                </div>
+                </div>
+                </details>
+            </div>
+
+            <div class="card manual-section">
+                <details class="ref-dropdown">
+                <summary>Condition Factor &amp; Weight Estimation</summary>
+                <div class="ref-body">
 
                 <h5 style="margin-top:0;">Fulton's Condition Factor (K)</h5>
                 <p><strong style="color:var(--primary);">Formula: K = (W / L³) × 100,000</strong><br>
@@ -1224,6 +1471,8 @@
                 <p><strong style="color:var(--primary);">Formula: SE = √(Var(N̂))</strong><br>
                 Standard Error quantifies the precision of your population estimate. Smaller SE = tighter estimate. The 95% confidence interval is calculated as N̂ ± 1.96 × SE.</p>
                 <span class="ex-text">Example: If N̂ = 90 and SE = 5, then the 95% CI is 90 ± 9.8, or roughly 80 to 100 fish. That's a tight, reliable estimate. If SE = 25, then CI is 90 ± 49, meaning anywhere from 41 to 139 — too imprecise to be useful.</span>
+                </div>
+                </details>
             </div>
 
             <div class="card">
