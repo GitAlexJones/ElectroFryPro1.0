@@ -1397,8 +1397,12 @@
             <div class="card">
                 <h3>Conversions</h3>
                 <div class="row" style="margin-bottom: 12px;">
-                    <div class="col"><label>Length (mm → in)</label><select id="lenConv" onchange="calcLen()"></select><div id="lenResult" class="conv-result" style="color:var(--primary);">--</div></div>
+                    <div class="col"><label>Meters → Feet</label><select id="mConv" onchange="calcM()"></select><div id="mResult" class="conv-result" style="color:var(--primary);">--</div></div>
+                    <div class="col"><label>cm → Meters</label><select id="cmConv" onchange="calcCm()"></select><div id="cmResult" class="conv-result" style="color:var(--secondary);">--</div></div>
+                </div>
+                <div class="row" style="margin-bottom: 12px;">
                     <div class="col"><label>Temp (°C → °F)</label><select id="tempConv" onchange="calcTemp()"></select><div id="tempResult" class="conv-result" style="color:var(--danger);">--</div></div>
+                    <div class="col"></div>
                 </div>
                 <div style="border-top: 1px solid var(--border); padding-top: 12px;">
                     <label>Fulton's Condition Factor (K)</label>
@@ -1529,14 +1533,15 @@
                 g.items.forEach(i => { const opt = document.createElement('option'); opt.value = i.n; opt.dataset.sci = i.s; opt.dataset.traits = i.t; opt.textContent = i.n; grp.appendChild(opt); });
                 sel.appendChild(grp);
             });
-            let lenHTML = '<option disabled selected>Select mm...</option>'; for(let i=10; i<=1000; i+=10) lenHTML += `<option value="${i}">${i} mm</option>`; document.getElementById('lenConv').innerHTML = lenHTML;
+            let mHTML = '<option disabled selected>Select m...</option>'; for(let i=1; i<=200; i++) mHTML += `<option value="${i}">${i} m</option>`; document.getElementById('mConv').innerHTML = mHTML; let cmHTML = '<option disabled selected>Select cm...</option>'; for(let i=10; i<=2000; i+=10) cmHTML += `<option value="${i}">${i} cm</option>`; document.getElementById('cmConv').innerHTML = cmHTML;
             let tmpHTML = '<option disabled selected>Select °C...</option>'; for(let i=-5; i<=35; i+=1) tmpHTML += `<option value="${i}">${i} °C</option>`; document.getElementById('tempConv').innerHTML = tmpHTML;
             initChart();
             initLFChart();
             updateHUD();
         }
 
-        function calcLen() { let v = document.getElementById('lenConv').value; document.getElementById('lenResult').innerText = `${v} mm = ${(v / 25.4).toFixed(2)} in`; sfxClick(); }
+        function calcM() { let v = document.getElementById('mConv').value; document.getElementById('mResult').innerText = `${v} m = ${(v * 3.28084).toFixed(2)} ft`; sfxClick(); }
+        function calcCm() { let v = document.getElementById('cmConv').value; document.getElementById('cmResult').innerText = `${v} cm = ${(v / 100).toFixed(2)} m`; sfxClick(); }
         function calcTemp() { let v = document.getElementById('tempConv').value; document.getElementById('tempResult').innerText = `${v} °C = ${((v * 1.8) + 32).toFixed(1)} °F`; sfxClick(); }
         function calcK() {
             const l = parseFloat(document.getElementById('kLength').value);
@@ -2472,7 +2477,7 @@
                     sel.appendChild(grp);
                 });
             }
-            let lenHTML = '<option disabled selected>Select mm...</option>'; for(let i=10; i<=1000; i+=10) lenHTML += `<option value="${i}">${i} mm</option>`; document.getElementById('lenConv').innerHTML = lenHTML;
+            let mHTML = '<option disabled selected>Select m...</option>'; for(let i=1; i<=200; i++) mHTML += `<option value="${i}">${i} m</option>`; document.getElementById('mConv').innerHTML = mHTML; let cmHTML = '<option disabled selected>Select cm...</option>'; for(let i=10; i<=2000; i+=10) cmHTML += `<option value="${i}">${i} cm</option>`; document.getElementById('cmConv').innerHTML = cmHTML;
             let tmpHTML = '<option disabled selected>Select °C...</option>'; for(let i=-5; i<=35; i+=1) tmpHTML += `<option value="${i}">${i} °C</option>`; document.getElementById('tempConv').innerHTML = tmpHTML;
             initChart(); initLFChart();
 
