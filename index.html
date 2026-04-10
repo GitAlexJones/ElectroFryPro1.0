@@ -881,7 +881,7 @@
                 <div class="row"><div class="col"><label>Voltage (V)</label><input type="number" id="volts"></div><div class="col"><label>Freq (Hz)</label><input type="number" id="freq"></div><div class="col"><label>Duty (%)</label><input type="number" id="duty"></div></div>
 
                 <label style="margin-top: 10px;">Pass Timer</label>
-                <div class="timer-display" id="timerDisplay">00:00</div>
+                <div class="timer-display" id="timerDisplay">0s</div>
                 <div class="timer-btns">
                     <button class="btn btn-success" id="timerStartBtn" onclick="startTimer()" style="font-size:11px;">▶ START</button>
                     <button class="btn btn-outline" onclick="stopTimer()" style="font-size:11px;">⏹ STOP</button>
@@ -1822,8 +1822,11 @@
                 if(d.isGroup) { gc = toNum(d.groupCount) || ''; gw = (d.groupWeight && d.groupWeight !== '---') ? toNum(d.groupWeight) : ''; }
                 // Find pass time log for this pass
                 let ptLog = passTimeLogs.find(pt => pt.pass === d.pass && pt.site === parseInt(d.site||'1'));
+                // Use timer elapsed as shock seconds if specimen's sec field is empty
+                let shockSec = toNum(d.sec);
+                if((!shockSec || shockSec === '' || d.sec === 'UNK') && ptLog) shockSec = ptLog.elapsedSec;
                 ws.addRow({ t: d.t, site: toNum(d.site||"1"), pass: toNum(d.pass),
-                    pStart: ptLog ? ptLog.startTime : '', pEnd: ptLog ? ptLog.endTime : '', sec: toNum(d.sec),
+                    pStart: ptLog ? ptLog.startTime : '', pEnd: ptLog ? ptLog.endTime : '', sec: shockSec || '',
                     sp: d.sp, sci: d.sci, len: toNum(d.len), wt: toNum(d.wt), gc: gc, gw: gw,
                     cond: d.cond, v: toNum(d.v), hz: toNum(d.hz), dty: toNum(d.dty),
                     wTmp: toNum(d.wTmp), cnd: toNum(d.cnd),
@@ -2607,9 +2610,8 @@
         }
 
         function updateTimerDisplay() {
-            const mins = Math.floor(timerElapsed / 60);
-            const secs = Math.floor(timerElapsed % 60);
-            document.getElementById('timerDisplay').textContent = String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+            const secs = Math.floor(timerElapsed);
+            document.getElementById('timerDisplay').textContent = secs + 's';
         }
 
         /* ===========================
