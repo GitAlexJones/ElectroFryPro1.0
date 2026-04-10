@@ -9,23 +9,22 @@
     <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
     <style>
         :root {
-            --primary: #00e5ff;
-            --primary-dim: #00889a;
-            --secondary: #7c4dff;
+            --primary: #ffffff;
+            --primary-dim: #b0bec5;
+            --secondary: #ff9100;
             --success: #00e676;
             --danger: #ff1744;
-            --warning: #ffab00;
-            --bg: #0a0e17;
-            --bg2: #0d1225;
-            --surf: #111a2e;
-            --surf2: #162040;
-            --text: #c8d6e5;
-            --text-bright: #e8f0fe;
-            --muted: #546e8a;
-            --border: #1e3050;
-            --glow: rgba(0, 229, 255, 0.15);
-            --glow-strong: rgba(0, 229, 255, 0.4);
-            --xp-bar: linear-gradient(90deg, #00e5ff, #7c4dff);
+            --warning: #ffd600;
+            --bg: #1a2332;
+            --bg2: #151e2b;
+            --surf: #1e2d3d;
+            --surf2: #243447;
+            --text: #e0e0e0;
+            --text-bright: #ffffff;
+            --muted: #78909c;
+            --border: #2c3e50;
+            --glow: rgba(255, 255, 255, 0.1);
+            --glow-strong: rgba(255, 255, 255, 0.25);
         }
 
         * { box-sizing: border-box; }
@@ -34,38 +33,14 @@
             background: var(--bg);
             color: var(--text);
             font-family: 'Exo 2', sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 15px;
+            line-height: 1.6;
             margin: 0;
-            padding: 95px 0 80px 0;
+            padding: 70px 0 80px 0;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
         }
 
-        /* SCANLINE OVERLAY */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0, 229, 255, 0.015) 2px,
-                rgba(0, 229, 255, 0.015) 4px
-            );
-            pointer-events: none;
-            z-index: 9998;
-        }
-
-        /* PARTICLE CANVAS */
-        #particles-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
 
         h1, h2, h3, h4, h5 {
             color: var(--primary);
@@ -110,12 +85,12 @@
             position: absolute;
             top: 0; left: 0;
             width: 3px; height: 100%;
-            background: var(--xp-bar);
+            background: linear-gradient(180deg, #ff9100, #ffd600);
             opacity: 0.6;
         }
         .card:hover {
-            border-color: rgba(0, 229, 255, 0.3);
-            box-shadow: 0 0 30px rgba(0, 229, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
         }
 
         .row { display: flex; gap: 12px; margin-bottom: 15px; }
@@ -135,7 +110,7 @@
         input, select, textarea {
             width: 100%;
             padding: 12px;
-            background: rgba(0, 229, 255, 0.04);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border);
             border-radius: 3px;
             font-family: 'Share Tech Mono', monospace;
@@ -147,8 +122,8 @@
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--primary);
-            background: rgba(0, 229, 255, 0.08);
-            box-shadow: 0 0 15px var(--glow), inset 0 0 15px rgba(0, 229, 255, 0.03);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 15px var(--glow), inset 0 0 15px rgba(255, 255, 255, 0.03);
         }
         select { cursor: pointer; color-scheme: dark; }
         select option { background: #1a1f3a !important; color: #e8f0fe !important; }
@@ -189,14 +164,14 @@
         .btn-primary {
             background: linear-gradient(135deg, #0d47a1, #1565c0);
             color: var(--primary);
-            border: 1px solid rgba(0, 229, 255, 0.3);
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
         }
-        .btn-primary:hover { box-shadow: 0 0 30px rgba(0, 229, 255, 0.2); border-color: var(--primary); }
+        .btn-primary:hover { box-shadow: 0 0 30px rgba(255, 255, 255, 0.2); border-color: var(--primary); }
         .btn-secondary {
             background: linear-gradient(135deg, #4a148c, #6a1b9a);
             color: #ce93d8;
-            border: 1px solid rgba(124, 77, 255, 0.3);
+            border: 1px solid rgba(255, 145, 0, 0.3);
         }
         .btn-success {
             background: linear-gradient(135deg, #1b5e20, #2e7d32);
@@ -242,7 +217,7 @@
             letter-spacing: 2px;
         }
         .header-badge {
-            background: rgba(0, 229, 255, 0.1);
+            background: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--border);
             padding: 3px 10px;
             border-radius: 3px;
@@ -253,45 +228,12 @@
         }
         .header-badge.active { color: var(--success); border-color: rgba(0, 230, 118, 0.3); background: rgba(0, 230, 118, 0.08); }
 
-        /* XP BAR */
-        .xp-bar-container {
-            display: flex; align-items: center; gap: 8px;
-        }
-        .xp-label {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 9px;
-            font-weight: 700;
-            color: var(--secondary);
-            letter-spacing: 1px;
-            white-space: nowrap;
-        }
-        .xp-track {
-            flex: 1;
-            height: 6px;
-            background: rgba(124, 77, 255, 0.15);
-            border-radius: 3px;
-            overflow: hidden;
-            border: 1px solid rgba(124, 77, 255, 0.2);
-        }
-        .xp-fill {
-            height: 100%;
-            background: var(--xp-bar);
-            border-radius: 3px;
-            width: 0%;
-            transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-            box-shadow: 0 0 10px rgba(124, 77, 255, 0.5);
-        }
-        .xp-text {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 10px;
-            color: var(--muted);
-            white-space: nowrap;
-        }
         .species-counter {
             font-family: 'Share Tech Mono', monospace;
-            font-size: 10px;
+            font-size: 12px;
             color: var(--warning);
             white-space: nowrap;
+            font-weight: 700;
         }
         .hud-stats {
             display: flex;
@@ -317,11 +259,11 @@
             color: var(--muted);
             cursor: pointer;
             flex: 1;
-            font-size: 9px;
+            font-size: 8px;
             font-family: 'Orbitron', sans-serif;
             font-weight: 600;
-            padding: 5px;
-            letter-spacing: 0.5px;
+            padding: 5px 2px;
+            letter-spacing: 0.3px;
             transition: all 0.3s;
             position: relative;
         }
@@ -331,11 +273,11 @@
             position: absolute;
             top: -9px; left: 25%; right: 25%;
             height: 2px;
-            background: var(--primary);
-            box-shadow: 0 0 10px var(--primary);
+            background: var(--secondary);
+            box-shadow: 0 0 10px var(--secondary);
             border-radius: 0 0 2px 2px;
         }
-        .nav-icon { display: block; font-size: 18px; margin-bottom: 3px; }
+        .nav-icon { display: block; font-size: 16px; margin-bottom: 2px; }
 
         /* TABS */
         .tab-content { display: none; }
@@ -374,7 +316,7 @@
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 2px;
-            background: var(--xp-bar);
+            background: linear-gradient(180deg, #ff9100, #ffd600);
         }
 
         /* SPLASH SPECIAL */
@@ -416,7 +358,7 @@
         .splash-features li:last-child { border: none; }
         .feat-icon {
             width: 28px; height: 28px;
-            background: rgba(0, 229, 255, 0.08);
+            background: rgba(255, 255, 255, 0.08);
             border: 1px solid var(--border);
             border-radius: 4px;
             display: flex; align-items: center; justify-content: center;
@@ -480,7 +422,7 @@
             font-family: 'Share Tech Mono', monospace;
         }
         .calc-grid .btn:hover { border-color: rgba(0,229,255,0.3); }
-        .calc-grid .btn-op { background: rgba(124, 77, 255, 0.15); color: var(--secondary); border-color: rgba(124,77,255,0.3); }
+        .calc-grid .btn-op { background: rgba(255, 145, 0, 0.15); color: var(--secondary); border-color: rgba(124,77,255,0.3); }
         .calc-grid .btn-clear { background: rgba(255, 23, 68, 0.12); color: var(--danger); border-color: rgba(255,23,68,0.3); }
         .calc-grid .btn-eq { background: rgba(0, 230, 118, 0.12); color: var(--success); border-color: rgba(0,230,118,0.3); grid-column: span 4; }
 
@@ -525,7 +467,7 @@
         .ref-dropdown .ref-body { animation: biodexSlide 0.3s ease-out; }
         .ex-text { display: block; margin-top: 6px; font-size: 11.5px; color: var(--primary-dim); font-style: italic; line-height: 1.5; border-left: 2px solid var(--border); padding-left: 10px; margin-left: 4px; }
         .example-box {
-            background: rgba(0, 229, 255, 0.04);
+            background: rgba(255, 255, 255, 0.04);
             padding: 14px;
             border-radius: 4px;
             font-size: 13px;
@@ -573,60 +515,9 @@
         .save-slot-btns { display: flex; gap: 6px; }
         .save-slot-btns button { padding: 6px 12px; font-size: 10px; }
 
-        /* ACHIEVEMENT TOAST */
-        .achievement-toast {
-            position: fixed;
-            top: 100px;
-            right: -400px;
-            z-index: 10000;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            border: 1px solid var(--warning);
-            border-radius: 4px;
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 0 30px rgba(255, 171, 0, 0.2), 0 8px 32px rgba(0,0,0,0.5);
-            transition: right 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-            max-width: 320px;
-        }
-        .achievement-toast.show { right: 15px; }
-        .achievement-toast .ach-icon { font-size: 28px; }
-        .achievement-toast .ach-label {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 8px;
-            color: var(--warning);
-            letter-spacing: 2px;
-            font-weight: 700;
-        }
-        .achievement-toast .ach-title {
-            font-family: 'Exo 2', sans-serif;
-            font-size: 14px;
-            color: var(--text-bright);
-            font-weight: 600;
-        }
-        .achievement-toast .ach-xp {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 11px;
-            color: var(--success);
-        }
-
-        /* LEVEL UP FLASH */
-        .level-up-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, rgba(124, 77, 255, 0.3), transparent 70%);
-            z-index: 9990;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .level-up-overlay.flash { opacity: 1; animation: lvlFlash 1s forwards; }
-        @keyframes lvlFlash { 0% { opacity: 1; } 100% { opacity: 0; } }
-
         /* LOG ROW ANIMATION */
         @keyframes rowSlide {
-            from { opacity: 0; transform: translateX(-20px); background: rgba(0, 229, 255, 0.1); }
+            from { opacity: 0; transform: translateX(-20px); background: rgba(255, 255, 255, 0.1); }
             to { opacity: 1; transform: translateX(0); background: transparent; }
         }
         #logBody tr { animation: rowSlide 0.4s ease-out; }
@@ -648,7 +539,7 @@
             margin-top: 12px;
         }
         .mle-stat-box {
-            background: rgba(0, 229, 255, 0.04);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border);
             border-radius: 4px;
             padding: 12px;
@@ -709,8 +600,8 @@
             gap: 10px;
             margin-bottom: 12px;
             padding: 8px 12px;
-            background: rgba(124, 77, 255, 0.06);
-            border: 1px solid rgba(124, 77, 255, 0.15);
+            background: rgba(255, 145, 0, 0.06);
+            border: 1px solid rgba(255, 145, 0, 0.15);
             border-radius: 4px;
         }
         .toggle-row label:not(.toggle-switch) {
@@ -753,7 +644,7 @@
             border-radius: 50%;
             transition: 0.3s;
         }
-        .toggle-switch input:checked + .toggle-track { background: rgba(124, 77, 255, 0.4); }
+        .toggle-switch input:checked + .toggle-track { background: rgba(255, 145, 0, 0.4); }
         .toggle-switch input:checked + .toggle-track::after { transform: translateX(20px); background: var(--secondary); }
         #groupCatchFields { display: none; }
         #individualFields { display: block; }
@@ -807,22 +698,6 @@
 </head>
 <body>
 
-    <!-- PARTICLE BACKGROUND -->
-    <canvas id="particles-canvas"></canvas>
-
-    <!-- LEVEL UP FLASH -->
-    <div class="level-up-overlay" id="levelFlash"></div>
-
-    <!-- ACHIEVEMENT TOAST -->
-    <div class="achievement-toast" id="achToast">
-        <div class="ach-icon" id="achIcon">🏆</div>
-        <div>
-            <div class="ach-label">ACHIEVEMENT UNLOCKED</div>
-            <div class="ach-title" id="achTitle">First Catch</div>
-            <div class="ach-xp" id="achXp">+50 XP</div>
-        </div>
-    </div>
-
     <!-- MODALS -->
     <div id="photo-modal" class="modal-overlay dark" style="display: none;">
         <img id="modal-img" src="" alt="Specimen Photo">
@@ -855,11 +730,12 @@
             <h3 style="margin-top:0; font-size: 12px;">System Modules</h3>
             <ul class="splash-features">
                 <li><div class="feat-icon">🐟</div> Comprehensive PNW Species Codex</li>
-                <li><div class="feat-icon">📸</div> In-App Photo Documentation</li>
+                <li><div class="feat-icon">📸</div> Camera &amp; Gallery Photo Documentation</li>
                 <li><div class="feat-icon">📊</div> Per-Species MLE, Biomass &amp; Density</li>
                 <li><div class="feat-icon">📈</div> Depletion Curves &amp; Length-Frequency</li>
                 <li><div class="feat-icon">⏱️</div> Pass Timer w/ Start/End Logging</li>
                 <li><div class="feat-icon">📥</div> Full Excel Report (8 Sheets)</li>
+                <li><div class="feat-icon">💾</div> Auto-Save &amp; JSON Backup</li>
             </ul>
             <button class="btn btn-primary" onclick="startGame()" style="font-size: 14px; padding: 16px;">▶ INITIALIZE PROTOCOL</button>
             <div style="text-align: center; margin-top: 15px; font-size: 11px;">
@@ -868,19 +744,14 @@
         </div>
     </div>
 
-    <!-- HEADER HUD -->
+    <!-- HEADER -->
     <div class="top-header">
         <div class="hud-row-1">
-            <div class="header-title">ELECTROFRY PRO 1.0</div>
+            <div class="header-title">ELECTROFRY PRO</div>
             <div class="header-badge" id="header-status">⏳ STANDBY</div>
         </div>
         <div class="hud-stats">
-            <div class="xp-bar-container" style="flex:1;">
-                <div class="xp-label">LV <span id="playerLevel">1</span></div>
-                <div class="xp-track"><div class="xp-fill" id="xpFill"></div></div>
-                <div class="xp-text"><span id="xpCurrent">0</span>/<span id="xpNeeded">100</span> XP</div>
-            </div>
-            <div class="species-counter">🐟 <span id="speciesCount">0</span> LOGGED</div>
+            <div class="species-counter">🐟 <span id="speciesCount">0</span> SPECIMENS LOGGED</div>
         </div>
     </div>
 
@@ -888,48 +759,84 @@
     <div id="app-body" class="container" style="display: none;">
 
         <!-- 1. SITE -->
-        <div id="tab-site" class="tab-content active">
+        <!-- 0. QUICK REFERENCE -->
+        <div id="tab-quick" class="tab-content active">
+            <div class="card" style="border-left: 3px solid var(--secondary); background: linear-gradient(135deg, rgba(255, 145, 0, 0.06), rgba(255, 214, 0, 0.04));">
+                <h3 style="font-size: 0.9rem;">⚡ Smith-Root LR-24 Quick Setup</h3>
+                <div style="font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--text); line-height: 2.2;">
+                    <span style="color:var(--secondary); font-weight:bold;">1.</span> Power on (rotate emergency switch 90° CW)<br>
+                    <span style="color:var(--secondary); font-weight:bold;">2.</span> Press <strong style="color:var(--text-bright);">MENU</strong><br>
+                    <span style="color:var(--secondary); font-weight:bold;">3.</span> Arrow to <strong style="color:var(--text-bright);">Quick Setup</strong><br>
+                    <span style="color:var(--secondary); font-weight:bold;">4.</span> Press <strong style="color:var(--text-bright);">ENTER</strong><br>
+                    <span style="color:var(--secondary); font-weight:bold;">5.</span> Submerge anode &amp; cathode in water<br>
+                    <span style="color:var(--secondary); font-weight:bold;">6.</span> Press <strong style="color:var(--text-bright);">anode pole switch</strong> briefly<br>
+                    <span style="color:var(--secondary); font-weight:bold;">7.</span> Check status screen for selected settings
+                </div>
+                <div style="margin-top: 8px; padding: 8px 12px; background: rgba(255,145,0,0.08); border-radius: 4px; border: 1px solid rgba(255,145,0,0.2); font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--secondary);">
+                    Defaults after Quick Setup: <strong>Pulsed DC</strong> · <strong>30 Hz</strong> · <strong>12% duty</strong> · voltage auto-selected (~25W avg)
+                </div>
+            </div>
+
+            <div class="card" style="border-left: 3px solid var(--warning);">
+                <h3 style="font-size: 0.9rem;">🔧 LR-24 Reset Shock Timer</h3>
+                <div style="font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--text); line-height: 2.2;">
+                    <span style="color:var(--warning); font-weight:bold;">1.</span> Press <strong style="color:var(--text-bright);">MENU</strong><br>
+                    <span style="color:var(--warning); font-weight:bold;">2.</span> Arrow to <strong style="color:var(--text-bright);">Reset Timer</strong><br>
+                    <span style="color:var(--warning); font-weight:bold;">3.</span> Press <strong style="color:var(--text-bright);">ENTER</strong> to confirm
+                </div>
+                <div style="margin-top: 8px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--muted); line-height: 1.8;">
+                    → Any other key cancels the reset<br>
+                    → Reset between each pass for per-pass effort<br>
+                    → Record shock seconds before resetting
+                </div>
+            </div>
+
+            <div class="card" style="border-left: 3px solid var(--danger);">
+                <h3 style="font-size: 0.9rem;">🐟 Fish Not Responding? — Adjustment Order</h3>
+                <div style="font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--text); line-height: 2;">
+                    <span style="color:var(--success); font-size:16px; font-weight:bold;">①</span> Press <strong>VOLTS</strong> → increase <strong style="color:var(--success);">+50V</strong> → press ENTER<br>
+                    <span style="font-size:11px; color:var(--muted); margin-left: 24px;">↳ Stop when fish begin twitching</span><br>
+                    <span style="color:var(--warning); font-size:16px; font-weight:bold;">②</span> Press <strong>DUTY CYCLE</strong> → increase <strong style="color:var(--warning);">+10%</strong> → press ENTER<br>
+                    <span style="font-size:11px; color:var(--muted); margin-left: 24px;">↳ Stop when fish show taxis (swim toward anode)</span><br>
+                    <span style="color:var(--danger); font-size:16px; font-weight:bold;">③</span> Press <strong>FREQ</strong> → increase <strong style="color:var(--danger);">+10Hz</strong> → press ENTER<br>
+                    <span style="font-size:11px; color:var(--muted); margin-left: 24px;">↳ LAST RESORT — highest injury risk. Never exceed 60Hz for salmonids.</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="font-size: 0.9rem;">📋 Safe Starting Values (No Quick Setup)</h3>
+                <div class="table-responsive">
+                    <table style="font-size: 13px;">
+                        <thead><tr><th>Conductivity</th><th>Voltage</th><th>Freq</th><th>Duty</th></tr></thead>
+                        <tbody>
+                            <tr><td style="color:var(--primary);"><strong>&lt;100 µS/cm</strong><br><span style="font-size:10px; color:var(--muted);">alpine, snowmelt</span></td><td>300–500V</td><td>30 Hz</td><td>10–15%</td></tr>
+                            <tr><td style="color:var(--primary);"><strong>100–300 µS/cm</strong><br><span style="font-size:10px; color:var(--muted);">most PNW streams</span></td><td>150–250V</td><td>30 Hz</td><td>10–15%</td></tr>
+                            <tr><td style="color:var(--primary);"><strong>300+ µS/cm</strong><br><span style="font-size:10px; color:var(--muted);">ag, urban, tidal</span></td><td>50–150V</td><td>30 Hz</td><td>10–15%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="font-size: 11px; color: var(--muted); margin-top: 6px;">Values are for juvenile salmonids (PDC). For heavily scaled fish (bass, carp): start 50–60 Hz, 20–30% duty.</p>
+            </div>
+
+            <div class="card safety-section" style="border-left: 3px solid var(--danger);">
+                <h3 style="color: var(--danger); font-size: 0.9rem;">⚠ Safety Reminders</h3>
+                <div style="font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--text); line-height: 2;">
+                    • Announce <strong style="color:var(--danger);">"POWER ON"</strong> before pressing anode switch<br>
+                    • Non-breathable waders + wading belt + lineman's gloves<br>
+                    • Cathode braid fully submerged, never wrapped around legs<br>
+                    • If anyone falls → release switch instantly<br>
+                    • Fish recovery &gt;5 sec = reduce settings · &gt;15 sec = too much<br>
+                    • <strong style="color:var(--warning);">Keep settings identical between passes</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. SITE -->
+        <div id="tab-site" class="tab-content">
             <div class="card">
                 <h3>Survey Metadata</h3>
                 <label>Waterbody / Stream Name</label><input type="text" id="streamName" placeholder="e.g. Bear Creek, Reach 2" style="margin-bottom: 12px;">
                 <label>Crew Members</label><input type="text" id="crewNames" placeholder="e.g. Dr. Smith, J. Doe">
-            </div>
-            <div class="card" style="border-left: 3px solid var(--secondary); background: linear-gradient(135deg, rgba(124,77,255,0.04), rgba(0,229,255,0.04));">
-                <h3 style="font-size: 0.8rem;">⚡ Smith-Root LR-24 Quick Reference</h3>
-                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 200px;">
-                        <div style="font-family: 'Orbitron', sans-serif; font-size: 9px; color: var(--secondary); letter-spacing: 2px; margin-bottom: 8px; font-weight: 700;">LR-24 QUICK SETUP</div>
-                        <div style="font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--text); line-height: 2;">
-                            <span style="color:var(--primary);">1.</span> Power on (rotate switch 90° CW)<br>
-                            <span style="color:var(--primary);">2.</span> Press <strong style="color:var(--text-bright);">MENU</strong><br>
-                            <span style="color:var(--primary);">3.</span> Arrow to <strong style="color:var(--text-bright);">Quick Setup</strong><br>
-                            <span style="color:var(--primary);">4.</span> Press <strong style="color:var(--text-bright);">ENTER</strong><br>
-                            <span style="color:var(--primary);">5.</span> Submerge anode &amp; cathode<br>
-                            <span style="color:var(--primary);">6.</span> Press <strong style="color:var(--text-bright);">anode pole switch</strong> briefly<br>
-                            <span style="color:var(--muted); font-size:10px;">→ LR-24 auto-selects voltage</span><br>
-                            <span style="color:var(--muted); font-size:10px;">→ Defaults: PDC, 30Hz, 12% duty</span>
-                        </div>
-                    </div>
-                    <div style="flex: 1; min-width: 200px;">
-                        <div style="font-family: 'Orbitron', sans-serif; font-size: 9px; color: var(--secondary); letter-spacing: 2px; margin-bottom: 8px; font-weight: 700;">LR-24 RESET SHOCK TIMER</div>
-                        <div style="font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--text); line-height: 2;">
-                            <span style="color:var(--primary);">1.</span> Press <strong style="color:var(--text-bright);">MENU</strong><br>
-                            <span style="color:var(--primary);">2.</span> Arrow to <strong style="color:var(--text-bright);">Reset Timer</strong><br>
-                            <span style="color:var(--primary);">3.</span> Press <strong style="color:var(--text-bright);">ENTER</strong> to confirm<br>
-                            <span style="color:var(--muted); font-size:10px;">→ Any other key cancels reset</span><br>
-                            <span style="color:var(--muted); font-size:10px;">→ Reset between each pass</span><br>
-                            <span style="color:var(--muted); font-size:10px;">→ Record shock secs before resetting</span>
-                        </div>
-                    </div>
-                </div>
-                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);">
-                    <div style="font-family: 'Orbitron', sans-serif; font-size: 9px; color: var(--secondary); letter-spacing: 2px; margin-bottom: 6px; font-weight: 700;">FISH NOT RESPONDING?</div>
-                    <div style="font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text); line-height: 1.8;">
-                        <span style="color:var(--success);">①</span> ↑ Voltage (+50V) until fish twitch →
-                        <span style="color:var(--warning);">②</span> ↑ Duty cycle (+10%) until taxis →
-                        <span style="color:var(--danger);">③</span> ↑ Frequency (+10Hz) — last resort
-                    </div>
-                </div>
             </div>
             <div class="card corner-marks">
                 <h3>Environmental Data</h3>
@@ -1552,12 +1459,13 @@
             </div>
         </div>
 
-        <div class="app-footer">Created by Michael Stocklin<br><a href="#" onclick="document.getElementById('terms-modal').style.display='flex'; return false;">Terms of Use &amp; Disclaimer</a></div>
+        <div class="app-footer">Created by Michael Stocklin 2026<br><a href="#" onclick="document.getElementById('terms-modal').style.display='flex'; return false;">Terms of Use &amp; Disclaimer</a></div>
     </div>
 
     <!-- BOTTOM NAV -->
     <div class="bottom-nav" id="nav-bar" style="display: none;">
-        <div class="nav-item active" onclick="switchTab('site', this)"><span class="nav-icon">📍</span>Site</div>
+        <div class="nav-item active" onclick="switchTab('quick', this)"><span class="nav-icon">⚡</span>LR-24</div>
+        <div class="nav-item" onclick="switchTab('site', this)"><span class="nav-icon">📍</span>Site</div>
         <div class="nav-item" onclick="switchTab('entry', this)"><span class="nav-icon">📝</span>Log</div>
         <div class="nav-item" onclick="switchTab('stats', this)"><span class="nav-icon">📈</span>Stats</div>
         <div class="nav-item" onclick="switchTab('gear', this)"><span class="nav-icon">⚙️</span>Ref</div>
@@ -1585,145 +1493,18 @@
         }
 
         function sfxLog() { playTone(523, 0.08, 'square', 0.08); setTimeout(()=>playTone(784, 0.12, 'square', 0.08), 80); setTimeout(()=>playTone(1047, 0.15, 'sine', 0.06), 160); }
-        function sfxAchieve() { playTone(659, 0.1, 'square', 0.1); setTimeout(()=>playTone(784, 0.1, 'square', 0.1), 100); setTimeout(()=>playTone(1047, 0.2, 'sine', 0.08), 200); setTimeout(()=>playTone(1319, 0.3, 'sine', 0.06), 350); }
-        function sfxLevelUp() { [523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>playTone(f, 0.15, 'square', 0.1), i*80)); }
         function sfxClick() { playTone(880, 0.04, 'square', 0.04); }
         function sfxGPS() { playTone(440, 0.05, 'sine', 0.06); setTimeout(()=>playTone(660, 0.05, 'sine', 0.06), 120); setTimeout(()=>playTone(880, 0.1, 'sine', 0.06), 240); }
         function sfxBoot() { playTone(220, 0.3, 'sawtooth', 0.05); setTimeout(()=>playTone(440, 0.2, 'sine', 0.08), 300); setTimeout(()=>playTone(660, 0.3, 'sine', 0.06), 500); }
 
-        /* ===========================
-           PARTICLE BACKGROUND
-           =========================== */
-        const pCanvas = document.getElementById('particles-canvas');
-        const pCtx = pCanvas.getContext('2d');
-        let particles = [];
-
-        function resizeCanvas() { pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight; }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        class Particle {
-            constructor() { this.reset(); }
-            reset() {
-                this.x = Math.random() * pCanvas.width;
-                this.y = Math.random() * pCanvas.height;
-                this.vx = (Math.random() - 0.5) * 0.3;
-                this.vy = (Math.random() - 0.5) * 0.3;
-                this.r = Math.random() * 1.5 + 0.3;
-                this.alpha = Math.random() * 0.4 + 0.1;
-                this.color = Math.random() > 0.7 ? '124, 77, 255' : '0, 229, 255';
-            }
-            update() {
-                this.x += this.vx; this.y += this.vy;
-                if(this.x < 0 || this.x > pCanvas.width || this.y < 0 || this.y > pCanvas.height) this.reset();
-            }
-            draw() {
-                pCtx.beginPath();
-                pCtx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-                pCtx.fillStyle = `rgba(${this.color}, ${this.alpha})`;
-                pCtx.fill();
-            }
-        }
-
-        for(let i = 0; i < 60; i++) particles.push(new Particle());
-
-        function animateParticles() {
-            pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            // Draw connections
-            for(let i = 0; i < particles.length; i++) {
-                for(let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-                    if(dist < 120) {
-                        pCtx.beginPath();
-                        pCtx.strokeStyle = `rgba(0, 229, 255, ${0.06 * (1 - dist/120)})`;
-                        pCtx.lineWidth = 0.5;
-                        pCtx.moveTo(particles[i].x, particles[i].y);
-                        pCtx.lineTo(particles[j].x, particles[j].y);
-                        pCtx.stroke();
-                    }
-                }
-            }
-            requestAnimationFrame(animateParticles);
-        }
-        animateParticles();
-
-        /* ===========================
-           XP & ACHIEVEMENT SYSTEM
-           =========================== */
-        let playerXP = 0;
-        let playerLevel = 1;
         let uniqueSpecies = new Set();
-        const XP_PER_LEVEL = 100;
-        const XP_GROWTH = 1.4;
-
-        const achievements = {
-            firstCatch: { name: "First Catch", icon: "🎣", xp: 50, desc: "Log your first specimen", done: false },
-            fiveSpecimens: { name: "Netting Pro", icon: "🐟", xp: 75, desc: "Log 5 specimens", done: false },
-            tenSpecimens: { name: "Survey Veteran", icon: "⚡", xp: 100, desc: "Log 10 specimens", done: false },
-            twentyFive: { name: "Master Biologist", icon: "🔬", xp: 200, desc: "Log 25 specimens", done: false },
-            threeSpecies: { name: "Biodiversity I", icon: "🧬", xp: 100, desc: "Log 3 unique species", done: false },
-            sixSpecies: { name: "Biodiversity II", icon: "🌊", xp: 150, desc: "Log 6 unique species", done: false },
-            gpsLock: { name: "Satellite Link", icon: "📡", xp: 30, desc: "Acquire GPS lock", done: false },
-            multiPass: { name: "Depletion Scientist", icon: "📊", xp: 120, desc: "Log on 3+ different passes", done: false },
-        };
-
-        function getXPForLevel(lv) { return Math.floor(XP_PER_LEVEL * Math.pow(XP_GROWTH, lv - 1)); }
-
-        function addXP(amount) {
-            playerXP += amount;
-            let needed = getXPForLevel(playerLevel);
-            while(playerXP >= needed) {
-                playerXP -= needed;
-                playerLevel++;
-                needed = getXPForLevel(playerLevel);
-                sfxLevelUp();
-                const flash = document.getElementById('levelFlash');
-                flash.classList.add('flash');
-                setTimeout(() => flash.classList.remove('flash'), 1100);
-            }
-            updateHUD();
-        }
 
         function updateHUD() {
-            const needed = getXPForLevel(playerLevel);
-            document.getElementById('playerLevel').textContent = playerLevel;
-            document.getElementById('xpCurrent').textContent = playerXP;
-            document.getElementById('xpNeeded').textContent = needed;
-            document.getElementById('xpFill').style.width = ((playerXP / needed) * 100) + '%';
             document.getElementById('speciesCount').textContent = catchData.length;
         }
 
-        function checkAchievements() {
-            const count = catchData.length;
-            const passes = new Set(catchData.map(d => d.pass));
-
-            if(count >= 1 && !achievements.firstCatch.done) { unlockAch('firstCatch'); }
-            if(count >= 5 && !achievements.fiveSpecimens.done) { unlockAch('fiveSpecimens'); }
-            if(count >= 10 && !achievements.tenSpecimens.done) { unlockAch('tenSpecimens'); }
-            if(count >= 25 && !achievements.twentyFive.done) { unlockAch('twentyFive'); }
-            if(uniqueSpecies.size >= 3 && !achievements.threeSpecies.done) { unlockAch('threeSpecies'); }
-            if(uniqueSpecies.size >= 6 && !achievements.sixSpecies.done) { unlockAch('sixSpecies'); }
-            if(passes.size >= 3 && !achievements.multiPass.done) { unlockAch('multiPass'); }
-        }
-
-        function unlockAch(key) {
-            const a = achievements[key];
-            a.done = true;
-            addXP(a.xp);
-            sfxAchieve();
-            const toast = document.getElementById('achToast');
-            document.getElementById('achIcon').textContent = a.icon;
-            document.getElementById('achTitle').textContent = a.name;
-            document.getElementById('achXp').textContent = '+' + a.xp + ' XP';
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3500);
-        }
-
         /* ===========================
-           SPECIES DATABASE (unchanged)
+           SPECIES DATABASE
            =========================== */
         const speciesDB =[
             { group: "Salmonidae", items:[{n:"Chinook Salmon", s:"Oncorhynchus tshawytscha", t:"Black mouth/gums. Spots on BOTH lobes of tail."}, {n:"Coho Salmon", s:"Oncorhynchus kisutch", t:"Black mouth, WHITE gums. Spots on UPPER tail lobe."}, {n:"Sockeye / Kokanee", s:"Oncorhynchus nerka", t:"No distinct back spots. Glassy eyes. 28-40 gill rakers."}, {n:"Chum Salmon", s:"Oncorhynchus keta", t:"No spots. Spawners have calico bands and canine teeth."}, {n:"Pink Salmon", s:"Oncorhynchus gorbuscha", t:"Large oval spots on back/tail. Tiny scales."}, {n:"Steelhead/Rainbow", s:"Oncorhynchus mykiss", t:"Radiating rows of black spots on tail. Pink lateral band."}, {n:"Coastal Cutthroat", s:"O. clarkii clarkii", t:"Red slash under jaw. Spots below lateral line."}, {n:"Bull Trout", s:"Salvelinus confluentus", t:"No black on dorsal. Pale yellow/pink spots on olive back."}, {n:"Brook Trout", s:"Salvelinus fontinalis", t:"Worm-like vermiculations on back. White leading fin edges."}, {n:"Brown Trout", s:"Salmo trutta", t:"Large dark/red spots with halos. Few spots on tail."}, {n:"Mountain Whitefish", s:"Prosopium williamsoni", t:"Large scales, subterminal mouth. Adipose fin."}] },
@@ -1792,7 +1573,6 @@
                 catch (e) { d.innerHTML = `<span style="color:var(--success);">✓ GPS LOCKED</span><br><strong style="color:var(--primary);">GPS:</strong> ${lat}, ${lon}<br><span style="color:var(--warning);">⚠ Weather API unreachable</span>`; }
                 document.getElementById('header-status').innerText = "✓ GPS LOCKED";
                 document.getElementById('header-status').classList.add('active');
-                if(!achievements.gpsLock.done) unlockAch('gpsLock');
             }
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((p) => { siteLat = p.coords.latitude.toFixed(5); siteLon = p.coords.longitude.toFixed(5); fetchW(siteLat, siteLon); },
@@ -1861,8 +1641,7 @@
             document.getElementById('photo').value = ''; document.getElementById('photoGallery').value = ''; document.getElementById('photoPreview').style.display = 'none'; document.getElementById('photoThumb').src = ''; activePhotoFile = null; document.getElementById('condition').value = 'Vigorous'; document.getElementById('biodex-box').style.display = 'none'; document.getElementById('species').selectedIndex = 0;
 
             sfxLog();
-            addXP(25);
-            checkAchievements();
+            updateHUD();
             autoSave();
 
             btn.style.opacity = '1';
@@ -1897,7 +1676,7 @@
                     ctx.fillStyle = '#00e5ff';
                     ctx.font = 'bold 13px "Orbitron", sans-serif';
                     ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-                    ctx.shadowColor = 'rgba(0, 229, 255, 0.6)'; ctx.shadowBlur = 8;
+                    ctx.shadowColor = 'rgba(255, 255, 255, 0.6)'; ctx.shadowBlur = 8;
                     ctx.fillText(Math.round(datapoint.y), x, y - 14);
                     ctx.shadowBlur = 0;
                 });
@@ -1926,7 +1705,7 @@
                     datasets:[
                         {
                             label: 'Actual Catch', type: 'scatter', data: [],
-                            backgroundColor: 'rgba(0, 229, 255, 0.8)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
                             borderColor: '#00e5ff',
                             pointRadius: 8, borderWidth: 2,
                             pointStyle: 'rectRot',
@@ -2484,9 +2263,6 @@
                 catchData: catchData,
                 passTimeLogs: passTimeLogs,
                 uniqueSpecies: [...uniqueSpecies],
-                playerXP: playerXP,
-                playerLevel: playerLevel,
-                achievements: achievements,
                 fields: {
                     streamName: document.getElementById('streamName').value,
                     crewNames: document.getElementById('crewNames').value,
@@ -2524,9 +2300,6 @@
             catchData = state.catchData || [];
             passTimeLogs = state.passTimeLogs || [];
             uniqueSpecies = new Set(state.uniqueSpecies || []);
-            playerXP = state.playerXP || 0;
-            playerLevel = state.playerLevel || 1;
-            if(state.achievements) { Object.keys(state.achievements).forEach(k => { if(achievements[k]) achievements[k].done = state.achievements[k].done; }); }
 
             // Restore form fields
             const f = state.fields || {};
@@ -2657,8 +2430,6 @@
             if(!confirm("FINAL WARNING: All specimen logs, form data, and XP will be erased. Continue?")) return;
             localStorage.removeItem(SAVE_KEY);
             catchData = []; passTimeLogs = []; uniqueSpecies = new Set();
-            playerXP = 0; playerLevel = 1;
-            Object.keys(achievements).forEach(k => achievements[k].done = false);
             document.getElementById('logBody').innerHTML = '';
             document.getElementById('passTimeLog').innerHTML = ''; document.getElementById('passTimeLog').style.display = 'none';
             // Clear form fields
@@ -2677,7 +2448,7 @@
                     const s = JSON.parse(raw);
                     if(s.catchData && s.catchData.length > 0) {
                         const d = new Date(s.savedAt);
-                        document.getElementById('restore-info').innerHTML = `<strong style="color:var(--primary);">Stream:</strong> ${s.fields?.streamName || 'Unnamed'}<br><strong style="color:var(--primary);">Specimens:</strong> ${s.catchData.length}<br><strong style="color:var(--primary);">Last Saved:</strong> ${d.toLocaleDateString()} ${d.toLocaleTimeString()}<br><strong style="color:var(--primary);">Level:</strong> ${s.playerLevel || 1}`;
+                        document.getElementById('restore-info').innerHTML = `<strong style="color:var(--primary);">Stream:</strong> ${s.fields?.streamName || 'Unnamed'}<br><strong style="color:var(--primary);">Specimens:</strong> ${s.catchData.length}<br><strong style="color:var(--primary);">Last Saved:</strong> ${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
                         document.getElementById('splash-screen').style.display = 'none';
                         document.getElementById('restore-modal').style.display = 'flex';
                         return true;
