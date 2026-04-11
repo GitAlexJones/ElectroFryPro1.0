@@ -905,7 +905,20 @@
                         <label style="color:var(--secondary);">GROUP CATCH</label>
                     </div>
                     <div id="individualFields">
-                        <div class="row"><div class="col"><label>Length (mm)</label><input type="number" id="length"></div><div class="col"><label>Weight (g)</label><input type="number" step="0.1" id="weight"></div></div>
+                        <div class="row">
+                            <div class="col">
+                                <label>Length</label>
+                                <div style="display:flex; gap:4px;">
+                                    <input type="number" id="length" style="flex:1;" placeholder="Value" oninput="convertLengthPreview()">
+                                    <select id="lengthUnit" style="width:65px; padding:10px 4px; font-size:12px;" onchange="convertLengthPreview()">
+                                        <option value="mm">mm</option>
+                                        <option value="cm">cm</option>
+                                    </select>
+                                </div>
+                                <div id="lengthPreview" style="font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); margin-top:3px;"></div>
+                            </div>
+                            <div class="col"><label>Weight (g)</label><input type="number" step="0.1" id="weight"></div>
+                        </div>
                     </div>
                     <div id="groupCatchFields">
                         <div class="row"><div class="col"><label>Group Count</label><input type="number" id="groupCount" min="1" placeholder="# of fish"></div><div class="col"><label>Group Weight (g)</label><input type="number" step="0.1" id="groupWeight" placeholder="Total weight"></div></div>
@@ -1511,10 +1524,90 @@
            SPECIES DATABASE
            =========================== */
         const speciesDB =[
-            { group: "Salmonidae", items:[{n:"Chinook Salmon", s:"Oncorhynchus tshawytscha", t:"Black mouth/gums. Spots on BOTH lobes of tail."}, {n:"Coho Salmon", s:"Oncorhynchus kisutch", t:"Black mouth, WHITE gums. Spots on UPPER tail lobe."}, {n:"Sockeye / Kokanee", s:"Oncorhynchus nerka", t:"No distinct back spots. Glassy eyes. 28-40 gill rakers."}, {n:"Chum Salmon", s:"Oncorhynchus keta", t:"No spots. Spawners have calico bands and canine teeth."}, {n:"Pink Salmon", s:"Oncorhynchus gorbuscha", t:"Large oval spots on back/tail. Tiny scales."}, {n:"Steelhead/Rainbow", s:"Oncorhynchus mykiss", t:"Radiating rows of black spots on tail. Pink lateral band."}, {n:"Coastal Cutthroat", s:"O. clarkii clarkii", t:"Red slash under jaw. Spots below lateral line."}, {n:"Bull Trout", s:"Salvelinus confluentus", t:"No black on dorsal. Pale yellow/pink spots on olive back."}, {n:"Brook Trout", s:"Salvelinus fontinalis", t:"Worm-like vermiculations on back. White leading fin edges."}, {n:"Brown Trout", s:"Salmo trutta", t:"Large dark/red spots with halos. Few spots on tail."}, {n:"Mountain Whitefish", s:"Prosopium williamsoni", t:"Large scales, subterminal mouth. Adipose fin."}] },
-            { group: "Cyprinidae", items:[{n:"Northern Pikeminnow", s:"Ptychocheilus oregonensis", t:"Large mouth past front of eye. Forked tail."}, {n:"Peamouth", s:"Mylocheilus caurinus", t:"Small mouth, reddish corners. Deeply forked tail."}, {n:"Redside Shiner", s:"Richardsonius balteatus", t:"Deep body. Long anal fin (10-22 rays). Crimson band."}, {n:"Speckled Dace", s:"Rhinichthys osculus", t:"Small subterminal mouth. Speckled dark pattern."}, {n:"Longnose Dace", s:"Rhinichthys cataractae", t:"Fleshy snout projects past mouth. Fast riffles."}, {n:"Common Carp", s:"Cyprinus carpio", t:"Two barbels per side. Heavy serrated dorsal/anal spines."}] },
-            { group: "Catostomidae & Cottidae", items:[{n:"Largescale Sucker", s:"Catostomus macrocheilus", t:"Fleshy subterminal mouth. <80 lateral scales."}, {n:"Bridgelip Sucker", s:"Catostomus columbianus", t:"Deeply incised lower lip. >90 lateral scales."}, {n:"Prickly Sculpin", s:"Cottus asper", t:"Rough prickles all over. Dark spot rear of 1st dorsal."}, {n:"Reticulate Sculpin", s:"Cottus perplexus", t:"Gap between dorsal fins. Reticulated pattern."}] },
-            { group: "Centrarchidae & Others", items:[{n:"Largemouth Bass", s:"Micropterus salmoides", t:"Jaw extends past eye. Deep horizontal stripe."}, {n:"Smallmouth Bass", s:"Micropterus dolomieu", t:"Jaw does NOT extend past eye. Vertical bars."}, {n:"Bluegill", s:"Lepomis macrochirus", t:"Solid black opercular flap. Spot at rear dorsal."}, {n:"Pacific Lamprey", s:"Entosphenus tridentatus", t:"3 supraoral teeth. Large (up to 30 in). Parasitic."}, {n:"Unknown Specimen", s:"Indeterminatus", t:"Unable to ID in field. Retained for lab."}] }
+            { group: "Salmonidae", items:[
+                {n:"Chinook Salmon", s:"Oncorhynchus tshawytscha", t:"Black mouth/gums. Spots on BOTH lobes of tail."},
+                {n:"Coho Salmon", s:"Oncorhynchus kisutch", t:"Black mouth, WHITE gums. Spots on UPPER tail lobe."},
+                {n:"Sockeye / Kokanee", s:"Oncorhynchus nerka", t:"No distinct back spots. Glassy eyes. 28-40 gill rakers."},
+                {n:"Chum Salmon", s:"Oncorhynchus keta", t:"No spots. Spawners have calico bands and canine teeth."},
+                {n:"Pink Salmon", s:"Oncorhynchus gorbuscha", t:"Large oval spots on back/tail. Tiny scales."},
+                {n:"Steelhead/Rainbow", s:"Oncorhynchus mykiss", t:"Radiating rows of black spots on tail. Pink lateral band."},
+                {n:"Redband Trout", s:"Oncorhynchus mykiss gairdneri", t:"Subspecies of rainbow. Brick-red lateral band. High desert streams."},
+                {n:"Coastal Cutthroat", s:"O. clarkii clarkii", t:"Red slash under jaw. Spots below lateral line."},
+                {n:"Westslope Cutthroat", s:"O. clarkii lewisi", t:"Red slash under jaw. Smaller spots concentrated above lateral line."},
+                {n:"Bull Trout", s:"Salvelinus confluentus", t:"No black on dorsal. Pale yellow/pink spots on olive back."},
+                {n:"Dolly Varden", s:"Salvelinus malma", t:"Similar to bull trout. Smaller spots, more numerous. Coastal streams."},
+                {n:"Brook Trout", s:"Salvelinus fontinalis", t:"Worm-like vermiculations on back. White leading fin edges."},
+                {n:"Lake Trout", s:"Salvelinus namaycush", t:"Deeply forked tail. Light spots on dark background. Deep lakes."},
+                {n:"Brown Trout", s:"Salmo trutta", t:"Large dark/red spots with halos. Few spots on tail."},
+                {n:"Mountain Whitefish", s:"Prosopium williamsoni", t:"Large scales, subterminal mouth. Adipose fin."},
+                {n:"Pygmy Whitefish", s:"Prosopium coulterii", t:"Very small (<15cm). Deep cold lakes. Rare."}
+            ]},
+            { group: "Cyprinidae (Minnows)", items:[
+                {n:"Northern Pikeminnow", s:"Ptychocheilus oregonensis", t:"Large mouth past front of eye. Forked tail."},
+                {n:"Peamouth", s:"Mylocheilus caurinus", t:"Small mouth, reddish corners. Deeply forked tail."},
+                {n:"Chiselmouth", s:"Acrocheilus alutaceus", t:"Hard cartilaginous lower lip. Scrapes algae. East of Cascades."},
+                {n:"Redside Shiner", s:"Richardsonius balteatus", t:"Deep body. Long anal fin (10-22 rays). Crimson band."},
+                {n:"Speckled Dace", s:"Rhinichthys osculus", t:"Small subterminal mouth. Speckled dark pattern."},
+                {n:"Longnose Dace", s:"Rhinichthys cataractae", t:"Fleshy snout projects past mouth. Fast riffles."},
+                {n:"Leopard Dace", s:"Rhinichthys falcatus", t:"Leopard-like spots. Upper Columbia drainage."},
+                {n:"Umatilla Dace", s:"Rhinichthys umatilla", t:"Upper Columbia rivers. Similar to speckled dace."},
+                {n:"Lake Chub", s:"Couesius plumbeus", t:"Small barbel at corner of mouth. NE Washington lakes."},
+                {n:"Tui Chub", s:"Gila bicolor", t:"Deep body. Lakes and slow streams. Columbia Basin."},
+                {n:"Common Carp", s:"Cyprinus carpio", t:"Two barbels per side. Heavy serrated dorsal/anal spines."},
+                {n:"Goldfish", s:"Carassius auratus", t:"No barbels (unlike carp). Deep body. Gold/olive. Introduced."},
+                {n:"Tench", s:"Tinca tinca", t:"Tiny scales, slimy. Small barbels. Olive-green. Introduced."}
+            ]},
+            { group: "Catostomidae (Suckers)", items:[
+                {n:"Largescale Sucker", s:"Catostomus macrocheilus", t:"Fleshy subterminal mouth. <80 lateral scales."},
+                {n:"Bridgelip Sucker", s:"Catostomus columbianus", t:"Deeply incised lower lip. >90 lateral scales."},
+                {n:"Longnose Sucker", s:"Catostomus catostomus", t:"Long snout overhangs mouth. East of Cascades."},
+                {n:"Mountain Sucker", s:"Catostomus platyrhynchus", t:"Small mouth with cartilaginous scraping edge. Notch in lower lip."}
+            ]},
+            { group: "Cottidae (Sculpins)", items:[
+                {n:"Prickly Sculpin", s:"Cottus asper", t:"Rough prickles all over. Dark spot rear of 1st dorsal."},
+                {n:"Reticulate Sculpin", s:"Cottus perplexus", t:"Gap between dorsal fins. Reticulated pattern."},
+                {n:"Coastrange Sculpin", s:"Cottus aleuticus", t:"Smooth skin. Single chin pore. Coastal streams."},
+                {n:"Torrent Sculpin", s:"Cottus rhotheus", t:"Two chin pores. Swift rocky streams. Eats other sculpins."},
+                {n:"Shorthead Sculpin", s:"Cottus confusus", t:"Short blunt head. East of Cascades."},
+                {n:"Margined Sculpin", s:"Cottus marginatus", t:"Black margin on dorsal fin. Very limited range."},
+                {n:"Slimy Sculpin", s:"Cottus cognatus", t:"Smooth skin, no prickles. Cold headwater streams."},
+                {n:"Marbled Sculpin", s:"Cottus klamathensis", t:"Marbled pattern. Tolerates warm/polluted water."},
+                {n:"Pacific Staghorn Sculpin", s:"Leptocottus armatus", t:"Antler-like preopercular spine. Estuaries and river mouths."}
+            ]},
+            { group: "Gasterosteidae (Sticklebacks)", items:[
+                {n:"Threespine Stickleback", s:"Gasterosteus aculeatus", t:"3 dorsal spines. Bony lateral plates. Coastal streams, estuaries, lakes."},
+                {n:"Brook Stickleback", s:"Culaea inconstans", t:"4-6 short dorsal spines. No lateral plates. Quiet waters."},
+                {n:"Ninespine Stickleback", s:"Pungitius pungitius", t:"8-10 short dorsal spines. Slender body. Northern lakes/streams."}
+            ]},
+            { group: "Petromyzontidae (Lampreys)", items:[
+                {n:"Pacific Lamprey", s:"Entosphenus tridentatus", t:"3 supraoral teeth. Large (up to 75cm). Anadromous, parasitic."},
+                {n:"River Lamprey", s:"Lampetra ayresi", t:"Anadromous. Smaller than Pacific lamprey. Coastal rivers."},
+                {n:"Western Brook Lamprey", s:"Lampetra richardsoni", t:"Small (<15cm). Non-parasitic. Coastal streams to Yakima R."}
+            ]},
+            { group: "Centrarchidae (Sunfish & Bass)", items:[
+                {n:"Largemouth Bass", s:"Micropterus salmoides", t:"Jaw extends past eye. Deep horizontal stripe."},
+                {n:"Smallmouth Bass", s:"Micropterus dolomieu", t:"Jaw does NOT extend past eye. Vertical bars."},
+                {n:"Bluegill", s:"Lepomis macrochirus", t:"Solid black opercular flap. Spot at rear dorsal."},
+                {n:"Pumpkinseed", s:"Lepomis gibbosus", t:"Orange spot on opercular flap. Bright blue/orange streaks on face."},
+                {n:"Black Crappie", s:"Pomoxis nigromaculatus", t:"7-8 dorsal spines. Irregular dark blotches."},
+                {n:"White Crappie", s:"Pomoxis annularis", t:"5-6 dorsal spines. Vertical bars on silvery body."}
+            ]},
+            { group: "Percidae & Ictaluridae", items:[
+                {n:"Yellow Perch", s:"Perca flavescens", t:"6-8 dark vertical bars on yellow-green body. Introduced."},
+                {n:"Walleye", s:"Sander vitreus", t:"Large glassy eyes. Dark blotch at rear of 1st dorsal. Columbia/Snake."},
+                {n:"Channel Catfish", s:"Ictalurus punctatus", t:"Deeply forked tail. Dark spots. 8 barbels. Introduced."},
+                {n:"Brown Bullhead", s:"Ameiurus nebulosus", t:"Square tail. Dark chin barbels. Mottled brown. Introduced."}
+            ]},
+            { group: "Other Native & Misc", items:[
+                {n:"Eulachon (Candlefish)", s:"Thaleichthys pacificus", t:"Small smelt. Very oily. Anadromous. Lower Columbia."},
+                {n:"Olympic Mudminnow", s:"Novumbra hubbsi", t:"WA endemic. Rounded tail. Soft-bottomed lowland streams."},
+                {n:"White Sturgeon", s:"Acipenser transmontanus", t:"Bony scutes. Barbels before mouth. Can exceed 3m. Anadromous."},
+                {n:"Green Sturgeon", s:"Acipenser medirostris", t:"Olive-green. 1 row of scutes between lateral and ventral. Coastal rivers."},
+                {n:"Burbot", s:"Lota lota", t:"Freshwater cod. Single chin barbel. Mottled. N. Washington lakes."},
+                {n:"American Shad", s:"Alosa sapidissima", t:"Deep compressed body. Row of dark spots behind gill. Introduced."},
+                {n:"Starry Flounder", s:"Platichthys stellatus", t:"Flat. Alternating dark/light bars on fins. Enters fresh water."},
+                {n:"Unknown Specimen", s:"Indeterminatus", t:"Unable to ID in field. Retained for lab."}
+            ]}
         ];
 
         let catchData =[]; let siteLat = "UNK", siteLon = "UNK", airTemp = "UNK", weatherCode = "UNK"; let chartInstance = null;
@@ -1556,6 +1649,26 @@
             document.getElementById('kResult').style.color = k < 0.80 ? 'var(--danger)' : k > 1.10 ? 'var(--success)' : 'var(--warning)';
             sfxClick();
         }
+
+        function getLengthMM() {
+            const raw = parseFloat(document.getElementById('length').value);
+            if(isNaN(raw) || raw <= 0) return '';
+            const unit = document.getElementById('lengthUnit').value;
+            return unit === 'cm' ? Math.round(raw * 10) : Math.round(raw);
+        }
+
+        function convertLengthPreview() {
+            const raw = parseFloat(document.getElementById('length').value);
+            const el = document.getElementById('lengthPreview');
+            if(isNaN(raw) || raw <= 0) { el.textContent = ''; return; }
+            const unit = document.getElementById('lengthUnit').value;
+            if(unit === 'cm') {
+                el.textContent = `= ${Math.round(raw * 10)} mm`;
+            } else {
+                el.textContent = `= ${(raw / 10).toFixed(1)} cm`;
+            }
+        }
+
         function updateBioDex() {
             const opt = document.getElementById('species').options[document.getElementById('species').selectedIndex];
             if(opt.value) { document.getElementById('biodex-box').style.display = 'block'; document.getElementById('biodex-sci').innerText = opt.dataset.sci; document.getElementById('biodex-traits').innerText = opt.dataset.traits; sfxClick(); }
@@ -1596,7 +1709,7 @@
                 const gCount = document.getElementById('groupCount').value;
                 if(!pass || !spName || !gCount) return alert("⚠ Input Sweep #, Species, and Group Count.");
             } else {
-                const len = document.getElementById('length').value;
+                const len = getLengthMM();
                 if(!pass || !spName || !len) return alert("⚠ Input Sweep #, Species, and Length.");
             }
 
@@ -1627,7 +1740,7 @@
                 document.getElementById('logBody').prepend(tr);
                 document.getElementById('groupCount').value = ''; document.getElementById('groupWeight').value = '';
             } else {
-                const len = document.getElementById('length').value;
+                const len = getLengthMM();
                 const rec = {
                     t: new Date().toLocaleTimeString(), site: siteNum, rLen: document.getElementById('reachLen').value||"UNK", nets: document.getElementById('blockNets').value,
                     wTmp: document.getElementById('waterTemp').value||"UNK", cnd: document.getElementById('conductivity').value||"UNK", pass: parseInt(pass), sec: document.getElementById('shockSecs').value||"UNK",
@@ -1640,7 +1753,7 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `<td style="color:var(--warning); font-size:10px;">${siteNum}</td><td style="color:var(--secondary); font-weight:bold;">${pass}</td><td><strong style="color:var(--text-bright);">${spName}</strong><br><span style="font-size:10px; color:var(--muted); font-style:italic;">${rec.sci}</span></td><td style="color:var(--primary);">${len}</td><td>${pThumb}</td>`;
                 document.getElementById('logBody').prepend(tr);
-                document.getElementById('length').value = ''; document.getElementById('weight').value = '';
+                document.getElementById('length').value = ''; document.getElementById('weight').value = ''; document.getElementById('lengthPreview').textContent = '';
             }
 
             document.getElementById('photo').value = ''; document.getElementById('photoGallery').value = ''; document.getElementById('photoPreview').style.display = 'none'; document.getElementById('photoThumb').src = ''; activePhotoFile = null; document.getElementById('condition').value = 'Vigorous'; document.getElementById('biodex-box').style.display = 'none'; document.getElementById('species').selectedIndex = 0;
@@ -2212,10 +2325,12 @@
                     { header: 'Pass', key: 'pass', width: 8 },
                     { header: 'Start Time', key: 'start', width: 14 },
                     { header: 'End Time', key: 'end', width: 14 },
-                    { header: 'Elapsed (sec)', key: 'secs', width: 14 }
+                    { header: 'Elapsed (sec)', key: 'secs', width: 14 },
+                    { header: 'Elapsed (mm:ss)', key: 'formatted', width: 16 }
                 ];
                 passTimeLogs.forEach(pt => {
-                    wsPT.addRow({ site: pt.site, pass: pt.pass, start: pt.startTime, end: pt.endTime, secs: pt.elapsedSec });
+                    let fmt = pt.elapsedFormatted || (String(Math.floor(pt.elapsedSec/60)).padStart(2,'0') + ':' + String(pt.elapsedSec%60).padStart(2,'0'));
+                    wsPT.addRow({ site: pt.site, pass: pt.pass, start: pt.startTime, end: pt.endTime, secs: pt.elapsedSec, formatted: fmt });
                 });
                 wsPT.getRow(1).font = { bold: true };
             }
@@ -2353,7 +2468,7 @@
                 ptLog.innerHTML = '';
                 passTimeLogs.forEach(pt => {
                     const entry = document.createElement('div');
-                    entry.innerHTML = `<span style="color:var(--secondary);">Site ${pt.site} Pass ${pt.pass}</span> — ${pt.startTime} → ${pt.endTime} — <strong style="color:var(--primary);">${pt.elapsedSec}s</strong>`;
+                    entry.innerHTML = `<span style="color:var(--secondary);">Site ${pt.site} Pass ${pt.pass}</span> — ${pt.startTime} → ${pt.endTime} — <strong style="color:var(--primary);">${pt.elapsedSec}s (${pt.elapsedFormatted || ''})</strong>`;
                     ptLog.prepend(entry);
                 });
             }
@@ -2583,9 +2698,12 @@
             const pass = document.getElementById('passNum').value || '?';
             const site = document.getElementById('siteNum').value || '1';
             const secs = Math.round(timerElapsed);
+            const mins = Math.floor(secs / 60);
+            const remSecs = secs % 60;
+            const formatted = String(mins).padStart(2,'0') + ':' + String(remSecs).padStart(2,'0');
             const startT = new Date(timerStart).toLocaleTimeString();
             const endT = new Date().toLocaleTimeString();
-            passTimeLogs.push({ pass: parseInt(pass), site: parseInt(site), startTime: startT, endTime: endT, elapsedSec: secs });
+            passTimeLogs.push({ pass: parseInt(pass), site: parseInt(site), startTime: startT, endTime: endT, elapsedSec: secs, elapsedFormatted: formatted });
 
             // Auto-fill shock seconds
             document.getElementById('shockSecs').value = secs;
@@ -2594,7 +2712,7 @@
             const logEl = document.getElementById('passTimeLog');
             logEl.style.display = 'block';
             const entry = document.createElement('div');
-            entry.innerHTML = `<span style="color:var(--secondary);">Site ${site} Pass ${pass}</span> — ${startT} → ${endT} — <strong style="color:var(--primary);">${secs}s</strong>`;
+            entry.innerHTML = `<span style="color:var(--secondary);">Site ${site} Pass ${pass}</span> — ${startT} → ${endT} — <strong style="color:var(--primary);">${secs}s (${formatted})</strong>`;
             logEl.prepend(entry);
             sfxClick();
             autoSave();
