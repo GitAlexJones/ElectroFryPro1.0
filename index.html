@@ -946,15 +946,21 @@
         <!-- 3. STATS -->
         <div id="tab-stats" class="tab-content">
             <div class="card">
-                <h3>Depletion Curve Modeling</h3>
-                <div style="background: #0d1225; border: 1px solid var(--border); border-radius: 4px; padding: 8px; margin-bottom: 10px;">
-                    <canvas id="depletionChart" width="400" height="320"></canvas>
-                </div>
-                <button class="btn btn-outline" onclick="downloadChartImage()">💾 DOWNLOAD CHART (.JPG)</button>
-            </div>
-            <div class="card">
-                <h3>Survey Raw Log</h3>
+                <details class="ref-dropdown">
+                <summary>Survey Raw Log</summary>
+                <div class="ref-body">
                 <div class="table-responsive"><table id="logTable"><thead><tr><th>Site</th><th>Sweep</th><th>Taxa</th><th>L(mm)</th><th>Photo</th></tr></thead><tbody id="logBody"></tbody></table></div>
+                </div>
+                </details>
+            </div>
+
+            <div class="card" style="border-top: 2px solid var(--success);">
+                <h3>Per-Species Population &amp; Biomass</h3>
+                <p style="font-size: 11px; color: var(--muted); margin-bottom: 10px;">Calculated from logged data. Density requires reach length and wetted width from the Site tab.</p>
+                <div class="table-responsive">
+                    <table id="speciesTable"><thead><tr><th>Species</th><th>Caught</th><th>N̂</th><th>p̂</th><th>CPUE/s</th><th>CPUE/pass</th><th>Biomass(g)</th><th>Density</th></tr></thead><tbody id="speciesBody"></tbody></table>
+                </div>
+                <button class="btn btn-outline" onclick="calcSpeciesStats()" style="margin-top: 10px;">↻ REFRESH ESTIMATES</button>
             </div>
 
             <div class="card" style="border-top: 2px solid var(--secondary);">
@@ -997,20 +1003,19 @@
             </div>
 
             <div class="card">
+                <h3>Depletion Curve Modeling</h3>
+                <div style="background: #0d1225; border: 1px solid var(--border); border-radius: 4px; padding: 8px; margin-bottom: 10px;">
+                    <canvas id="depletionChart" width="400" height="320"></canvas>
+                </div>
+                <button class="btn btn-outline" onclick="downloadChartImage()">💾 DOWNLOAD CHART (.JPG)</button>
+            </div>
+
+            <div class="card">
                 <h3>Length-Frequency Distribution</h3>
                 <div style="background: #0d1225; border: 1px solid var(--border); border-radius: 4px; padding: 8px; margin-bottom: 10px;">
                     <canvas id="lengthFreqChart" width="400" height="280"></canvas>
                 </div>
                 <button class="btn btn-outline" onclick="downloadLFChart()">💾 DOWNLOAD LENGTH-FREQ CHART (.JPG)</button>
-            </div>
-
-            <div class="card" style="border-top: 2px solid var(--success);">
-                <h3>Per-Species Population &amp; Biomass</h3>
-                <p style="font-size: 11px; color: var(--muted); margin-bottom: 10px;">Calculated from logged data. Density requires reach length and wetted width from the Site tab.</p>
-                <div class="table-responsive">
-                    <table id="speciesTable"><thead><tr><th>Species</th><th>Caught</th><th>N̂</th><th>p̂</th><th>CPUE/s</th><th>CPUE/pass</th><th>Biomass(g)</th><th>Density</th></tr></thead><tbody id="speciesBody"></tbody></table>
-                </div>
-                <button class="btn btn-outline" onclick="calcSpeciesStats()" style="margin-top: 10px;">↻ REFRESH ESTIMATES</button>
             </div>
         </div>
 
