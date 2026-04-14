@@ -1008,7 +1008,7 @@
                 <h3>Per-Species Population &amp; Biomass</h3>
                 <p style="font-size: 11px; color: var(--muted); margin-bottom: 10px;">Calculated from logged data. Density requires reach length and wetted width from the Site tab.</p>
                 <div class="table-responsive">
-                    <table id="speciesTable"><thead><tr><th>Species</th><th>Caught</th><th>N̂ (MLE)</th><th>p̂</th><th>Avg Wt(g)</th><th>Biomass(g)</th><th>Density</th></tr></thead><tbody id="speciesBody"></tbody></table>
+                    <table id="speciesTable"><thead><tr><th>Species</th><th>Caught</th><th>N̂</th><th>p̂</th><th>CPUE/s</th><th>CPUE/pass</th><th>Biomass(g)</th><th>Density</th></tr></thead><tbody id="speciesBody"></tbody></table>
                 </div>
                 <button class="btn btn-outline" onclick="calcSpeciesStats()" style="margin-top: 10px;">↻ REFRESH ESTIMATES</button>
             </div>
@@ -2177,32 +2177,48 @@
             wsK.getRow(sumRow).getCell(1).font = { bold: true, color: { argb: 'FF0F4C81' } };
             wsK.getRow(sumRow + 1).getCell(1).value = 'K < 0.80 = Poor  |  K 0.80–1.10 = Average  |  K > 1.10 = Excellent (general salmonid ranges)';
 
-            /* --- Per-Species MLE Sheet --- */
-            const wsSp = wb.addWorksheet('Per-Species MLE');
+            /* --- Per-Species MLE & CPUE Sheet --- */
+            const wsSp = wb.addWorksheet('Per-Species MLE & CPUE');
+
+            // Calculate total shock seconds for CPUE
+            let xlTotalShockSecs = 0;
+            passTimeLogs.forEach(pt => { xlTotalShockSecs += pt.elapsedSec || 0; });
+            if(xlTotalShockSecs === 0) {
+                const seenP = new Set();
+                catchData.forEach(d => { const k = (d.site||'1') + '-' + d.pass; if(!seenP.has(k) && d.sec && d.sec !== 'UNK') { xlTotalShockSecs += parseInt(d.sec) || 0; seenP.add(k); } });
+            }
+
             wsSp.columns = [
                 { header: 'Species', key: 'sp', width: 24 },
                 { header: 'Total Caught', key: 'caught', width: 14 },
-                { header: 'Population Est (N̂)', key: 'nHat', width: 20 },
-                { header: 'Capture Prob (p̂)', key: 'pHat', width: 18 },
+                { header: 'Pop Est (N̂)', key: 'nHat', width: 14 },
+                { header: 'Capture Prob (p̂)', key: 'pHat', width: 16 },
                 { header: 'Std Error', key: 'se', width: 12 },
                 { header: '95% CI Lower', key: 'ciL', width: 14 },
                 { header: '95% CI Upper', key: 'ciH', width: 14 },
+                { header: 'CPUE/sec', key: 'cpueSec', width: 12 },
+                { header: 'CPUE/pass', key: 'cpuePass', width: 12 },
                 { header: 'Pattern', key: 'pattern', width: 20 }
             ];
 
             const allSpecies = [...new Set(catchData.map(d => d.sp))];
             const allPasses = [...new Set(catchData.map(d => d.pass))].sort((a,b) => a - b);
+            const xlNumPasses = allPasses.length;
 
             allSpecies.forEach(sp => {
-                const perPass = allPasses.map(p => catchData.filter(d => d.sp === sp && d.pass === p).length);
+                const spData = catchData.filter(d => d.sp === sp);
+                const perPass = allPasses.map(p => spData.filter(d => d.pass === p).length);
                 const mleR = computeSpeciesMLE(perPass);
+                const totalCaught = spData.length;
                 let nonDesc = false;
                 for(let i = 1; i < perPass.length; i++) { if(perPass[i] > perPass[i-1]) { nonDesc = true; break; } }
                 wsSp.addRow({
-                    sp, caught: perPass.reduce((a,b) => a+b, 0), nHat: mleR.nHat,
+                    sp, caught: totalCaught, nHat: mleR.nHat,
                     pHat: mleR.pHat > 0 ? mleR.pHat : 'N/A',
                     se: !isNaN(mleR.se) ? mleR.se : 'N/A',
                     ciL: mleR.ciLow, ciH: mleR.ciHigh,
+                    cpueSec: xlTotalShockSecs > 0 ? parseFloat((totalCaught / xlTotalShockSecs).toFixed(4)) : 'N/A',
+                    cpuePass: xlNumPasses > 0 ? parseFloat((totalCaught / xlNumPasses).toFixed(2)) : 'N/A',
                     pattern: nonDesc ? '⚠ Non-descending' : 'Valid'
                 });
             });
@@ -2230,7 +2246,10 @@
 
             wsBD.columns = [
                 { header: 'Species', key: 'sp', width: 24 },
+                { header: 'Caught', key: 'caught', width: 10 },
                 { header: 'Est Pop (N̂)', key: 'nHat', width: 14 },
+                { header: 'CPUE/sec', key: 'cpueSec', width: 12 },
+                { header: 'CPUE/pass', key: 'cpuePass', width: 12 },
                 { header: 'Avg Weight (g)', key: 'avgWt', width: 14 },
                 { header: 'Est Biomass (g)', key: 'biomass', width: 16 },
                 { header: 'Biomass (kg)', key: 'biomassKg', width: 14 },
@@ -2239,19 +2258,23 @@
                 { header: 'Density (kg/ha)', key: 'kgHa', width: 14 }
             ];
 
-            let totalNhat = 0, totalBiomass = 0;
+            let totalNhat = 0, totalBiomass = 0, totalCaughtAll = 0;
             allSpecies.forEach(sp => {
                 const spData = catchData.filter(d => d.sp === sp);
                 const perPass = allPasses.map(p => spData.filter(d => d.pass === p).length);
                 const mleR = computeSpeciesMLE(perPass);
+                const spCaught = spData.length;
                 const withWt = spData.filter(d => d.wt && d.wt !== '---' && parseFloat(d.wt) > 0);
                 const avgWt = withWt.length > 0 ? withWt.reduce((a,d) => a + parseFloat(d.wt), 0) / withWt.length : 0;
                 const biomass = mleR.nHat * avgWt;
                 totalNhat += mleR.nHat;
                 totalBiomass += biomass;
+                totalCaughtAll += spCaught;
 
                 wsBD.addRow({
-                    sp, nHat: mleR.nHat,
+                    sp, caught: spCaught, nHat: mleR.nHat,
+                    cpueSec: xlTotalShockSecs > 0 ? parseFloat((spCaught / xlTotalShockSecs).toFixed(4)) : 'N/A',
+                    cpuePass: xlNumPasses > 0 ? parseFloat((spCaught / xlNumPasses).toFixed(2)) : 'N/A',
                     avgWt: avgWt > 0 ? parseFloat(avgWt.toFixed(1)) : 'N/A',
                     biomass: biomass > 0 ? parseFloat(biomass.toFixed(0)) : 'N/A',
                     biomassKg: biomass > 0 ? parseFloat((biomass / 1000).toFixed(3)) : 'N/A',
@@ -2263,7 +2286,10 @@
 
             // Totals row
             wsBD.addRow({
-                sp: 'ALL SPECIES', nHat: totalNhat, avgWt: '',
+                sp: 'ALL SPECIES', caught: totalCaughtAll, nHat: totalNhat,
+                cpueSec: xlTotalShockSecs > 0 ? parseFloat((totalCaughtAll / xlTotalShockSecs).toFixed(4)) : 'N/A',
+                cpuePass: xlNumPasses > 0 ? parseFloat((totalCaughtAll / xlNumPasses).toFixed(2)) : 'N/A',
+                avgWt: '',
                 biomass: totalBiomass > 0 ? parseFloat(totalBiomass.toFixed(0)) : 'N/A',
                 biomassKg: totalBiomass > 0 ? parseFloat((totalBiomass / 1000).toFixed(3)) : 'N/A',
                 numDens: reachArea > 0 ? parseFloat(((totalNhat / reachArea) * 100).toFixed(2)) : 'N/A',
@@ -2281,9 +2307,11 @@
             wsBD.getRow(bdInfo+2).values = ['Avg Wetted Width (m)', widths.avgWetted || 'Not entered'];
             wsBD.getRow(bdInfo+3).values = ['Avg Bankfull Width (m)', widths.avgBankfull || 'Not entered'];
             wsBD.getRow(bdInfo+4).values = ['Reach Area (m²)', reachArea > 0 ? parseFloat(reachArea.toFixed(1)) : 'Requires length + width'];
-            wsBD.getRow(bdInfo+5).values = ['DO (mg/L)', toNum(doVal) || 'Not entered'];
-            wsBD.getRow(bdInfo+6).values = ['pH', toNum(phVal) || 'Not entered'];
-            wsBD.getRow(bdInfo+7).values = ['Turbidity (NTU)', toNum(turbVal) || 'Not entered'];
+            wsBD.getRow(bdInfo+5).values = ['Total Shock Seconds', xlTotalShockSecs > 0 ? xlTotalShockSecs : 'No timer data'];
+            wsBD.getRow(bdInfo+6).values = ['Number of Passes', xlNumPasses];
+            wsBD.getRow(bdInfo+7).values = ['DO (mg/L)', toNum(doVal) || 'Not entered'];
+            wsBD.getRow(bdInfo+8).values = ['pH', toNum(phVal) || 'Not entered'];
+            wsBD.getRow(bdInfo+9).values = ['Turbidity (NTU)', toNum(turbVal) || 'Not entered'];
 
             /* --- Length-Frequency Sheet --- */
             const wsLF = wb.addWorksheet('Length-Frequency');
@@ -2872,13 +2900,30 @@
             const species = [...new Set(catchData.map(d => d.sp))];
             const passes = [...new Set(catchData.map(d => d.pass))].sort((a,b) => a - b);
 
+            // Total shock seconds across all passes
+            let totalShockSecs = 0;
+            passTimeLogs.forEach(pt => { totalShockSecs += pt.elapsedSec || 0; });
+            // Fallback: sum from catch data if no timer logs
+            if(totalShockSecs === 0) {
+                const seenPasses = new Set();
+                catchData.forEach(d => {
+                    const key = d.site + '-' + d.pass;
+                    if(!seenPasses.has(key) && d.sec && d.sec !== 'UNK') { totalShockSecs += parseInt(d.sec) || 0; seenPasses.add(key); }
+                });
+            }
+            const numPasses = passes.length;
+
             species.forEach(sp => {
                 const spData = catchData.filter(d => d.sp === sp);
                 const perPass = passes.map(p => spData.filter(d => d.pass === p).length);
                 const mle = computeSpeciesMLE(perPass);
                 const totalCaught = spData.length;
 
-                // Average weight from fish with weight data
+                // CPUE
+                const cpueSec = totalShockSecs > 0 ? (totalCaught / totalShockSecs).toFixed(4) : '—';
+                const cpuePass = numPasses > 0 ? (totalCaught / numPasses).toFixed(1) : '—';
+
+                // Biomass
                 const withWt = spData.filter(d => d.wt && d.wt !== '---' && parseFloat(d.wt) > 0);
                 const avgWt = withWt.length > 0 ? withWt.reduce((a,d) => a + parseFloat(d.wt), 0) / withWt.length : 0;
                 const biomass = mle.nHat * avgWt;
@@ -2894,7 +2939,8 @@
                     <td>${totalCaught}</td>
                     <td style="color:var(--success);">${mle.nHat}</td>
                     <td>${mle.pHat > 0 ? mle.pHat : '—'}</td>
-                    <td>${avgWt > 0 ? avgWt.toFixed(1) : '—'}</td>
+                    <td>${cpueSec}</td>
+                    <td>${cpuePass}</td>
                     <td>${biomass > 0 ? biomass.toFixed(0) : '—'}</td>
                     <td style="color:var(--primary);">${density}</td>`;
                 body.appendChild(tr);
