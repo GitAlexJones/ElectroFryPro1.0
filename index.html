@@ -997,6 +997,21 @@
             <div class="card" style="border-top: 2px solid var(--success);">
                 <h3>Per-Species Population &amp; Biomass</h3>
                 <p style="font-size: 11px; color: var(--muted); margin-bottom: 10px;">Calculated from logged data. Density requires reach length and wetted width from the Site tab.</p>
+                <details style="margin-bottom: 14px;">
+                    <summary style="cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--lcd-highlight); letter-spacing:1px; padding: 6px 0; list-style:none; display:flex; align-items:center; gap:6px;">
+                        <span style="font-size:13px;">?</span> COLUMN DEFINITIONS <span style="margin-left:auto; font-size:11px; opacity:0.5;">tap to expand</span>
+                    </summary>
+                    <div style="background:#0e140e; border:1px solid #2a3028; border-radius:4px; padding:12px; margin-top:8px; font-family:'Share Tech Mono',monospace; font-size:12px; line-height:2; color:var(--text);">
+                        <strong style="color:var(--lcd-highlight);">SPECIES</strong> — The common name of the fish species.<br>
+                        <strong style="color:var(--lcd-highlight);">CAUGHT</strong> — Total number of that species physically captured across all passes.<br>
+                        <strong style="color:var(--lcd-highlight);">N (N-hat)</strong> — MLE population estimate. The math's best guess at how many of that species are actually in the reach, including fish you never caught. Always equal to or greater than Caught.<br>
+                        <strong style="color:var(--lcd-highlight);">p (p-hat)</strong> — Capture probability. The estimated fraction of fish caught per pass. Example: 0.50 means each pass catches about 50% of the remaining fish. Higher = more efficient sampling. A dash means not enough data to calculate.<br>
+                        <strong style="color:var(--lcd-highlight);">CPUE/s</strong> — Catch Per Unit Effort per second. Total caught divided by total shock seconds. Lets you compare between surveys with different effort levels.<br>
+                        <strong style="color:var(--lcd-highlight);">CPUE/pass</strong> — Catch Per Unit Effort per pass. Total caught divided by number of passes. Simpler version — how many of this species you average per sweep.<br>
+                        <strong style="color:var(--lcd-highlight);">BIOMASS(g)</strong> — Estimated total weight of that species in the reach, in grams. Calculated as N-hat times average weight of fish you weighed. Shows a dash if no weight data was entered.<br>
+                        <strong style="color:var(--lcd-highlight);">DENSITY</strong> — Number of estimated fish per 100 square meters of stream. Requires reach length and average wetted width from the Site tab. This is the standard metric for comparing fish abundance between sites of different sizes.
+                    </div>
+                </details>
                 <div class="table-responsive">
                     <table id="speciesTable"><thead><tr><th>Species</th><th>Caught</th><th>N̂</th><th>p̂</th><th>CPUE/s</th><th>CPUE/pass</th><th>Biomass(g)</th><th>Density</th></tr></thead><tbody id="speciesBody"></tbody></table>
                 </div>
