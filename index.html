@@ -9,28 +9,37 @@
     <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
     <style>
         :root {
-            --primary: #ffffff;
-            --primary-dim: #b0bec5;
-            --secondary: #ff9100;
-            --success: #00e676;
-            --danger: #ff1744;
-            --warning: #ffd600;
-            --bg: #1a2332;
-            --bg2: #151e2b;
-            --surf: #1e2d3d;
-            --surf2: #243447;
-            --text: #e0e0e0;
-            --text-bright: #ffffff;
-            --muted: #78909c;
-            --border: #2c3e50;
-            --glow: rgba(255, 255, 255, 0.1);
-            --glow-strong: rgba(255, 255, 255, 0.25);
+            --primary: #e8dcc8;
+            --primary-dim: #b0a890;
+            --secondary: #e8dcc8;
+            --success: #8fce6a;
+            --danger: #e05050;
+            --warning: #e8b840;
+            --bg: #8a9199;
+            --bg2: #747b82;
+            --surf: #1a1f24;
+            --surf2: #0e1215;
+            --text: #d8d0c0;
+            --text-bright: #f0e8d8;
+            --muted: #908878;
+            --border: #2a3028;
+            --glow: rgba(232, 220, 200, 0.08);
+            --glow-strong: rgba(232, 220, 200, 0.15);
+            --lcd-bg: #141a14;
+            --lcd-text: #d8d0c0;
+            --lcd-highlight: #e8b840;
+            --btn-blue: #2a5a8a;
+            --btn-blue-light: #3a7ab0;
+            --housing: #8a9199;
+            --housing-light: #a0a8b0;
+            --housing-dark: #6a7178;
         }
 
         * { box-sizing: border-box; }
 
         body {
-            background: var(--bg);
+            background: var(--housing);
+            background-image: linear-gradient(180deg, var(--housing-light) 0%, var(--housing) 30%, var(--housing-dark) 100%);
             color: var(--text);
             font-family: 'Exo 2', sans-serif;
             font-size: 15px;
@@ -43,7 +52,7 @@
 
 
         h1, h2, h3, h4, h5 {
-            color: var(--primary);
+            color: var(--lcd-text);
             margin: 0 0 10px 0;
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
@@ -52,45 +61,44 @@
         }
         h3 {
             font-size: 0.85rem;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #242a24;
             padding-bottom: 10px;
             margin-bottom: 16px;
-            text-shadow: 0 0 20px var(--glow-strong);
+            text-shadow: 0 0 8px rgba(216, 208, 192, 0.3);
             display: flex;
             align-items: center;
             gap: 8px;
         }
         h3::before {
-            content: '//';
-            color: var(--secondary);
+            content: '>';
+            color: var(--lcd-text);
             font-weight: 400;
-            opacity: 0.6;
+            opacity: 0.5;
         }
         p { margin: 0 0 10px 0; }
 
         .container { padding: 10px; max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
 
         .card {
-            background: linear-gradient(135deg, var(--surf) 0%, var(--surf2) 100%);
-            border-radius: 4px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border: 1px solid var(--border);
+            background: var(--lcd-bg);
+            border-radius: 6px;
+            padding: 18px;
+            margin-bottom: 12px;
+            border: 2px solid #2a3028;
             position: relative;
             overflow: hidden;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.08);
         }
         .card::before {
             content: '';
             position: absolute;
             top: 0; left: 0;
             width: 3px; height: 100%;
-            background: linear-gradient(180deg, #ff9100, #ffd600);
-            opacity: 0.6;
+            background: var(--lcd-text);
+            opacity: 0.2;
         }
         .card:hover {
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+            border-color: #3a4038;
         }
 
         .row { display: flex; gap: 12px; margin-bottom: 15px; }
@@ -101,7 +109,7 @@
             margin-bottom: 6px;
             font-weight: 600;
             font-size: 0.75rem;
-            color: var(--primary-dim);
+            color: var(--muted);
             text-transform: uppercase;
             letter-spacing: 1.5px;
             font-family: 'Share Tech Mono', monospace;
@@ -110,24 +118,24 @@
         input, select, textarea {
             width: 100%;
             padding: 12px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border);
+            background: #121812;
+            border: 1px solid #2a3028;
             border-radius: 3px;
             font-family: 'Share Tech Mono', monospace;
             font-size: 15px;
-            color: var(--text-bright);
+            color: var(--lcd-text);
             box-sizing: border-box;
             transition: all 0.3s;
         }
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 15px var(--glow), inset 0 0 15px rgba(255, 255, 255, 0.03);
+            border-color: var(--lcd-text);
+            background: #161c16;
+            box-shadow: 0 0 10px rgba(216, 208, 192, 0.1);
         }
         select { cursor: pointer; color-scheme: dark; }
-        select option { background: #1a1f3a !important; color: #e8f0fe !important; }
-        select optgroup { background: #0d1225 !important; color: #00e5ff !important; font-weight: 700; }
+        select option { background: #121812 !important; color: var(--lcd-text) !important; }
+        select optgroup { background: #0e140e !important; color: var(--lcd-text) !important; font-weight: 700; }
         textarea { height: 100px; resize: vertical; font-size: 13px; }
         .code-textarea { height: 120px; font-family: 'Share Tech Mono', monospace; font-size: 11px; }
 
@@ -162,78 +170,85 @@
         .btn:active { transform: scale(0.97); }
 
         .btn-primary {
-            background: linear-gradient(135deg, #0d47a1, #1565c0);
-            color: var(--primary);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            background: linear-gradient(180deg, #3a7ab0, #2a5a8a);
+            color: #e0e8f0;
+            border: 1px solid #4a8ac0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
         }
-        .btn-primary:hover { box-shadow: 0 0 30px rgba(255, 255, 255, 0.2); border-color: var(--primary); }
+        .btn-primary:hover { background: linear-gradient(180deg, #4a8ac0, #3a6a9a); }
         .btn-secondary {
-            background: linear-gradient(135deg, #4a148c, #6a1b9a);
-            color: #ce93d8;
-            border: 1px solid rgba(255, 145, 0, 0.3);
+            background: linear-gradient(180deg, #3a7ab0, #2a5a8a);
+            color: #e0e8f0;
+            border: 1px solid #4a8ac0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
         }
         .btn-success {
-            background: linear-gradient(135deg, #1b5e20, #2e7d32);
-            color: var(--success);
-            border: 1px solid rgba(0, 230, 118, 0.3);
-            box-shadow: 0 0 20px rgba(0, 230, 118, 0.1);
+            background: linear-gradient(180deg, #3a7ab0, #2a5a8a);
+            color: var(--lcd-text);
+            border: 1px solid #4a8ac0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
         }
         .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--primary);
+            background: var(--lcd-bg);
+            border: 1px solid #2a3028;
+            color: var(--lcd-text);
             padding: 10px;
             font-size: 11px;
             font-family: 'Share Tech Mono', monospace;
             letter-spacing: 1px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
         }
-        .btn-outline:hover { border-color: var(--primary); background: var(--glow); }
+        .btn-outline:hover { border-color: var(--lcd-text); background: #161c16; }
 
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px; font-family: 'Share Tech Mono', monospace; }
-        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--border); }
-        th { background: rgba(0,229,255,0.05); font-weight: 600; color: var(--primary-dim); text-transform: uppercase; font-size: 10px; letter-spacing: 1px; }
-        td { color: var(--text); }
+        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #242a24; }
+        th { background: #121812; font-weight: 600; color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: 1px; }
+        td { color: var(--lcd-text); }
 
-        /* === TOP HEADER HUD === */
+        /* === TOP HEADER — LR-24 LABEL PANEL === */
         .top-header {
             position: fixed; top: 0; left: 0; width: 100%;
-            background: linear-gradient(180deg, var(--bg2) 0%, rgba(13,18,37,0.95) 100%);
+            background: linear-gradient(180deg, #6a7178, #5a6168);
             color: white;
             padding: 10px 15px;
             box-sizing: border-box;
             z-index: 1000;
-            border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #4a5158;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         .hud-row-1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .header-title {
             font-family: 'Orbitron', sans-serif;
             font-weight: 800;
-            font-size: 14px;
-            color: var(--primary);
-            text-shadow: 0 0 20px var(--glow-strong);
+            font-size: 13px;
+            color: #e0e8f0;
             letter-spacing: 2px;
         }
         .header-badge {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--border);
+            background: var(--lcd-bg);
+            border: 1px solid #2a3028;
             padding: 3px 10px;
             border-radius: 3px;
             font-size: 10px;
             font-family: 'Share Tech Mono', monospace;
-            color: var(--muted);
+            color: var(--lcd-text);
             letter-spacing: 1px;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.4);
         }
-        .header-badge.active { color: var(--success); border-color: rgba(0, 230, 118, 0.3); background: rgba(0, 230, 118, 0.08); }
+        .header-badge.active { color: var(--success); border-color: #2a3028; }
 
         .species-counter {
             font-family: 'Share Tech Mono', monospace;
-            font-size: 12px;
-            color: var(--warning);
+            font-size: 11px;
+            color: var(--lcd-text);
             white-space: nowrap;
             font-weight: 700;
+            background: var(--lcd-bg);
+            padding: 3px 10px;
+            border-radius: 3px;
+            border: 1px solid #2a3028;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.4);
         }
         .hud-stats {
             display: flex;
@@ -242,97 +257,97 @@
             gap: 10px;
         }
 
-        /* === BOTTOM NAV === */
+        /* === BOTTOM NAV — LR-24 BUTTON PANEL === */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: linear-gradient(0deg, var(--bg2) 0%, rgba(13,18,37,0.98) 100%);
-            border-top: 1px solid var(--border);
+            background: linear-gradient(180deg, #2a5a8a, #1a4a7a);
+            border-top: 2px solid #3a7ab0;
             display: flex;
             justify-content: space-around;
-            padding: 8px 0;
+            padding: 4px 4px;
+            gap: 4px;
             z-index: 1000;
-            padding-bottom: calc(8px + env(safe-area-inset-bottom));
-            backdrop-filter: blur(10px);
+            padding-bottom: calc(4px + env(safe-area-inset-bottom));
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
         }
         .nav-item {
             text-align: center;
-            color: var(--muted);
+            color: #c0d0e0;
             cursor: pointer;
             flex: 1;
-            font-size: 8px;
+            font-size: 9px;
             font-family: 'Orbitron', sans-serif;
-            font-weight: 600;
-            padding: 5px 2px;
-            letter-spacing: 0.3px;
-            transition: all 0.3s;
+            font-weight: 700;
+            padding: 10px 2px;
+            letter-spacing: 0.5px;
+            transition: all 0.15s;
             position: relative;
+            background: linear-gradient(180deg, #3a7ab0, #2a5a8a);
+            border-radius: 4px;
+            border: 1px solid #4a8ac0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
         }
-        .nav-item.active { color: var(--primary); }
-        .nav-item.active::after {
-            content: '';
-            position: absolute;
-            top: -9px; left: 25%; right: 25%;
-            height: 2px;
-            background: var(--secondary);
-            box-shadow: 0 0 10px var(--secondary);
-            border-radius: 0 0 2px 2px;
+        .nav-item:active {
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+            transform: translateY(1px);
         }
-        .nav-icon { display: block; font-size: 16px; margin-bottom: 2px; }
+        .nav-item.active {
+            color: #ffffff;
+            background: linear-gradient(180deg, #4a8ac0, #3a7ab0);
+            border-color: #5a9ad0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2), 0 0 8px rgba(90,140,200,0.3);
+        }
+        .nav-item.active::after { display: none; }
 
         /* TABS */
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: glitchIn 0.4s; }
         @keyframes glitchIn {
-            0% { opacity: 0; transform: translateY(8px); filter: hue-rotate(40deg) brightness(1.5); }
-            30% { opacity: 0.7; filter: hue-rotate(0deg) brightness(1.2); }
-            100% { opacity: 1; transform: translateY(0); filter: none; }
+            0% { opacity: 0; transform: translateY(4px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         /* SPLASH */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg);
+            background: #5a6168;
             z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 20px; box-sizing: border-box; text-align: center; color: white;
         }
-        .modal-overlay.dark { background: rgba(0,0,0,0.95); }
-        .modal-overlay.blur { background: rgba(10, 14, 23, 0.97); }
+        .modal-overlay.dark { background: rgba(20,26,20,0.95); }
+        .modal-overlay.blur { background: rgba(90, 97, 104, 0.97); }
 
         .modal-card {
-            background: var(--surf);
+            background: var(--lcd-bg);
             color: var(--text);
             padding: 30px;
-            border-radius: 4px;
+            border-radius: 6px;
             max-width: 450px;
             width: 100%;
             text-align: left;
             max-height: 80vh;
             overflow-y: auto;
-            border: 1px solid var(--border);
+            border: 2px solid #2a3028;
             position: relative;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
         }
         .modal-card::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(180deg, #ff9100, #ffd600);
+            background: linear-gradient(90deg, var(--btn-blue), var(--btn-blue-light));
         }
 
         /* SPLASH SPECIAL */
         .splash-title {
             font-family: 'Orbitron', sans-serif;
             font-weight: 900;
-            font-size: 32px;
+            font-size: 28px;
             color: var(--primary);
-            text-shadow: 0 0 40px var(--glow-strong), 0 0 80px rgba(0,229,255,0.2);
+            text-shadow: 0 0 12px rgba(232,184,64,0.3);
             letter-spacing: 4px;
             margin-bottom: 8px;
-            animation: titlePulse 3s ease-in-out infinite;
-        }
-        @keyframes titlePulse {
-            0%, 100% { text-shadow: 0 0 40px var(--glow-strong), 0 0 80px rgba(0,229,255,0.2); }
-            50% { text-shadow: 0 0 60px var(--glow-strong), 0 0 120px rgba(0,229,255,0.3), 0 0 160px rgba(124,77,255,0.1); }
         }
         .splash-sub {
             font-family: 'Share Tech Mono', monospace;
@@ -349,7 +364,7 @@
         .splash-features li {
             font-size: 13px;
             padding: 8px 0;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #2a3028;
             color: var(--text);
             display: flex;
             align-items: center;
@@ -368,8 +383,8 @@
 
         /* BIODEX */
         #biodex-box {
-            background: linear-gradient(135deg, rgba(0,229,255,0.06), rgba(124,77,255,0.06));
-            border-left: 3px solid var(--secondary);
+            background: #121812;
+            border-left: 3px solid var(--lcd-text);
             padding: 15px;
             margin-bottom: 15px;
             border-radius: 0 4px 4px 0;
@@ -421,10 +436,10 @@
             border: 1px solid var(--border);
             font-family: 'Share Tech Mono', monospace;
         }
-        .calc-grid .btn:hover { border-color: rgba(0,229,255,0.3); }
-        .calc-grid .btn-op { background: rgba(255, 145, 0, 0.15); color: var(--secondary); border-color: rgba(124,77,255,0.3); }
-        .calc-grid .btn-clear { background: rgba(255, 23, 68, 0.12); color: var(--danger); border-color: rgba(255,23,68,0.3); }
-        .calc-grid .btn-eq { background: rgba(0, 230, 118, 0.12); color: var(--success); border-color: rgba(0,230,118,0.3); grid-column: span 4; }
+        .calc-grid .btn:hover { border-color: rgba(216,208,192,0.3); }
+        .calc-grid .btn-op { background: rgba(216, 208, 192, 0.15); color: var(--secondary); border-color: rgba(42,90,138,0.3); }
+        .calc-grid .btn-clear { background: rgba(255, 23, 68, 0.12); color: var(--danger); border-color: rgba(255,68,68,0.3); }
+        .calc-grid .btn-eq { background: rgba(216, 208, 192, 0.12); color: var(--success); border-color: rgba(216,208,192,0.3); grid-column: span 4; }
 
         /* REFERENCE SECTIONS */
         .manual-section h5 { margin-top: 15px; margin-bottom: 4px; color: var(--primary); font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px; }
@@ -447,47 +462,48 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             padding-bottom: 10px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #2a3028;
             margin-bottom: 16px;
-            text-shadow: 0 0 20px var(--glow-strong);
+            text-shadow: 0 0 12px rgba(232,184,64,0.3);
             user-select: none;
             -webkit-user-select: none;
         }
         .ref-dropdown summary::-webkit-details-marker { display: none; }
-        .ref-dropdown summary::before { content: '//'; color: var(--secondary); font-weight: 400; opacity: 0.6; }
+        .ref-dropdown summary::before { content: '>'; color: var(--lcd-text); font-weight: 400; opacity: 0.5; }
         .ref-dropdown summary::after {
             content: '▸';
             margin-left: auto;
             font-size: 14px;
-            color: var(--secondary);
+            color: var(--lcd-text);
             transition: transform 0.3s;
         }
         .ref-dropdown[open] summary::after { transform: rotate(90deg); }
         .ref-dropdown[open] summary { margin-bottom: 16px; }
         .ref-dropdown .ref-body { animation: biodexSlide 0.3s ease-out; }
-        .ex-text { display: block; margin-top: 6px; font-size: 11.5px; color: var(--primary-dim); font-style: italic; line-height: 1.5; border-left: 2px solid var(--border); padding-left: 10px; margin-left: 4px; }
+        .ex-text { display: block; margin-top: 6px; font-size: 11.5px; color: var(--muted); font-style: italic; line-height: 1.5; border-left: 2px solid #2a3028; padding-left: 10px; margin-left: 4px; }
         .example-box {
-            background: rgba(255, 255, 255, 0.04);
+            background: #121812;
             padding: 14px;
             border-radius: 4px;
             font-size: 13px;
             margin-top: 8px;
-            border: 1px solid var(--border);
-            border-left: 3px solid var(--secondary);
-            color: var(--text);
+            border: 1px solid #2a3028;
+            border-left: 3px solid var(--lcd-text);
+            color: var(--lcd-text);
             line-height: 1.6;
         }
 
         .app-footer {
             text-align: center;
             padding: 30px 10px;
-            color: var(--muted);
-            font-size: 11px;
-            border-top: 1px solid var(--border);
+            color: #2a3028;
+            font-size: 12px;
+            border-top: none;
             margin-top: 20px;
             font-family: 'Share Tech Mono', monospace;
+            font-weight: 600;
         }
-        .app-footer a { color: var(--primary); text-decoration: none; }
+        .app-footer a { color: #2a3028; text-decoration: underline; }
 
         /* SAVE STATUS */
         .save-status {
@@ -498,12 +514,12 @@
             text-align: center;
             margin-bottom: 10px;
         }
-        .save-status.saved { color: var(--success); background: rgba(0,230,118,0.06); border: 1px solid rgba(0,230,118,0.2); }
-        .save-status.empty { color: var(--muted); background: rgba(0,229,255,0.03); border: 1px solid var(--border); }
+        .save-status.saved { color: var(--lcd-text); background: #121812; border: 1px solid #2a3028; }
+        .save-status.empty { color: var(--muted); background: #121812; border: 1px solid #2a3028; }
         .save-slot {
             display: flex; align-items: center; justify-content: space-between;
             padding: 10px 12px;
-            background: rgba(0,229,255,0.03);
+            background: #121812;
             border: 1px solid var(--border);
             border-radius: 4px;
             margin-bottom: 8px;
@@ -564,8 +580,8 @@
         .mle-stat-value.good { color: var(--success); }
         .mle-stat-value.small { font-size: 14px; }
         .mle-warning {
-            background: rgba(255, 171, 0, 0.08);
-            border: 1px solid rgba(255, 171, 0, 0.3);
+            background: #1a1a0a;
+            border: 1px solid #3a3a1a;
             border-radius: 4px;
             padding: 10px;
             margin-top: 10px;
@@ -600,8 +616,8 @@
             gap: 10px;
             margin-bottom: 12px;
             padding: 8px 12px;
-            background: rgba(255, 145, 0, 0.06);
-            border: 1px solid rgba(255, 145, 0, 0.15);
+            background: rgba(216, 208, 192, 0.06);
+            border: 1px solid rgba(216, 208, 192, 0.15);
             border-radius: 4px;
         }
         .toggle-row label:not(.toggle-switch) {
@@ -644,7 +660,7 @@
             border-radius: 50%;
             transition: 0.3s;
         }
-        .toggle-switch input:checked + .toggle-track { background: rgba(255, 145, 0, 0.4); }
+        .toggle-switch input:checked + .toggle-track { background: rgba(216, 208, 192, 0.4); }
         .toggle-switch input:checked + .toggle-track::after { transform: translateX(20px); background: var(--secondary); }
         #groupCatchFields { display: none; }
         #individualFields { display: block; }
@@ -652,31 +668,32 @@
         /* PASS TIMER */
         .timer-display {
             font-family: 'Share Tech Mono', monospace;
-            font-size: 24px;
-            color: var(--primary);
+            font-size: 28px;
+            color: var(--lcd-text);
             text-align: center;
-            padding: 10px;
-            background: var(--bg);
-            border: 1px solid var(--border);
+            padding: 12px;
+            background: var(--lcd-bg);
+            border: 2px solid #2a3028;
             border-radius: 4px;
             margin-bottom: 8px;
-            text-shadow: 0 0 10px var(--glow);
+            text-shadow: 0 0 8px rgba(216, 208, 192, 0.4);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
         }
-        .timer-display.running { color: var(--success); border-color: rgba(0,230,118,0.3); }
+        .timer-display.running { color: #f0e8d8; text-shadow: 0 0 12px rgba(216, 208, 192, 0.6); }
         .timer-btns { display: flex; gap: 6px; margin-bottom: 10px; }
         .timer-btns .btn { flex: 1; padding: 10px; font-size: 11px; }
         .pass-time-log {
             font-family: 'Share Tech Mono', monospace;
             font-size: 11px;
-            color: var(--muted);
+            color: var(--lcd-text);
             max-height: 80px;
             overflow-y: auto;
             padding: 6px;
-            background: rgba(0,229,255,0.02);
-            border: 1px solid var(--border);
+            background: var(--lcd-bg);
+            border: 1px solid #2a3028;
             border-radius: 3px;
         }
-        .pass-time-log div { padding: 2px 0; border-bottom: 1px solid rgba(30,48,80,0.3); }
+        .pass-time-log div { padding: 2px 0; border-bottom: 1px solid #242a24; }
 
         /* WIDTH TRANSECT INPUTS */
         .transect-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
@@ -716,28 +733,28 @@
 
     <div id="restore-modal" class="modal-overlay blur" style="display: none;">
         <div class="modal-card" style="text-align: center;">
-            <h2 style="margin-top:0; font-size: 16px;">📂 Saved Survey Found</h2>
-            <div id="restore-info" style="font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--text); margin-bottom: 15px; text-align: left; padding: 10px; background: rgba(0,229,255,0.04); border-radius: 4px; border: 1px solid var(--border);"></div>
-            <button class="btn btn-success" onclick="restoreSurvey()" style="margin-bottom: 10px;">↻ RESTORE &amp; CONTINUE</button>
+            <h2 style="margin-top:0; font-size: 16px;">Saved Survey Found</h2>
+            <div id="restore-info" style="font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--text); margin-bottom: 15px; text-align: left; padding: 10px; background: rgba(216,208,192,0.04); border-radius: 4px; border: 1px solid var(--border);"></div>
+            <button class="btn btn-success" onclick="restoreSurvey()" style="margin-bottom: 10px;">RESTORE &amp; CONTINUE</button>
             <button class="btn btn-outline" onclick="skipRestore()">START NEW SURVEY</button>
         </div>
     </div>
 
     <div id="splash-screen" class="modal-overlay">
         <div class="splash-title">ELECTROFRY</div>
-        <div class="splash-sub">PRO 1.0</div>
+        <div class="splash-sub">VERSION 1.0</div>
         <div class="modal-card">
             <h3 style="margin-top:0; font-size: 12px;">System Modules</h3>
             <ul class="splash-features">
-                <li><div class="feat-icon">🐟</div> Comprehensive PNW Species Codex</li>
-                <li><div class="feat-icon">📸</div> Camera &amp; Gallery Photo Documentation</li>
-                <li><div class="feat-icon">📊</div> Per-Species MLE, Biomass &amp; Density</li>
-                <li><div class="feat-icon">📈</div> Depletion Curves &amp; Length-Frequency</li>
-                <li><div class="feat-icon">⏱️</div> Pass Timer w/ Start/End Logging</li>
-                <li><div class="feat-icon">📥</div> Full Excel Report (8 Sheets)</li>
-                <li><div class="feat-icon">💾</div> Auto-Save &amp; JSON Backup</li>
+                <li>— Comprehensive PNW Species Codex</li>
+                <li>— Camera &amp; Gallery Photo Documentation</li>
+                <li>— Per-Species MLE, Biomass &amp; Density</li>
+                <li>— Depletion Curves &amp; Length-Frequency</li>
+                <li>— Pass Timer w/ Start/End Logging</li>
+                <li>— Full Excel Report (8 Sheets)</li>
+                <li>— Auto-Save &amp; JSON Backup</li>
             </ul>
-            <button class="btn btn-primary" onclick="startGame()" style="font-size: 14px; padding: 16px;">▶ INITIALIZE PROTOCOL</button>
+            <button class="btn btn-primary" onclick="startGame()" style="font-size: 14px; padding: 16px;">INITIALIZE SYSTEM</button>
             <div style="text-align: center; margin-top: 15px; font-size: 11px;">
                 <a href="#" onclick="document.getElementById('terms-modal').style.display='flex'; return false;" style="color: var(--muted); font-family:'Share Tech Mono',monospace; letter-spacing:1px;">VIEW TERMS OF USE</a>
             </div>
@@ -747,87 +764,110 @@
     <!-- HEADER -->
     <div class="top-header">
         <div class="hud-row-1">
-            <div class="header-title">ELECTROFRY PRO</div>
-            <div class="header-badge" id="header-status">⏳ STANDBY</div>
+            <div class="header-title">ELECTROFRY 1.0</div>
+            <div class="header-badge" id="header-status">STANDBY</div>
         </div>
         <div class="hud-stats">
-            <div class="species-counter">🐟 <span id="speciesCount">0</span> SPECIMENS LOGGED</div>
+            <div class="species-counter"> <span id="speciesCount">0</span> SPECIMENS LOGGED</div>
         </div>
     </div>
 
     <!-- TABS -->
     <div id="app-body" class="container" style="display: none;">
 
-        <!-- 1. SITE -->
-        <!-- 0. QUICK REFERENCE -->
         <div id="tab-quick" class="tab-content active">
-            <div class="card" style="border-left: 3px solid var(--secondary); background: linear-gradient(135deg, rgba(255, 145, 0, 0.06), rgba(255, 214, 0, 0.04));">
-                <h3 style="font-size: 0.9rem;">⚡ Smith-Root LR-24 Quick Setup</h3>
-                <div style="font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--text); line-height: 2.2;">
-                    <span style="color:var(--secondary); font-weight:bold;">1.</span> Power on (rotate emergency switch 90° CW)<br>
-                    <span style="color:var(--secondary); font-weight:bold;">2.</span> Press <strong style="color:var(--text-bright);">MENU</strong><br>
-                    <span style="color:var(--secondary); font-weight:bold;">3.</span> Arrow to <strong style="color:var(--text-bright);">Quick Setup</strong><br>
-                    <span style="color:var(--secondary); font-weight:bold;">4.</span> Press <strong style="color:var(--text-bright);">ENTER</strong><br>
-                    <span style="color:var(--secondary); font-weight:bold;">5.</span> Submerge anode &amp; cathode in water<br>
-                    <span style="color:var(--secondary); font-weight:bold;">6.</span> Press <strong style="color:var(--text-bright);">anode pole switch</strong> briefly<br>
-                    <span style="color:var(--secondary); font-weight:bold;">7.</span> Check status screen for selected settings
-                </div>
-                <div style="margin-top: 8px; padding: 8px 12px; background: rgba(255,145,0,0.08); border-radius: 4px; border: 1px solid rgba(255,145,0,0.2); font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--secondary);">
-                    Defaults after Quick Setup: <strong>Pulsed DC</strong> · <strong>30 Hz</strong> · <strong>12% duty</strong> · voltage auto-selected (~25W avg)
-                </div>
-            </div>
-
-            <div class="card" style="border-left: 3px solid var(--warning);">
-                <h3 style="font-size: 0.9rem;">🔧 LR-24 Reset Shock Timer</h3>
-                <div style="font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--text); line-height: 2.2;">
-                    <span style="color:var(--warning); font-weight:bold;">1.</span> Press <strong style="color:var(--text-bright);">MENU</strong><br>
-                    <span style="color:var(--warning); font-weight:bold;">2.</span> Arrow to <strong style="color:var(--text-bright);">Reset Timer</strong><br>
-                    <span style="color:var(--warning); font-weight:bold;">3.</span> Press <strong style="color:var(--text-bright);">ENTER</strong> to confirm
-                </div>
-                <div style="margin-top: 8px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--muted); line-height: 1.8;">
-                    → Any other key cancels the reset<br>
-                    → Reset between each pass for per-pass effort<br>
-                    → Record shock seconds before resetting
-                </div>
-            </div>
-
-            <div class="card" style="border-left: 3px solid var(--danger);">
-                <h3 style="font-size: 0.9rem;">🐟 Fish Not Responding? — Adjustment Order</h3>
-                <div style="font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--text); line-height: 2;">
-                    <span style="color:var(--success); font-size:16px; font-weight:bold;">①</span> Press <strong>VOLTS</strong> → increase <strong style="color:var(--success);">+50V</strong> → press ENTER<br>
-                    <span style="font-size:11px; color:var(--muted); margin-left: 24px;">↳ Stop when fish begin twitching</span><br>
-                    <span style="color:var(--warning); font-size:16px; font-weight:bold;">②</span> Press <strong>DUTY CYCLE</strong> → increase <strong style="color:var(--warning);">+10%</strong> → press ENTER<br>
-                    <span style="font-size:11px; color:var(--muted); margin-left: 24px;">↳ Stop when fish show taxis (swim toward anode)</span><br>
-                    <span style="color:var(--danger); font-size:16px; font-weight:bold;">③</span> Press <strong>FREQ</strong> → increase <strong style="color:var(--danger);">+10Hz</strong> → press ENTER<br>
-                    <span style="font-size:11px; color:var(--muted); margin-left: 24px;">↳ LAST RESORT — highest injury risk. Never exceed 60Hz for salmonids.</span>
-                </div>
+            <div class="card" style="text-align:center; padding: 15px;">
+                <div style="font-family: 'Orbitron', sans-serif; font-size: 14px; color: var(--primary); letter-spacing: 3px; font-weight: 800;">SMITH-ROOT LR-24</div>
+                <div style="font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 2px; margin-top: 4px;">BACKPACK ELECTROFISHER — FIELD REFERENCE</div>
             </div>
 
             <div class="card">
-                <h3 style="font-size: 0.9rem;">📋 Safe Starting Values (No Quick Setup)</h3>
+                <details class="ref-dropdown" open>
+                <summary>Quick Setup</summary>
+                <div class="ref-body">
+                <div style="font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--text); line-height: 2.2;">
+                    <span style="color:var(--primary); font-weight:bold;">1.</span> Power on — rotate emergency switch 90 deg CW<br>
+                    <span style="color:var(--primary); font-weight:bold;">2.</span> Press <strong style="color:var(--text-bright);">MENU</strong><br>
+                    <span style="color:var(--primary); font-weight:bold;">3.</span> Arrow to <strong style="color:var(--text-bright);">Quick Setup</strong><br>
+                    <span style="color:var(--primary); font-weight:bold;">4.</span> Press <strong style="color:var(--text-bright);">ENTER</strong><br>
+                    <span style="color:var(--primary); font-weight:bold;">5.</span> Submerge anode and cathode in water<br>
+                    <span style="color:var(--primary); font-weight:bold;">6.</span> Press <strong style="color:var(--text-bright);">anode pole switch</strong> briefly<br>
+                    <span style="color:var(--primary); font-weight:bold;">7.</span> Check status screen for selected settings
+                </div>
+                <div style="margin-top: 8px; padding: 8px 12px; background: rgba(216,208,192,0.06); border-radius: 4px; border: 1px solid rgba(216,208,192,0.15); font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--primary);">
+                    DEFAULTS: Pulsed DC / 30 Hz / 12% duty / voltage auto-selected (~25W avg)
+                </div>
+                </div>
+                </details>
+            </div>
+
+            <div class="card">
+                <details class="ref-dropdown">
+                <summary>Reset Shock Timer</summary>
+                <div class="ref-body">
+                <div style="font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--text); line-height: 2.2;">
+                    <span style="color:var(--primary); font-weight:bold;">1.</span> Press <strong style="color:var(--text-bright);">MENU</strong><br>
+                    <span style="color:var(--primary); font-weight:bold;">2.</span> Arrow to <strong style="color:var(--text-bright);">Reset Timer</strong><br>
+                    <span style="color:var(--primary); font-weight:bold;">3.</span> Press <strong style="color:var(--text-bright);">ENTER</strong> to confirm
+                </div>
+                <div style="margin-top: 8px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--muted); line-height: 1.8;">
+                    Any other key cancels the reset<br>
+                    Reset between each pass for per-pass effort<br>
+                    Record shock seconds before resetting
+                </div>
+                </div>
+                </details>
+            </div>
+
+            <div class="card">
+                <details class="ref-dropdown">
+                <summary>Fish Not Responding — Adjustment Order</summary>
+                <div class="ref-body">
+                <div style="font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--text); line-height: 2;">
+                    <span style="color:var(--success); font-weight:bold;">[1]</span> Press <strong>VOLTS</strong> — increase <strong style="color:var(--success);">+50V</strong> — press ENTER<br>
+                    <span style="font-size:11px; color:var(--muted); padding-left: 24px; display:inline-block;">Stop when fish begin twitching</span><br>
+                    <span style="color:var(--warning); font-weight:bold;">[2]</span> Press <strong>DUTY CYCLE</strong> — increase <strong style="color:var(--warning);">+10%</strong> — press ENTER<br>
+                    <span style="font-size:11px; color:var(--muted); padding-left: 24px; display:inline-block;">Stop when fish show taxis (swim toward anode)</span><br>
+                    <span style="color:var(--danger); font-weight:bold;">[3]</span> Press <strong>FREQ</strong> — increase <strong style="color:var(--danger);">+10Hz</strong> — press ENTER<br>
+                    <span style="font-size:11px; color:var(--muted); padding-left: 24px; display:inline-block;">LAST RESORT — highest injury risk. Never exceed 60Hz for salmonids.</span>
+                </div>
+                </div>
+                </details>
+            </div>
+
+            <div class="card">
+                <details class="ref-dropdown">
+                <summary>Safe Starting Values — No Quick Setup</summary>
+                <div class="ref-body">
                 <div class="table-responsive">
                     <table style="font-size: 13px;">
                         <thead><tr><th>Conductivity</th><th>Voltage</th><th>Freq</th><th>Duty</th></tr></thead>
                         <tbody>
-                            <tr><td style="color:var(--primary);"><strong>&lt;100 µS/cm</strong><br><span style="font-size:10px; color:var(--muted);">alpine, snowmelt</span></td><td>300–500V</td><td>30 Hz</td><td>10–15%</td></tr>
-                            <tr><td style="color:var(--primary);"><strong>100–300 µS/cm</strong><br><span style="font-size:10px; color:var(--muted);">most PNW streams</span></td><td>150–250V</td><td>30 Hz</td><td>10–15%</td></tr>
-                            <tr><td style="color:var(--primary);"><strong>300+ µS/cm</strong><br><span style="font-size:10px; color:var(--muted);">ag, urban, tidal</span></td><td>50–150V</td><td>30 Hz</td><td>10–15%</td></tr>
+                            <tr><td style="color:var(--primary);"><strong>&lt;100 uS/cm</strong><br><span style="font-size:10px; color:var(--muted);">alpine, snowmelt</span></td><td>300-500V</td><td>30 Hz</td><td>10-15%</td></tr>
+                            <tr><td style="color:var(--primary);"><strong>100-300 uS/cm</strong><br><span style="font-size:10px; color:var(--muted);">most PNW streams</span></td><td>150-250V</td><td>30 Hz</td><td>10-15%</td></tr>
+                            <tr><td style="color:var(--primary);"><strong>300+ uS/cm</strong><br><span style="font-size:10px; color:var(--muted);">ag, urban, tidal</span></td><td>50-150V</td><td>30 Hz</td><td>10-15%</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <p style="font-size: 11px; color: var(--muted); margin-top: 6px;">Values are for juvenile salmonids (PDC). For heavily scaled fish (bass, carp): start 50–60 Hz, 20–30% duty.</p>
+                <p style="font-size: 11px; color: var(--muted); margin-top: 6px;">Values for juvenile salmonids (PDC). Heavily scaled fish (bass, carp): start 50-60 Hz, 20-30% duty.</p>
+                </div>
+                </details>
             </div>
 
-            <div class="card safety-section" style="border-left: 3px solid var(--danger);">
-                <h3 style="color: var(--danger); font-size: 0.9rem;">⚠ Safety Reminders</h3>
+            <div class="card">
+                <details class="ref-dropdown">
+                <summary>Safety Reminders</summary>
+                <div class="ref-body">
                 <div style="font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--text); line-height: 2;">
-                    • Announce <strong style="color:var(--danger);">"POWER ON"</strong> before pressing anode switch<br>
-                    • Non-breathable waders + wading belt + lineman's gloves<br>
-                    • Cathode braid fully submerged, never wrapped around legs<br>
-                    • If anyone falls → release switch instantly<br>
-                    • Fish recovery &gt;5 sec = reduce settings · &gt;15 sec = too much<br>
-                    • <strong style="color:var(--warning);">Keep settings identical between passes</strong>
+                    Announce <strong style="color:var(--danger);">"POWER ON"</strong> before pressing anode switch<br>
+                    Non-breathable waders + wading belt + lineman's gloves<br>
+                    Cathode braid fully submerged, never wrapped around legs<br>
+                    If anyone falls — release switch instantly<br>
+                    Fish recovery &gt;5 sec = reduce settings / &gt;15 sec = too much<br>
+                    <strong style="color:var(--warning);">Keep settings identical between passes</strong>
                 </div>
+                </div>
+                </details>
             </div>
         </div>
 
@@ -840,8 +880,8 @@
             </div>
             <div class="card corner-marks">
                 <h3>Environmental Data</h3>
-                <button class="btn btn-secondary" onclick="getLocationAndWeather()" style="margin-bottom: 15px;">📡 ACQUIRE GPS &amp; WEATHER</button>
-                <div id="env-data" style="font-size: 12px; color: var(--muted); background: rgba(0,229,255,0.03); padding: 12px; border-radius: 4px; border: 1px solid var(--border); font-family: 'Share Tech Mono', monospace;">⏳ Awaiting sensor input...</div>
+                <button class="btn btn-secondary" onclick="getLocationAndWeather()" style="margin-bottom: 15px;">ACQUIRE GPS + WEATHER</button>
+                <div id="env-data" style="font-size: 12px; color: var(--muted); background: #121812; padding: 12px; border-radius: 4px; border: 1px solid var(--border); font-family: 'Share Tech Mono', monospace;">⏳ Awaiting sensor input...</div>
             </div>
             <div class="card">
                 <h3>Reach Parameters</h3>
@@ -883,9 +923,9 @@
                 <label style="margin-top: 10px;">Pass Timer</label>
                 <div class="timer-display" id="timerDisplay">0s</div>
                 <div class="timer-btns">
-                    <button class="btn btn-success" id="timerStartBtn" onclick="startTimer()" style="font-size:11px;">▶ START</button>
-                    <button class="btn btn-outline" onclick="stopTimer()" style="font-size:11px;">⏹ STOP</button>
-                    <button class="btn btn-outline" onclick="resetTimer()" style="font-size:11px;">↺ RESET</button>
+                    <button class="btn btn-success" id="timerStartBtn" onclick="startTimer()" style="font-size:11px;">START</button>
+                    <button class="btn btn-outline" onclick="stopTimer()" style="font-size:11px;">STOP</button>
+                    <button class="btn btn-outline" onclick="resetTimer()" style="font-size:11px;">RESET</button>
                 </div>
                 <div class="pass-time-log" id="passTimeLog" style="display:none;"></div>
             </div>
@@ -930,15 +970,15 @@
                         <input type="file" id="photo" accept="image/*" capture="environment" style="display:none;" onchange="previewPhoto()">
                         <input type="file" id="photoGallery" accept="image/*" style="display:none;" onchange="galleryPicked()">
                         <div style="display:flex; gap:6px;">
-                            <button type="button" class="btn btn-outline" onclick="document.getElementById('photo').click()" style="flex:1; padding:10px; font-size:11px;">📷 CAMERA</button>
-                            <button type="button" class="btn btn-outline" onclick="document.getElementById('photoGallery').click()" style="flex:1; padding:10px; font-size:11px;">🖼 GALLERY</button>
+                            <button type="button" class="btn btn-outline" onclick="document.getElementById('photo').click()" style="flex:1; padding:10px; font-size:11px;">CAMERA</button>
+                            <button type="button" class="btn btn-outline" onclick="document.getElementById('photoGallery').click()" style="flex:1; padding:10px; font-size:11px;">GALLERY</button>
                         </div>
                         <div id="photoPreview" style="display:none; margin-top:8px; position:relative;">
                             <img id="photoThumb" src="" style="width:100%; max-height:120px; object-fit:cover; border-radius:4px; border:2px solid var(--primary); box-shadow:0 0 10px var(--glow);">
-                            <button type="button" onclick="clearPhoto()" style="position:absolute; top:4px; right:4px; background:rgba(255,23,68,0.8); color:white; border:none; border-radius:3px; padding:2px 6px; font-size:10px; cursor:pointer; font-family:'Share Tech Mono',monospace;">✕</button>
+                            <button type="button" onclick="clearPhoto()" style="position:absolute; top:4px; right:4px; background:rgba(255,68,68,0.8); color:white; border:none; border-radius:3px; padding:2px 6px; font-size:10px; cursor:pointer; font-family:'Share Tech Mono',monospace;">X</button>
                         </div>
                     </div></div>
-                    <button type="button" class="btn btn-success" id="logBtn" onclick="saveCatch()" style="margin-top: 10px;">⚡ LOG SPECIMEN</button>
+                    <button type="button" class="btn btn-success" id="logBtn" onclick="saveCatch()" style="margin-top: 10px;">LOG SPECIMEN</button>
                 </form>
             </div>
         </div>
@@ -960,7 +1000,7 @@
                 <div class="table-responsive">
                     <table id="speciesTable"><thead><tr><th>Species</th><th>Caught</th><th>N̂</th><th>p̂</th><th>CPUE/s</th><th>CPUE/pass</th><th>Biomass(g)</th><th>Density</th></tr></thead><tbody id="speciesBody"></tbody></table>
                 </div>
-                <button class="btn btn-outline" onclick="calcSpeciesStats()" style="margin-top: 10px;">↻ REFRESH ESTIMATES</button>
+                <button class="btn btn-outline" onclick="calcSpeciesStats()" style="margin-top: 10px;">REFRESH ESTIMATES</button>
             </div>
 
             <div class="card" style="border-top: 2px solid var(--secondary);">
@@ -974,7 +1014,7 @@
                     <div><input type="number" id="mleP4" min="0" placeholder="0" oninput="runMLE()"><span class="mle-pass-label">Pass 4</span></div>
                 </div>
                 <button class="btn btn-outline" onclick="addMLEPass()" style="margin-bottom: 12px; width: auto; display: inline-block; padding: 8px 16px;">+ ADD PASS</button>
-                <button class="btn btn-outline" onclick="autoFillMLE()" style="margin-bottom: 12px; width: auto; display: inline-block; padding: 8px 16px; margin-left: 6px;">↻ AUTO-FILL FROM LOG</button>
+                <button class="btn btn-outline" onclick="autoFillMLE()" style="margin-bottom: 12px; width: auto; display: inline-block; padding: 8px 16px; margin-left: 6px;">AUTO-FILL FROM LOG</button>
                 <div id="mleResults" style="display:none;">
                     <div class="mle-result-grid">
                         <div class="mle-stat-box full-width">
@@ -1004,18 +1044,18 @@
 
             <div class="card">
                 <h3>Depletion Curve Modeling</h3>
-                <div style="background: #0d1225; border: 1px solid var(--border); border-radius: 4px; padding: 8px; margin-bottom: 10px;">
+                <div style="background: #121812; border: 1px solid var(--border); border-radius: 4px; padding: 8px; margin-bottom: 10px;">
                     <canvas id="depletionChart" width="400" height="320"></canvas>
                 </div>
-                <button class="btn btn-outline" onclick="downloadChartImage()">💾 DOWNLOAD CHART (.JPG)</button>
+                <button class="btn btn-outline" onclick="downloadChartImage()">DOWNLOAD CHART</button>
             </div>
 
             <div class="card">
                 <h3>Length-Frequency Distribution</h3>
-                <div style="background: #0d1225; border: 1px solid var(--border); border-radius: 4px; padding: 8px; margin-bottom: 10px;">
+                <div style="background: #121812; border: 1px solid var(--border); border-radius: 4px; padding: 8px; margin-bottom: 10px;">
                     <canvas id="lengthFreqChart" width="400" height="280"></canvas>
                 </div>
-                <button class="btn btn-outline" onclick="downloadLFChart()">💾 DOWNLOAD LENGTH-FREQ CHART (.JPG)</button>
+                <button class="btn btn-outline" onclick="downloadLFChart()">DOWNLOAD LENGTH-FREQ CHART</button>
             </div>
         </div>
 
@@ -1023,7 +1063,7 @@
         <div id="tab-gear" class="tab-content">
 
             <div class="card safety-section" style="border-left: 3px solid var(--danger);">
-                <h3 style="color: var(--danger); border-bottom-color: rgba(255,23,68,0.3);">⚠ Backpack Safety Protocol</h3>
+                <h3 style="color: var(--danger); border-bottom-color: rgba(255,68,68,0.3);"> Backpack Safety Protocol</h3>
                 <h5 style="margin-top:0;">1. Personal Protective Equipment (PPE)</h5>
                 <p>All crew must wear non-leaking, non-breathable chest waders, a wading belt to prevent water entry during a fall, and high-voltage lineman's gloves (Class 0, rated to 1000V).</p>
                 <h5>2. Communication ("Power On")</h5>
@@ -1093,13 +1133,13 @@
                     <strong style="color:var(--success);">✓ IDEAL: Fish swim toward anode, slow down, and are easily netted</strong><br>
                     → Settings are correct. Keep fishing.<br><br>
 
-                    <strong style="color:var(--warning);">⚠ Fish TWITCH but DON'T MOVE toward anode</strong><br>
+                    <strong style="color:var(--warning);"> Fish TWITCH but DON'T MOVE toward anode</strong><br>
                     → Voltage is reaching them but not enough to induce taxis (attraction). Press <strong style="color:var(--text-bright);">VOLTS</strong>, <strong>increase voltage</strong> in 50V steps, press <strong style="color:var(--text-bright);">ENTER</strong>. Stop increasing when fish begin showing a forced twitch response.<br><br>
 
-                    <strong style="color:var(--warning);">⚠ Fish TWITCH and then ESCAPE</strong><br>
+                    <strong style="color:var(--warning);"> Fish TWITCH and then ESCAPE</strong><br>
                     → Voltage is adequate — fish feel the field but aren't showing taxis. Press <strong style="color:var(--text-bright);">DUTY CYCLE</strong>, <strong>increase duty cycle</strong> by 10%, press <strong style="color:var(--text-bright);">ENTER</strong>. Repeat until taxis is achieved. If duty cycle reaches max without taxis, reset to 12% and go to frequency.<br><br>
 
-                    <strong style="color:var(--warning);">⚠ Fish SWIM AWAY (flee response, no twitching)</strong><br>
+                    <strong style="color:var(--warning);"> Fish SWIM AWAY (flee response, no twitching)</strong><br>
                     → Field is too weak to stun. Press <strong style="color:var(--text-bright);">VOLTS</strong>, <strong>increase voltage</strong> by 50V. If already at max voltage, <strong>increase duty cycle</strong> by 10%. If still no response, <strong>increase frequency</strong> by 10 Hz as a last resort.<br><br>
 
                     <strong style="color:var(--danger);">✖ Fish go RIGID / TETANY (locked up, can't move)</strong><br>
@@ -1173,9 +1213,9 @@
                     <strong style="color:var(--secondary);">Step-by-Step Example:</strong><br>
                     • Pass 1 (C₁) = 60 fish caught.<br>
                     • Pass 2 (C₂) = 20 fish caught.<br><br>
-                    <strong>Step 1:</strong> Calculate denominator (C₁ - C₂) ➔ 60 - 20 = 40.<br>
-                    <strong>Step 2:</strong> Calculate numerator (C₁²) ➔ 60 × 60 = 3600.<br>
-                    <strong>Step 3:</strong> Divide (3600 ÷ 40) ➔ <strong style="color:var(--success);">N = 90</strong>.<br><br>
+                    <strong>Step 1:</strong> Calculate denominator (C₁ - C₂)  = 60 - 20 = 40.<br>
+                    <strong>Step 2:</strong> Calculate numerator (C₁²)  = 60 × 60 = 3600.<br>
+                    <strong>Step 3:</strong> Divide (3600 ÷ 40)  = <strong style="color:var(--success);">N = 90</strong>.<br><br>
                     <em style="color:var(--muted);">Conclusion: Even though you only caught 80 fish physically, the math estimates the true total population of the reach is 90 fish.</em>
                 </div>
 
@@ -1183,9 +1223,9 @@
                 <p>A linear regression method used when you conduct 3 or more passes. Catch Per Unit Effort (CPUE) is plotted on the Y-axis against Cumulative Catch (prior to the current pass) on the X-axis.</p>
                 <div class="example-box">
                     <strong style="color:var(--secondary);">Step-by-Step Example:</strong><br>
-                    • <strong>Pass 1:</strong> Catch = 50. (Cum. Catch before pass = 0). Plot ➔ <strong style="color:var(--primary);">(0, 50)</strong><br>
-                    • <strong>Pass 2:</strong> Catch = 30. (Cum. Catch before pass = 50). Plot ➔ <strong style="color:var(--primary);">(50, 30)</strong><br>
-                    • <strong>Pass 3:</strong> Catch = 10. (Cum. Catch before pass = 50+30=80). Plot ➔ <strong style="color:var(--primary);">(80, 10)</strong><br><br>
+                    • <strong>Pass 1:</strong> Catch = 50. (Cum. Catch before pass = 0). Plot  = <strong style="color:var(--primary);">(0, 50)</strong><br>
+                    • <strong>Pass 2:</strong> Catch = 30. (Cum. Catch before pass = 50). Plot  = <strong style="color:var(--primary);">(50, 30)</strong><br>
+                    • <strong>Pass 3:</strong> Catch = 10. (Cum. Catch before pass = 50+30=80). Plot  = <strong style="color:var(--primary);">(80, 10)</strong><br><br>
                     <strong>Step 1:</strong> Plot these three points on a graph.<br>
                     <strong>Step 2:</strong> Draw a straight line of best fit through the points descending toward the bottom axis.<br>
                     <strong>Step 3:</strong> Find where the line intersects the X-axis (where Catch theoretically hits 0).<br><br>
@@ -1200,13 +1240,13 @@
                     <strong>Step 2:</strong> Ask: "If there really were N fish and we catch p proportion each pass, how likely is the exact catch sequence we observed?"<br>
                     <strong>Step 3:</strong> Try different N and p values. The pair that produces the highest likelihood is your Maximum-Likelihood Estimate.<br><br>
                     <strong style="color:var(--warning);">Key advantage over Seber-Le Cren:</strong> MLE works with 2, 3, 4, or more passes, produces 95% confidence intervals, standard error, and handles unequal effort between passes. The 95% CI tells you the range within which the true population falls with 95% certainty.<br><br>
-                    <em style="color:var(--muted);">Use the interactive MLE calculator on the Stats tab (📈) to run these calculations in the field.</em>
+                    <em style="color:var(--muted);">Use the interactive MLE calculator on the Stats tab () to run these calculations in the field.</em>
                 </div>
 
                 <h5 style="margin-top:15px;">5. Non-Descending Removal Patterns</h5>
                 <p>A valid depletion survey requires catches to <strong style="color:var(--warning);">decrease</strong> with each successive pass. If Pass 2 catches more fish than Pass 1, the fundamental assumption of constant capture probability is violated.</p>
                 <div class="example-box">
-                    <strong style="color:var(--danger);">⚠ Common Causes of Non-Descending Patterns:</strong><br>
+                    <strong style="color:var(--danger);"> Common Causes of Non-Descending Patterns:</strong><br>
                     • Net failure allowing fish to re-enter the reach between passes.<br>
                     • Inconsistent effort (different shock times between passes).<br>
                     • Habitat features like log jams releasing fish that were previously sheltered.<br>
@@ -1233,7 +1273,7 @@
                     • <strong>Peak at 110-139mm</strong> — These are age 1+ juveniles from last year's spawn.<br>
                     • <strong>Scattered fish at 180-250mm</strong> — These are adults (age 2-3+). Fewer fish here is normal because not all juveniles survive to adulthood.<br><br>
                     <strong style="color:var(--warning);">Red Flag Example:</strong> If your chart only shows fish in the 150-250mm range with zero fish under 100mm, it likely means spawning failed this year — no juveniles recruited into the population. This is critical information for managers.<br><br>
-                    <em style="color:var(--muted);">The Length-Frequency chart is auto-generated on the Stats tab (📈) and exported to the Excel download as its own sheet with a per-species size class matrix.</em>
+                    <em style="color:var(--muted);">The Length-Frequency chart is auto-generated on the Stats tab () and exported to the Excel download as its own sheet with a per-species size class matrix.</em>
                 </div>
                 </div>
                 </details>
@@ -1296,7 +1336,7 @@
                     <strong>3. Biomass per Hectare (kg/ha)</strong><br>
                     1.63 g/m² × 10 = <strong style="color:var(--primary);">16.3 kg/ha</strong><br>
                     <em>Standard unit for comparing across watersheds and in published literature. Productive salmonid streams typically range from 20–80 kg/ha.</em><br><br>
-                    <em style="color:var(--muted);">These values auto-calculate on the Stats tab (📈) when you click "Refresh Estimates" and appear in the Biomass & Density sheet of the Excel export.</em>
+                    <em style="color:var(--muted);">These values auto-calculate on the Stats tab () when you click "Refresh Estimates" and appear in the Biomass & Density sheet of the Excel export.</em>
                 </div>
                 </div>
                 </details>
@@ -1350,12 +1390,12 @@
                 <h5 style="margin-top:15px;">CPUE Assumptions &amp; Pitfalls</h5>
                 <p>CPUE only works as an abundance index if capture probability stays roughly constant. If anything changes the catchability between surveys — different gear, different crew experience, different water clarity, different flow — your CPUE comparison is compromised.</p>
                 <div class="example-box">
-                    <strong style="color:var(--danger);">⚠ Common CPUE Traps:</strong><br>
+                    <strong style="color:var(--danger);"> Common CPUE Traps:</strong><br>
                     • <strong>Comparing across gear types</strong> — a backpack unit and a boat shocker have totally different capture efficiency. Never compare their CPUE directly.<br>
                     • <strong>Ignoring water conditions</strong> — high turbidity dramatically reduces capture probability. A low CPUE during a flood doesn't mean fish disappeared.<br>
                     • <strong>Different operators</strong> — an experienced crew catches more per second than a novice crew. Standardize crew experience or note it in your report.<br>
                     • <strong>Hyperstability</strong> — fish may aggregate in the remaining good habitat as a population declines, keeping CPUE artificially high even as abundance drops. This is especially dangerous for management decisions.<br><br>
-                    <em style="color:var(--muted);">Always record your exact effort (shock seconds, reach length, crew size, gear model) so CPUE can be properly standardized. The pass timer on the Log tab (📝) helps ensure consistent effort between passes.</em>
+                    <em style="color:var(--muted);">Always record your exact effort (shock seconds, reach length, crew size, gear model) so CPUE can be properly standardized. The pass timer on the Log tab () helps ensure consistent effort between passes.</em>
                 </div>
                 </div>
                 </details>
@@ -1389,7 +1429,7 @@
                     • <strong>p̂ &gt; 0.50</strong> → Excellent. Your sweeps are highly effective — fewer passes needed.<br>
                     • <strong>p̂ = 0.30–0.50</strong> → Good. Standard for most wadeable streams.<br>
                     • <strong>p̂ &lt; 0.20</strong> → Poor. Deep pools, high turbidity, or poor technique. Your population estimate will have wide confidence intervals, meaning low precision.<br><br>
-                    <em style="color:var(--muted);">Rule of thumb: If capture probability is below 0.20, consider adding more passes to narrow the confidence interval. Use the MLE calculator on the Stats tab (📈) to test how additional passes would affect precision.</em>
+                    <em style="color:var(--muted);">Rule of thumb: If capture probability is below 0.20, consider adding more passes to narrow the confidence interval. Use the MLE calculator on the Stats tab () to test how additional passes would affect precision.</em>
                 </div>
 
                 <h5 style="margin-top:15px;">Standard Error (SE)</h5>
@@ -1402,7 +1442,7 @@
 
             <div class="card">
                 <h3>Field Calculator</h3>
-                <input type="text" id="calcDisplay" disabled style="font-size: 20px; text-align: right; background: var(--bg); margin-bottom:15px; color:var(--primary); border-color:var(--border); font-family:'Share Tech Mono',monospace;">
+                <input type="text" id="calcDisplay" disabled style="font-size: 20px; text-align: right; background: #5a6168; margin-bottom:15px; color:var(--primary); border-color:var(--border); font-family:'Share Tech Mono',monospace;">
                 <div class="calc-grid">
                     <button class="btn" onclick="calcIn('7')">7</button><button class="btn" onclick="calcIn('8')">8</button><button class="btn" onclick="calcIn('9')">9</button><button class="btn btn-op" onclick="calcIn('/')">÷</button>
                     <button class="btn" onclick="calcIn('4')">4</button><button class="btn" onclick="calcIn('5')">5</button><button class="btn" onclick="calcIn('6')">6</button><button class="btn btn-op" onclick="calcIn('*')">×</button>
@@ -1457,22 +1497,22 @@
             </div>
             <div class="card" style="text-align: center; padding: 20px;">
                 <h3>Generate Final Report</h3>
-                <button class="btn btn-success" onclick="exportXLSX()" style="margin-bottom: 15px;">📊 DOWNLOAD EXCEL DATA W/ CHART</button>
-                <button class="btn btn-primary" onclick="exportDOC()">📄 DOWNLOAD FORMAL REPORT (.DOC)</button>
+                <button class="btn btn-success" onclick="exportXLSX()" style="margin-bottom: 15px;">DOWNLOAD EXCEL REPORT</button>
+                <button class="btn btn-primary" onclick="exportDOC()">DOWNLOAD DOC REPORT</button>
             </div>
             <div class="card" style="border-top: 2px solid var(--secondary);">
-                <h3>💾 Survey Data Management</h3>
+                <h3> Survey Data Management</h3>
                 <div id="saveStatus" class="save-status empty">No saved data</div>
-                <button class="btn btn-success" onclick="saveSurvey()" style="margin-bottom: 10px;">💾 SAVE SURVEY TO BROWSER</button>
+                <button class="btn btn-success" onclick="saveSurvey()" style="margin-bottom: 10px;">SAVE SURVEY</button>
                 <p style="font-size:11px; color:var(--muted); margin-bottom: 12px;">Auto-saves after every logged specimen. Data persists even if you close the tab. To be safe, also download a backup file below.</p>
                 <div class="row" style="margin-bottom: 0;">
-                    <div class="col"><button class="btn btn-outline" onclick="exportSurveyJSON()">📥 DOWNLOAD BACKUP (.JSON)</button></div>
+                    <div class="col"><button class="btn btn-outline" onclick="exportSurveyJSON()">DOWNLOAD BACKUP</button></div>
                     <div class="col">
                         <input type="file" id="importJSON" accept=".json" style="display:none;" onchange="importSurveyJSON()">
-                        <button class="btn btn-outline" onclick="document.getElementById('importJSON').click()">📤 LOAD BACKUP (.JSON)</button>
+                        <button class="btn btn-outline" onclick="document.getElementById('importJSON').click()">LOAD BACKUP</button>
                     </div>
                 </div>
-                <button class="btn btn-outline" onclick="confirmClearSurvey()" style="margin-top: 10px; color: var(--danger); border-color: rgba(255,23,68,0.3);">🗑 CLEAR ALL DATA &amp; START NEW</button>
+                <button class="btn btn-outline" onclick="confirmClearSurvey()" style="margin-top: 10px; color: var(--danger); border-color: rgba(255,68,68,0.3);">CLEAR ALL DATA</button>
             </div>
             <div class="card" style="border-left: 3px solid var(--danger);">
                 <h3 style="color: var(--danger);">Emergency Text Fallback</h3>
@@ -1486,12 +1526,12 @@
 
     <!-- BOTTOM NAV -->
     <div class="bottom-nav" id="nav-bar" style="display: none;">
-        <div class="nav-item active" onclick="switchTab('quick', this)"><span class="nav-icon">⚡</span>LR-24</div>
-        <div class="nav-item" onclick="switchTab('site', this)"><span class="nav-icon">📍</span>Site</div>
-        <div class="nav-item" onclick="switchTab('entry', this)"><span class="nav-icon">📝</span>Log</div>
-        <div class="nav-item" onclick="switchTab('stats', this)"><span class="nav-icon">📈</span>Stats</div>
-        <div class="nav-item" onclick="switchTab('gear', this)"><span class="nav-icon">⚙️</span>Ref</div>
-        <div class="nav-item" onclick="switchTab('save', this)"><span class="nav-icon">📄</span>Report</div>
+        <div class="nav-item active" onclick="switchTab('quick', this)">LR-24</div>
+        <div class="nav-item" onclick="switchTab('site', this)">Site</div>
+        <div class="nav-item" onclick="switchTab('entry', this)">Log</div>
+        <div class="nav-item" onclick="switchTab('stats', this)">Stats</div>
+        <div class="nav-item" onclick="switchTab('gear', this)">Ref</div>
+        <div class="nav-item" onclick="switchTab('save', this)">Report</div>
     </div>
 
     <script>
@@ -1693,14 +1733,14 @@
             const d = document.getElementById('env-data'); d.innerHTML = "⏳ Acquiring satellite signal...";
             async function fetchW(lat, lon) {
                 try { const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`); const w = await r.json(); airTemp = w.current_weather.temperature; weatherCode = w.current_weather.windspeed; d.innerHTML = `<span style="color:var(--success);">✓ GPS LOCKED</span><br><strong style="color:var(--primary);">GPS:</strong> ${lat}, ${lon}<br><strong style="color:var(--primary);">ENV:</strong> Air ${airTemp}°C, Wind ${weatherCode} km/h`; }
-                catch (e) { d.innerHTML = `<span style="color:var(--success);">✓ GPS LOCKED</span><br><strong style="color:var(--primary);">GPS:</strong> ${lat}, ${lon}<br><span style="color:var(--warning);">⚠ Weather API unreachable</span>`; }
+                catch (e) { d.innerHTML = `<span style="color:var(--success);">✓ GPS LOCKED</span><br><strong style="color:var(--primary);">GPS:</strong> ${lat}, ${lon}<br><span style="color:var(--warning);"> Weather API unreachable</span>`; }
                 document.getElementById('header-status').innerText = "✓ GPS LOCKED";
                 document.getElementById('header-status').classList.add('active');
             }
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((p) => { siteLat = p.coords.latitude.toFixed(5); siteLon = p.coords.longitude.toFixed(5); fetchW(siteLat, siteLon); },
-                (e) => { d.innerHTML = "<span style='color:var(--warning)'>⚠ GPS blocked. Using fallback coordinates.</span>"; siteLat = "45.5231"; siteLon = "-122.6765"; setTimeout(() => fetchW(siteLat, siteLon), 1000); }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
-            } else { d.innerHTML = "⚠ Geolocation unavailable."; }
+                (e) => { d.innerHTML = "<span style='color:var(--warning)'> GPS blocked. Using fallback coordinates.</span>"; siteLat = "45.5231"; siteLon = "-122.6765"; setTimeout(() => fetchW(siteLat, siteLon), 1000); }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
+            } else { d.innerHTML = " Geolocation unavailable."; }
         }
 
         async function saveCatch() {
@@ -1712,10 +1752,10 @@
 
             if(isGroup) {
                 const gCount = document.getElementById('groupCount').value;
-                if(!pass || !spName || !gCount) return alert("⚠ Input Sweep #, Species, and Group Count.");
+                if(!pass || !spName || !gCount) return alert(" Input Sweep #, Species, and Group Count.");
             } else {
                 const len = getLengthMM();
-                if(!pass || !spName || !len) return alert("⚠ Input Sweep #, Species, and Length.");
+                if(!pass || !spName || !len) return alert(" Input Sweep #, Species, and Length.");
             }
 
             const btn = document.getElementById('logBtn'); btn.innerText = "⏳ PROCESSING..."; btn.style.opacity = '0.6';
@@ -1770,7 +1810,7 @@
             btn.style.opacity = '1';
             btn.style.background = 'linear-gradient(135deg, #1b5e20, #2e7d32)';
             btn.innerText = "✓ LOGGED SUCCESSFULLY";
-            setTimeout(() => { btn.style.background = ''; btn.innerText = "⚡ LOG SPECIMEN"; }, 1200);
+            setTimeout(() => { btn.style.background = ''; btn.innerText = "LOG SPECIMEN"; }, 1200);
         }
 
         function openPhoto(u) { document.getElementById('modal-img').src = u; document.getElementById('photo-modal').style.display = 'flex'; }
@@ -1780,7 +1820,7 @@
             sfxClick();
             const cvs = document.getElementById('depletionChart');
             const tCvs = document.createElement('canvas'); tCvs.width = cvs.width; tCvs.height = cvs.height;
-            const ctx = tCvs.getContext('2d'); ctx.fillStyle = '#0d1225'; ctx.fillRect(0, 0, tCvs.width, tCvs.height); ctx.drawImage(cvs, 0, 0);
+            const ctx = tCvs.getContext('2d'); ctx.fillStyle = '#121812'; ctx.fillRect(0, 0, tCvs.width, tCvs.height); ctx.drawImage(cvs, 0, 0);
             const link = document.createElement('a'); link.download = 'Depletion_Chart.jpg'; link.href = tCvs.toDataURL('image/jpeg', 0.95); link.click();
         }
 
@@ -1796,7 +1836,7 @@
                 const meta = chart.getDatasetMeta(0);
                 dataset.data.forEach((datapoint, index) => {
                     const { x, y } = meta.data[index];
-                    ctx.fillStyle = '#00e5ff';
+                    ctx.fillStyle = '#d8d0c0';
                     ctx.font = 'bold 13px "Orbitron", sans-serif';
                     ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
                     ctx.shadowColor = 'rgba(255, 255, 255, 0.6)'; ctx.shadowBlur = 8;
@@ -1820,7 +1860,7 @@
 
         function initChart() {
             Chart.defaults.font.family = "'Exo 2', sans-serif";
-            Chart.defaults.color = '#546e8a';
+            Chart.defaults.color = '#908878';
             const ctx = document.getElementById('depletionChart').getContext('2d');
             chartInstance = new Chart(ctx, {
                 type: 'scatter',
@@ -1828,17 +1868,17 @@
                     datasets:[
                         {
                             label: 'Actual Catch', type: 'scatter', data: [],
-                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                            borderColor: '#00e5ff',
+                            backgroundColor: 'rgba(232, 184, 64, 0.8)',
+                            borderColor: '#e8b840',
                             pointRadius: 8, borderWidth: 2,
                             pointStyle: 'rectRot',
                             pointHoverRadius: 12,
                             pointHoverBorderWidth: 3,
-                            pointHoverBackgroundColor: '#00e5ff',
+                            pointHoverBackgroundColor: '#d8d0c0',
                         },
                         {
                             label: 'Fitted Curve', type: 'line', data:[],
-                            borderColor: '#7c4dff',
+                            borderColor: '#908878',
                             borderWidth: 2,
                             borderDash:[6, 4],
                             fill: false, tension: 0,
@@ -1851,21 +1891,21 @@
                     scales: {
                         x: {
                             type: 'linear',
-                            title: { display: true, text: 'SWEEP NUMBER (EFFORT)', font: { weight: 'bold', size: 11, family: "'Orbitron', sans-serif" }, color: '#546e8a' },
-                            ticks: { stepSize: 1, callback: function(v) { return Number.isInteger(v) ? v : ''; }, color: '#546e8a' },
-                            grid: { color: 'rgba(30, 48, 80, 0.5)' },
-                            border: { color: '#1e3050' }
+                            title: { display: true, text: 'SWEEP NUMBER (EFFORT)', font: { weight: 'bold', size: 11, family: "'Orbitron', sans-serif" }, color: '#908878' },
+                            ticks: { stepSize: 1, callback: function(v) { return Number.isInteger(v) ? v : ''; }, color: '#908878' },
+                            grid: { color: 'rgba(42, 48, 40, 0.5)' },
+                            border: { color: '#2a3028' }
                         },
                         y: {
                             beginAtZero: true,
-                            title: { display: true, text: 'QUANTITY OF FISH CAUGHT', font: { weight: 'bold', size: 11, family: "'Orbitron', sans-serif" }, color: '#546e8a' },
-                            grid: { color: 'rgba(30, 48, 80, 0.5)' },
-                            border: { color: '#1e3050' }
+                            title: { display: true, text: 'QUANTITY OF FISH CAUGHT', font: { weight: 'bold', size: 11, family: "'Orbitron', sans-serif" }, color: '#908878' },
+                            grid: { color: 'rgba(42, 48, 40, 0.5)' },
+                            border: { color: '#2a3028' }
                         }
                     },
                     plugins: {
-                        legend: { display: true, position: 'bottom', labels: { color: '#546e8a', font: { size: 11 }, usePointStyle: true, padding: 20 } },
-                        title: { display: true, text: 'ELECTROFISHING DEPLETION CURVE', font: { size: 13, weight: 'bold', family: "'Orbitron', sans-serif" }, color: '#00e5ff', padding: { bottom: 15 } }
+                        legend: { display: true, position: 'bottom', labels: { color: '#908878', font: { size: 11 }, usePointStyle: true, padding: 20 } },
+                        title: { display: true, text: 'ELECTROFISHING DEPLETION CURVE', font: { size: 13, weight: 'bold', family: "'Orbitron', sans-serif" }, color: '#d8d0c0', padding: { bottom: 15 } }
                     }
                 },
                 plugins: [drawDataLabels]
@@ -2109,7 +2149,7 @@
             setCell(rStart + 8, 5, 'Status', true); setCell(rStart + 8, 6, mleStatus);
 
             if(mleNonDesc) {
-                setCell(rStart + 10, 5, '⚠ Catches increased between passes.', true, 'FFFF0000');
+                setCell(rStart + 10, 5, ' Catches increased between passes.', true, 'FFFF0000');
                 setCell(rStart + 11, 5, 'Check net integrity and effort consistency.');
             }
 
@@ -2224,7 +2264,7 @@
                     ciL: mleR.ciLow, ciH: mleR.ciHigh,
                     cpueSec: xlTotalShockSecs > 0 ? parseFloat((totalCaught / xlTotalShockSecs).toFixed(4)) : 'N/A',
                     cpuePass: xlNumPasses > 0 ? parseFloat((totalCaught / xlNumPasses).toFixed(2)) : 'N/A',
-                    pattern: nonDesc ? '⚠ Non-descending' : 'Valid'
+                    pattern: nonDesc ? ' Non-descending' : 'Valid'
                 });
             });
             wsSp.getRow(1).font = { bold: true };
@@ -2520,7 +2560,7 @@
                 updateSaveStatus();
                 sfxClick();
             } catch(e) {
-                alert("⚠ Save failed: " + e.message);
+                alert(" Save failed: " + e.message);
             }
         }
 
@@ -2574,7 +2614,7 @@
                     alert("✓ Survey restored successfully!");
                     sfxClick();
                 } catch(err) {
-                    alert("⚠ Failed to load backup: " + err.message);
+                    alert(" Failed to load backup: " + err.message);
                 }
             };
             reader.readAsText(input.files[0]);
@@ -2582,7 +2622,7 @@
         }
 
         function confirmClearSurvey() {
-            if(!confirm("⚠ This will permanently delete ALL survey data from this browser.\n\nDownload a backup first if you haven't already.\n\nAre you sure?")) return;
+            if(!confirm(" This will permanently delete ALL survey data from this browser.\n\nDownload a backup first if you haven't already.\n\nAre you sure?")) return;
             if(!confirm("FINAL WARNING: All specimen logs, form data, and XP will be erased. Continue?")) return;
             localStorage.removeItem(SAVE_KEY);
             catchData = []; passTimeLogs = []; uniqueSpecies = new Set();
@@ -2725,7 +2765,7 @@
             timerElapsed = (Date.now() - timerStart) / 1000;
             updateTimerDisplay();
             document.getElementById('timerDisplay').classList.remove('running');
-            document.getElementById('timerStartBtn').innerText = '▶ START';
+            document.getElementById('timerStartBtn').innerText = 'START';
 
             // Log this pass time
             const pass = document.getElementById('passNum').value || '?';
@@ -2756,7 +2796,7 @@
             timerElapsed = 0; timerStart = null;
             updateTimerDisplay();
             document.getElementById('timerDisplay').classList.remove('running');
-            document.getElementById('timerStartBtn').innerText = '▶ START';
+            document.getElementById('timerStartBtn').innerText = 'START';
             sfxClick();
         }
 
@@ -2805,12 +2845,12 @@
                 options: {
                     layout: { padding: { top: 10, right: 10 } },
                     scales: {
-                        x: { title: { display: true, text: 'LENGTH CLASS (mm)', font: { weight: 'bold', size: 10, family: "'Orbitron', sans-serif" }, color: '#546e8a' }, grid: { color: 'rgba(30,48,80,0.5)' }, border: { color: '#1e3050' } },
-                        y: { beginAtZero: true, title: { display: true, text: 'COUNT', font: { weight: 'bold', size: 10, family: "'Orbitron', sans-serif" }, color: '#546e8a' }, grid: { color: 'rgba(30,48,80,0.5)' }, border: { color: '#1e3050' } }
+                        x: { title: { display: true, text: 'LENGTH CLASS (mm)', font: { weight: 'bold', size: 10, family: "'Orbitron', sans-serif" }, color: '#908878' }, grid: { color: 'rgba(42, 48, 40, 0.5)' }, border: { color: '#2a3028' } },
+                        y: { beginAtZero: true, title: { display: true, text: 'COUNT', font: { weight: 'bold', size: 10, family: "'Orbitron', sans-serif" }, color: '#908878' }, grid: { color: 'rgba(42, 48, 40, 0.5)' }, border: { color: '#2a3028' } }
                     },
                     plugins: {
-                        legend: { display: true, position: 'bottom', labels: { color: '#546e8a', font: { size: 10 }, usePointStyle: true, padding: 15 } },
-                        title: { display: true, text: 'LENGTH-FREQUENCY DISTRIBUTION', font: { size: 12, weight: 'bold', family: "'Orbitron', sans-serif" }, color: '#00e5ff', padding: { bottom: 10 } }
+                        legend: { display: true, position: 'bottom', labels: { color: '#908878', font: { size: 10 }, usePointStyle: true, padding: 15 } },
+                        title: { display: true, text: 'LENGTH-FREQUENCY DISTRIBUTION', font: { size: 12, weight: 'bold', family: "'Orbitron', sans-serif" }, color: '#d8d0c0', padding: { bottom: 10 } }
                     }
                 }
             });
@@ -2830,7 +2870,7 @@
 
             // Group by species
             const speciesList = [...new Set(validFish.map(d => d.sp))];
-            const colors = ['#00e5ff','#7c4dff','#00e676','#ffab00','#ff1744','#ce93d8','#4fc3f7','#ffcc80'];
+            const colors = ['#e8b840','#6aadda','#8fce6a','#e07050','#c490d0','#e0a060','#70c0b0','#d0a0a0'];
             const datasets = speciesList.map((sp, si) => {
                 const spFish = validFish.filter(d => d.sp === sp);
                 const counts = bins.map(b => spFish.filter(d => { let l = parseFloat(d.len); return l >= b && l < b + 10; }).length);
@@ -2846,7 +2886,7 @@
             sfxClick();
             const cvs = document.getElementById('lengthFreqChart');
             const tCvs = document.createElement('canvas'); tCvs.width = cvs.width; tCvs.height = cvs.height;
-            const ctx = tCvs.getContext('2d'); ctx.fillStyle = '#0d1225'; ctx.fillRect(0, 0, tCvs.width, tCvs.height); ctx.drawImage(cvs, 0, 0);
+            const ctx = tCvs.getContext('2d'); ctx.fillStyle = '#121812'; ctx.fillRect(0, 0, tCvs.width, tCvs.height); ctx.drawImage(cvs, 0, 0);
             const link = document.createElement('a'); link.download = 'Length_Frequency.jpg'; link.href = tCvs.toDataURL('image/jpeg', 0.95); link.click();
         }
 
@@ -3024,7 +3064,7 @@
                 document.getElementById('mleCI').textContent = '—';
                 document.getElementById('mleSE').textContent = '—';
                 warningDiv.style.display = 'block';
-                warningDiv.textContent = '⚠ Cannot compute MLE: insufficient decreasing catch data. Need at least 2 passes with positive catches.';
+                warningDiv.textContent = ' Cannot compute MLE: insufficient decreasing catch data. Need at least 2 passes with positive catches.';
                 return;
             }
 
@@ -3100,9 +3140,9 @@
 
             // Warnings
             let warnings = [];
-            if(nonDesc) warnings.push('⚠ NON-DESCENDING PATTERN: Catch increased between passes. Population estimate may be unreliable. Check net integrity and effort consistency.');
+            if(nonDesc) warnings.push(' NON-DESCENDING PATTERN: Catch increased between passes. Population estimate may be unreliable. Check net integrity and effort consistency.');
             if(catches[catches.length-1] === 0) warnings.push('✓ Zero catch on final pass — strong depletion evidence.');
-            if(pHat < 0.20) warnings.push('⚠ LOW CAPTURE PROBABILITY (p < 0.20): Consider additional passes to improve precision.');
+            if(pHat < 0.20) warnings.push(' LOW CAPTURE PROBABILITY (p < 0.20): Consider additional passes to improve precision.');
             if(pHat > 0.70) warnings.push('✓ HIGH CAPTURE PROBABILITY: Excellent sampling efficiency.');
 
             if(warnings.length > 0) {
