@@ -1511,9 +1511,8 @@
                 <label style="margin-top: 10px;">General Comments / Incidents</label><textarea id="surveyComments" placeholder="Describe gear malfunctions, mortalities..."></textarea>
             </div>
             <div class="card" style="text-align: center; padding: 20px;">
-                <h3>Generate Final Report</h3>
+                <h3>Generate Data Report</h3>
                 <button class="btn btn-success" onclick="exportXLSX()" style="margin-bottom: 15px;">DOWNLOAD EXCEL REPORT</button>
-                <button class="btn btn-primary" onclick="exportDOC()">DOWNLOAD DOC REPORT</button>
             </div>
             <div class="card" style="border-top: 2px solid var(--secondary);">
                 <h3> Survey Data Management</h3>
@@ -2428,36 +2427,6 @@
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a'); a.href = url; a.download = 'Electro_Survey_Data.xlsx';
             document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url);
-        }
-
-        function exportDOC() {
-            if(catchData.length === 0) return alert("No data to export.");
-            sfxClick();
-            const d0 = catchData[0]; const strm = document.getElementById('streamName').value||"Unnamed"; const crw = document.getElementById('crewNames').value||"N/A"; const eq = document.getElementById('equipModel').value||"N/A";
-            const hNts = document.getElementById('habitatNotes').value||"None"; const cNts = document.getElementById('surveyComments').value||"None";
-            const wth = document.getElementById('rptWeather').value; const clr = document.getElementById('rptClarity').value; const flw = document.getElementById('rptFlow').value; const sub = document.getElementById('rptSubstrate').value; const netI = document.getElementById('rptNets').value; const eff = document.getElementById('rptEfficiency').value;
-            const docWidths = getWidthData();
-            const docDO = document.getElementById('dissolvedO2').value || 'N/A';
-            const docPH = document.getElementById('phLevel').value || 'N/A';
-            const docTurb = document.getElementById('turbidity').value || 'N/A';
-            const docArea = (parseFloat(d0.rLen) || 0) * (docWidths.avgWetted || 0);
-
-            let p = {}; catchData.forEach(d => { if(!p[d.pass]) p[d.pass] = { c:0, s:d.sec, v:d.v, hz:d.hz }; p[d.pass].c++; });
-            let sH = ""; let sT = ""; Object.keys(p).sort((a,b)=>a-b).forEach(k => { sH += `<tr><td>Pass ${k}</td><td>${p[k].s} s</td><td>${p[k].v}V, ${p[k].hz}Hz</td><td><strong>${p[k].c}</strong></td></tr>`; sT += `Pass ${k} | ${p[k].s}s | ${p[k].v}V, ${p[k].hz}Hz | Caught: ${p[k].c}\n`; });
-
-            let html = `<html><head><meta charset="UTF-8"><style>body{font-family:Arial;} table{border-collapse:collapse;width:100%;margin-bottom:20px;} th,td{border:1px solid #ddd;padding:8px;text-align:left;} th{background:#f2f2f2;} h2{color:#0F4C81;border-bottom:2px solid #0F4C81;}</style></head><body>
-                <h1 style="text-align:center;">DEPLETION SURVEY REPORT</h1><p><strong>Stream:</strong> ${strm}</p><p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p><p><strong>Crew:</strong> ${crw}</p>
-                <h2>1. Environment & Site</h2><p><strong>GPS:</strong> ${siteLat}, ${siteLon} | <strong>Weather:</strong> ${wth}, Air ${airTemp}°C</p><p><strong>Water:</strong> ${d0.wTmp}°C, Cond ${d0.cnd}µS/cm, ${clr}</p><p><strong>Water Quality:</strong> DO ${docDO} mg/L, pH ${docPH}, Turbidity ${docTurb} NTU</p><p><strong>Reach:</strong> ${d0.rLen}m | <strong>Avg Wetted Width:</strong> ${docWidths.avgWetted || 'N/A'}m | <strong>Avg Bankfull Width:</strong> ${docWidths.avgBankfull || 'N/A'}m | <strong>Area:</strong> ${docArea > 0 ? docArea.toFixed(1) : 'N/A'}m²</p><p><strong>Flow:</strong> ${flw} | <strong>Substrate:</strong> ${sub}</p><p><strong>Nets:</strong> ${d0.nets} (${netI}) | <strong>Efficiency:</strong> ${eff}</p>
-                <h2>2. Notes</h2><p><strong>Habitat:</strong><br>${hNts}</p><p><strong>Comments:</strong><br>${cNts}</p>
-                <h2>3. Effort</h2><p><strong>Gear:</strong> ${eq}</p><table><tr><th>Sweep</th><th>Effort</th><th>Settings</th><th>Catch</th></tr>${sH}</table>
-                <h2>4. Specimen Log</h2><table><tr><th>Pass</th><th>Species</th><th>Sci Name</th><th>L(mm)</th><th>W(g)</th><th>Cond</th></tr>`;
-
-            let ft = `REPORT: ${strm} | ${new Date().toLocaleDateString()}\nCrew: ${crw}\nEnv: ${wth}, Air ${airTemp}C, Water ${d0.wTmp}C, Cond ${d0.cnd}uS/cm\nSite: ${d0.rLen}m, Flow: ${flw}, Sub: ${sub}, Nets: ${d0.nets}\n\nEffort:\n${sT}\nLog:\n`;
-
-            catchData.forEach(d => { html += `<tr><td>${d.pass}</td><td>${d.sp}</td><td><i>${d.sci}</i></td><td>${d.len}</td><td>${d.wt}</td><td>${d.cond}</td></tr>`; ft += `${d.pass}|${d.sp}|${d.len}mm|${d.wt}g|${d.cond}\n`; });
-            html += "</table></body></html>"; document.getElementById('rawDataBox').value = ft;
-
-            const u = 'data:application/msword;charset=utf-8,' + encodeURIComponent(html); const a = document.createElement('a'); a.href = u; a.download = 'Report.doc'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
 
         function copyRawData() { const b = document.getElementById('rawDataBox'); if(!b.value) return alert("Generate export first."); b.select(); b.setSelectionRange(0, 99999); navigator.clipboard.writeText(b.value).then(() => alert("Copied!")).catch(() => alert("Copy failed.")); sfxClick(); }
