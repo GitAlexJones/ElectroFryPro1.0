@@ -7,6 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+    <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
     <style>
         :root {
             --primary: #e8dcc8;
@@ -1012,6 +1014,28 @@
                         <strong style="color:var(--lcd-highlight);">DENSITY</strong> — Number of estimated fish per 100 square meters of stream. Requires reach length and average wetted width from the Site tab. This is the standard metric for comparing fish abundance between sites of different sizes.
                     </div>
                 </details>
+                <div id="sdiDisplay" style="background:#141a14; border:1px solid #2a3028; border-radius:4px; padding:12px; margin-bottom:14px; font-family:'Share Tech Mono',monospace;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <div>
+                            <div style="font-size:10px; color:var(--muted); letter-spacing:1px;">SIMPSON'S DIVERSITY (D)</div>
+                            <div style="font-size:22px; color:var(--lcd-highlight); font-weight:bold;" id="sdiValue">—</div>
+                        </div>
+                        <div>
+                            <div style="font-size:10px; color:var(--muted); letter-spacing:1px;">RICHNESS (S)</div>
+                            <div style="font-size:22px; color:var(--primary); font-weight:bold;" id="sdiRichness">—</div>
+                        </div>
+                        <div>
+                            <div style="font-size:10px; color:var(--muted); letter-spacing:1px;">TOTAL (N)</div>
+                            <div style="font-size:22px; color:var(--primary); font-weight:bold;" id="sdiTotal">—</div>
+                        </div>
+                    </div>
+                    <details style="margin-top:10px;">
+                        <summary style="cursor:pointer; font-size:10px; color:var(--lcd-highlight); letter-spacing:1px; list-style:none;">? ABOUT SIMPSON'S DIVERSITY</summary>
+                        <div style="font-size:11px; color:var(--text); line-height:1.7; margin-top:6px;">
+                            D = 1 - Σ[n(n-1)] / [N(N-1)]. Values range 0 to 1. Higher = more diverse community. D &gt; 0.7 indicates a diverse assemblage; D &lt; 0.4 often signals habitat degradation or dominance by a few tolerant species.
+                        </div>
+                    </details>
+                </div>
                 <div class="table-responsive">
                     <table id="speciesTable"><thead><tr><th>Species</th><th>Caught</th><th>N̂</th><th>p̂</th><th>CPUE/s</th><th>CPUE/pass</th><th>Biomass(g)</th><th>Density</th></tr></thead><tbody id="speciesBody"></tbody></table>
                 </div>
@@ -1491,25 +1515,125 @@
         <!-- 5. REPORT -->
         <div id="tab-save" class="tab-content">
             <div class="card" style="border-top: 2px solid var(--primary);">
-                <h3>Standardized Site Conditions</h3>
-                <div class="row">
-                    <div class="col"><label>Weather</label><select id="rptWeather"><option>Clear</option><option>Partly Cloudy</option><option>Overcast</option><option>Light Rain</option><option>Heavy Rain</option></select></div>
-                    <div class="col"><label>Water Clarity</label><select id="rptClarity"><option>Clear (High Vis)</option><option>Slightly Turbid</option><option>Turbid (Low Vis)</option><option>Tannic / Stained</option></select></div>
-                </div>
-                <div class="row">
-                    <div class="col"><label>Flow State</label><select id="rptFlow"><option>Low / Base</option><option selected>Normal / Moderate</option><option>High</option><option>Flood / Spate</option></select></div>
-                    <div class="col"><label>Substrate</label><select id="rptSubstrate"><option>Silt / Mud</option><option>Sand</option><option>Gravel</option><option selected>Cobble</option><option>Boulder</option><option>Bedrock</option></select></div>
-                </div>
+                <h3>Sampling QA/QC</h3>
+                <p style="font-size: 11px; color: var(--muted); margin-bottom: 12px;">Metadata flags that get recorded in the data export and optionally appended to the technical report.</p>
                 <div class="row">
                     <div class="col"><label>Net Integrity</label><select id="rptNets"><option>100% Secure</option><option>Minor Undercutting</option><option>Major Blowout</option><option>Not Used</option></select></div>
                     <div class="col"><label>Capture Efficiency</label><select id="rptEfficiency"><option>Excellent</option><option selected>Good</option><option>Fair</option><option>Poor</option></select></div>
                 </div>
+                <label style="margin-top: 10px;">Incident / QA Notes</label>
+                <textarea id="surveyComments" placeholder="Gear malfunctions, mortalities, unusual events, data quality concerns..."></textarea>
             </div>
-            <div class="card">
-                <h3>Additional Notes &amp; Anomalies</h3>
-                <label>Habitat Notes (Woody Debris, Cover)</label><textarea id="habitatNotes" placeholder="Describe specific cover types..."></textarea>
-                <label style="margin-top: 10px;">General Comments / Incidents</label><textarea id="surveyComments" placeholder="Describe gear malfunctions, mortalities..."></textarea>
+            <div class="card" style="border-top: 2px solid var(--lcd-highlight);">
+                <h3>Author Profile</h3>
+                <p style="font-size: 11px; color: var(--muted); margin-bottom: 12px;">Saved to this device. Auto-fills every report you generate.</p>
+                <div class="row">
+                    <div class="col"><label>Name</label><input type="text" id="authName" placeholder="e.g. Jane Doe, M.S." onchange="saveAuthorProfile()"></div>
+                    <div class="col"><label>Credentials/Title</label><input type="text" id="authTitle" placeholder="e.g. Fisheries Biologist" onchange="saveAuthorProfile()"></div>
+                </div>
+                <div class="row">
+                    <div class="col"><label>Affiliation / Agency</label><input type="text" id="authAffil" placeholder="e.g. WA Dept. of Fish & Wildlife" onchange="saveAuthorProfile()"></div>
+                    <div class="col"><label>Email (optional)</label><input type="email" id="authEmail" placeholder="j.doe@agency.gov" onchange="saveAuthorProfile()"></div>
+                </div>
+                <button class="btn btn-outline" onclick="clearAuthorProfile()" style="margin-top: 8px;">CLEAR PROFILE</button>
             </div>
+
+            <div class="card" style="border-top: 2px solid var(--lcd-highlight);">
+                <h3>Technical Report (.docx)</h3>
+                <p style="font-size: 11px; color: var(--muted); margin-bottom: 12px;">Generate a formal AFS-style report with title page, numbered sections, and embedded figures. Fill what you can; leave blank what you'll write later.</p>
+
+                <details open class="tr-section">
+                    <summary>Report Metadata</summary>
+                    <div style="padding-top:10px;">
+                        <label>Report Title</label><input type="text" id="trTitle" placeholder="e.g. Electrofishing Depletion Survey of Bear Creek, WA">
+                        <div class="row" style="margin-top:10px;">
+                            <div class="col"><label>Project / Report No.</label><input type="text" id="trProject" placeholder="optional"></div>
+                            <div class="col"><label>Client / Recipient</label><input type="text" id="trClient" placeholder="e.g. WDFW, instructor name"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col"><label>Revision</label><input type="text" id="trRev" placeholder="Draft / Final"></div>
+                            <div class="col"><label>Report Date</label><input type="date" id="trDate"></div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="tr-section">
+                    <summary>1. Abstract</summary>
+                    <div style="padding-top:10px;">
+                        <details style="margin-bottom:8px;"><summary style="font-size:10px; color:var(--lcd-highlight); cursor:pointer; list-style:none;">? WRITING GUIDANCE</summary>
+                        <div style="font-size:11px; color:var(--text); padding:8px 10px; background:#141a14; border-left:2px solid var(--lcd-highlight); margin-top:4px; line-height:1.7;">
+                            A condensed version of the entire report (150-250 words). Most readers only read this section, so make every sentence count. Cover four things: the question you asked, how you answered it, what you found (with real numbers), and what it means. Write this after everything else is finished. No citations, no references to figures or tables, no jargon without definition.
+                        </div></details>
+                        <textarea id="trAbstract" style="height:140px;" placeholder="Example: A three-pass depletion electrofishing survey was conducted on a 75-m reach of the Nooksack River tributary to estimate juvenile salmonid density and assess community structure. Coho Salmon dominated catch (n=42, 61% of total), followed by Steelhead (n=18) and Coastal Cutthroat Trout (n=9). MLE population estimates yielded 54 Coho (95% CI: 46-68), translating to a density of 4.2 fish per 100 m2. Simpson's Diversity Index (D=0.52) indicated moderate diversity with salmonid dominance, consistent with regional reference conditions." oninput="updateWordCount('trAbstract','abstractWC')"></textarea>
+                        <div style="font-size:10px; color:var(--muted); text-align:right; margin-top:4px;"><span id="abstractWC">0</span> words (target: 150-250)</div>
+                    </div>
+                </details>
+
+                <details class="tr-section">
+                    <summary>2. Introduction</summary>
+                    <div style="padding-top:10px;">
+                        <details style="margin-bottom:8px;"><summary style="font-size:10px; color:var(--lcd-highlight); cursor:pointer; list-style:none;">? WRITING GUIDANCE</summary>
+                        <div style="font-size:11px; color:var(--text); padding:8px 10px; background:#141a14; border-left:2px solid var(--lcd-highlight); margin-top:4px; line-height:1.7;">
+                            Two to four paragraphs that answer: why does this study matter, what do we already know, and what specifically are you trying to find out. Start with something specific to your watershed or species, not a generic statement. Cite three to five peer-reviewed sources to establish what is already known. End with an explicit objective or hypothesis — the reader should never have to guess what you set out to do. Skip results; this section is about the question, not the answer.
+                        </div></details>
+                        <textarea id="trIntro" style="height:180px;" placeholder="Example opening: Bull Trout (Salvelinus confluentus) populations in the upper Columbia River basin have declined substantially since the 1990s due to habitat fragmentation, non-native species interactions, and altered thermal regimes (Fraley and Shepard 1989; Rieman and McIntyre 1993). Electrofishing depletion surveys remain the primary tool for estimating juvenile abundance in small tributaries because they provide closed-population estimates with quantifiable precision. This study aimed to (1) estimate juvenile Bull Trout abundance in Pine Creek and (2) evaluate whether current density meets the recovery threshold of 8 fish per 100 m2 established by USFWS (2015)." oninput="updateWordCount('trIntro','introWC')"></textarea>
+                        <div style="font-size:10px; color:var(--muted); text-align:right; margin-top:4px;"><span id="introWC">0</span> words</div>
+                    </div>
+                </details>
+
+                <details class="tr-section">
+                    <summary>3. Methods</summary>
+                    <div style="padding-top:10px;">
+                        <details style="margin-bottom:8px;"><summary style="font-size:10px; color:var(--lcd-highlight); cursor:pointer; list-style:none;">? WRITING GUIDANCE</summary>
+                        <div style="font-size:11px; color:var(--text); padding:8px 10px; background:#141a14; border-left:2px solid var(--lcd-highlight); margin-top:4px; line-height:1.7;">
+                            Write this so another biologist could repeat your survey exactly. Cover four subsections: (1) where and when — stream name, coordinates, reach length, date, weather/flow conditions; (2) what you used and how — electrofisher make and model, pulse type, voltage/Hz/duty, block nets, crew size, number of passes, shock seconds per pass; (3) how you processed fish — anesthesia if any, ID to species, measurements taken, release point; (4) how you analyzed the data — name the methods (Zippin MLE, Simpson's D, Fulton's K) and cite them. Everything in past tense. If you used specific software, name it and the version.
+                        </div></details>
+                        <button class="btn btn-outline" onclick="autoDraftMethods()" style="margin-bottom:10px;">AUTO-DRAFT FROM SURVEY DATA</button>
+                        <textarea id="trMethods" style="height:220px;" placeholder="Tap AUTO-DRAFT to generate a starting paragraph from your logged gear settings, coordinates, and pass data. Then edit for style, add any details the app cannot capture (anesthetic, weather during sampling, specific software used for analysis), and polish the prose." oninput="updateWordCount('trMethods','methodsWC')"></textarea>
+                        <div style="font-size:10px; color:var(--muted); text-align:right; margin-top:4px;"><span id="methodsWC">0</span> words</div>
+                    </div>
+                </details>
+
+                <details class="tr-section">
+                    <summary>4. Results</summary>
+                    <div style="padding-top:10px;">
+                        <details style="margin-bottom:8px;"><summary style="font-size:10px; color:var(--lcd-highlight); cursor:pointer; list-style:none;">? WRITING GUIDANCE</summary>
+                        <div style="font-size:11px; color:var(--text); padding:8px 10px; background:#141a14; border-left:2px solid var(--lcd-highlight); margin-top:4px; line-height:1.7;">
+                            Report what you found — no reasons, no opinions. Lead with the total catch and species list, then move to your quantitative estimates (CPUE, MLE, density, SDI, length-frequency patterns). Every figure and table must be called out in the prose ("Table 1", "Figure 2"). Give specific numbers with units, not vague phrases like "many" or "high". If something failed or a confidence interval was too wide to be useful, state it plainly. Save the "why" for Discussion. Past tense throughout.
+                        </div></details>
+                        <button class="btn btn-outline" onclick="autoDraftResults()" style="margin-bottom:10px;">AUTO-DRAFT FROM SURVEY DATA</button>
+                        <textarea id="trResults" style="height:220px;" placeholder="Tap AUTO-DRAFT to pre-fill with your real catch totals, CPUE, MLE estimates, density, and Simpson's D. Then refine — trim redundant sentences, rearrange so results flow in the order they will matter in Discussion, reference every figure by number." oninput="updateWordCount('trResults','resultsWC')"></textarea>
+                        <div style="font-size:10px; color:var(--muted); text-align:right; margin-top:4px;"><span id="resultsWC">0</span> words</div>
+                    </div>
+                </details>
+
+                <details class="tr-section">
+                    <summary>5. Discussion</summary>
+                    <div style="padding-top:10px;">
+                        <details style="margin-bottom:8px;"><summary style="font-size:10px; color:var(--lcd-highlight); cursor:pointer; list-style:none;">? WRITING GUIDANCE</summary>
+                        <div style="font-size:11px; color:var(--text); padding:8px 10px; background:#141a14; border-left:2px solid var(--lcd-highlight); margin-top:4px; line-height:1.7;">
+                            This is where you interpret. Walk through each objective from your Introduction and answer it using the numbers in your Results. Explain why you think you saw what you saw. Compare against published values for the same species, watershed, or habitat type — does your density fall within the expected range? Acknowledge what could have biased your estimates (low capture probability, non-descending catches, small sample size). End with management implications and one or two concrete next steps. Use cautious language: "suggests", "is consistent with", "may indicate" rather than "proves".
+                        </div></details>
+                        <textarea id="trDiscussion" style="height:200px;" placeholder="Example opening: The estimated Bull Trout density of 3.1 fish per 100 m2 falls below the USFWS recovery threshold (8 per 100 m2) and is consistent with continued decline reported by WDFW (2022) for the lower basin. The non-descending catch pattern in Pass 2 (see Table 2) may indicate variable capture probability driven by pool-riffle heterogeneity rather than true population response, and MLE confidence intervals should be interpreted accordingly. Future surveys would benefit from..." oninput="updateWordCount('trDiscussion','discussionWC')"></textarea>
+                        <div style="font-size:10px; color:var(--muted); text-align:right; margin-top:4px;"><span id="discussionWC">0</span> words</div>
+                    </div>
+                </details>
+
+                <details class="tr-section">
+                    <summary>6. References</summary>
+                    <div style="padding-top:10px;">
+                        <details style="margin-bottom:8px;"><summary style="font-size:10px; color:var(--lcd-highlight); cursor:pointer; list-style:none;">? WRITING GUIDANCE</summary>
+                        <div style="font-size:11px; color:var(--text); padding:8px 10px; background:#141a14; border-left:2px solid var(--lcd-highlight); margin-top:4px; line-height:1.7;">
+                            List every source you cited in the report — no more, no less. Default format is American Fisheries Society (AFS) style: author last name, initials, year, title, journal or publisher, volume and page numbers. Include a DOI or stable URL for online material. Alphabetize by first author's last name. If you have not cited a source in the text, it does not belong here.
+                        </div></details>
+                        <textarea id="trReferences" style="height:160px; font-family:'Share Tech Mono',monospace; font-size:12px;" placeholder="Fraley, J.J., and B.B. Shepard. 1989. Life history, ecology, and population status of migratory Bull Trout in the Flathead Lake and River system, Montana. Northwest Science 63(4):133-143.&#10;&#10;Rieman, B.E., and J.D. McIntyre. 1993. Demographic and habitat requirements for conservation of Bull Trout. USDA Forest Service General Technical Report INT-302.&#10;&#10;Zippin, C. 1958. The removal method of population estimation. Journal of Wildlife Management 22(1):82-90."></textarea>
+                    </div>
+                </details>
+
+                <button class="btn btn-success" onclick="generateTechReport()" style="margin-top: 14px;">GENERATE TECHNICAL REPORT (.DOCX)</button>
+                <p style="font-size:10px; color:var(--muted); margin-top:8px; text-align:center;">Includes title page, numbered sections, embedded depletion curve &amp; length-frequency charts, and raw specimen log appendix.</p>
+            </div>
+
             <div class="card" style="text-align: center; padding: 20px;">
                 <h3>Generate Data Report</h3>
                 <button class="btn btn-success" onclick="exportXLSX()" style="margin-bottom: 15px;">DOWNLOAD EXCEL REPORT</button>
@@ -1690,6 +1814,9 @@
             initChart();
             initLFChart();
             updateHUD();
+            loadAuthorProfile();
+            // Set today's date as default for report
+            const trD = document.getElementById('trDate'); if(trD) trD.value = new Date().toISOString().split('T')[0];
         }
 
         function calcM() { let v = document.getElementById('mConv').value; document.getElementById('mResult').innerText = `${v} m = ${(v * 3.28084).toFixed(2)} ft`; sfxClick(); }
@@ -1962,11 +2089,11 @@
             if(catchData.length === 0) return alert("No database records to export.");
             sfxClick();
 
-            let csv = `"Time","Site","Stream","Crew","Lat","Lon","AirTempC","WaterTempC","Cond_uS","Reach_m","BlockNets","Weather","Clarity","Flow","Substrate","Net_Int","Efficiency","Sweep","Secs","Model","Volts","Hz","Duty%","Common_Name","Scientific","Length_mm","Weight_g","Condition","Photo"\n`;
+            let csv = `"Time","Site","Stream","Crew","Lat","Lon","AirTempC","WaterTempC","Cond_uS","Reach_m","BlockNets","Net_Integrity","Capture_Efficiency","Sweep","Secs","Model","Volts","Hz","Duty%","Common_Name","Scientific","Length_mm","Weight_g","Condition","Photo"\n`;
             const strm = (document.getElementById('streamName').value||"Unk").replace(/"/g, '""'); const crw = (document.getElementById('crewNames').value||"Unk").replace(/"/g, '""'); const eq = (document.getElementById('equipModel').value||"Unk").replace(/"/g, '""');
-            const wth = document.getElementById('rptWeather').value; const clr = document.getElementById('rptClarity').value; const flw = document.getElementById('rptFlow').value; const sub = document.getElementById('rptSubstrate').value; const netI = document.getElementById('rptNets').value; const eff = document.getElementById('rptEfficiency').value;
+            const netI = document.getElementById('rptNets').value; const eff = document.getElementById('rptEfficiency').value;
 
-            catchData.forEach(d => { csv += `"${d.t}","${d.site||'1'}","${strm}","${crw}","${siteLat}","${siteLon}","${airTemp}","${d.wTmp}","${d.cnd}","${d.rLen}","${d.nets}","${wth}","${clr}","${flw}","${sub}","${netI}","${eff}","${d.pass}","${d.sec}","${eq}","${d.v}","${d.hz}","${d.dty}","${d.sp}","${d.sci}","${d.len}","${d.wt}","${d.cond}","${d.pStat}"\n`; });
+            catchData.forEach(d => { csv += `"${d.t}","${d.site||'1'}","${strm}","${crw}","${siteLat}","${siteLon}","${airTemp}","${d.wTmp}","${d.cnd}","${d.rLen}","${d.nets}","${netI}","${eff}","${d.pass}","${d.sec}","${eq}","${d.v}","${d.hz}","${d.dty}","${d.sp}","${d.sci}","${d.len}","${d.wt}","${d.cond}","${d.pStat}"\n`; });
             document.getElementById('rawDataBox').value = csv;
 
             const wb = new ExcelJS.Workbook();
@@ -2169,7 +2296,7 @@
 
             wsMLE.getRow(1).font = { bold: true };
 
-            /* --- Fulton's Condition Factor (K) Sheet --- */
+            /* --- Fulton's Condition Factor (K) Sheet — LIVE FORMULAS --- */
             const wsK = wb.addWorksheet("Condition Factor (K)");
             wsK.columns = [
                 { header: 'Sweep', key: 'pass', width: 10 },
@@ -2177,12 +2304,13 @@
                 { header: 'Scientific Name', key: 'sci', width: 25 },
                 { header: 'Length (mm)', key: 'len', width: 14 },
                 { header: 'Weight (g)', key: 'wt', width: 12 },
-                { header: 'K Factor', key: 'k', width: 12 },
+                { header: 'K = (W/L³)×100000', key: 'k', width: 20 },
                 { header: 'Rating', key: 'rating', width: 14 }
             ];
 
             let kCount = 0, kSum = 0;
-            let speciesK = {}; // track per-species averages
+            let speciesK = {};
+            let kRowNum = 1; // header
 
             catchData.forEach(d => {
                 let l = parseFloat(d.len);
@@ -2190,10 +2318,13 @@
                 if(!l || !w || l <= 0 || w <= 0 || d.len === '---' || d.wt === '---') return;
                 let kVal = (w / Math.pow(l, 3)) * 100000;
                 let rating = kVal < 0.80 ? 'Poor' : kVal <= 1.10 ? 'Average' : 'Excellent';
-                wsK.addRow({ pass: toNum(d.pass), sp: d.sp, sci: d.sci, len: l, wt: w, k: parseFloat(kVal.toFixed(4)), rating: rating });
+                const r = wsK.addRow({ pass: toNum(d.pass), sp: d.sp, sci: d.sci, len: l, wt: w, rating: rating });
+                kRowNum++;
+                // Live K formula: =(E/D^3)*100000
+                r.getCell(6).value = { formula: `(E${kRowNum}/D${kRowNum}^3)*100000`, result: parseFloat(kVal.toFixed(4)) };
+                r.getCell(6).numFmt = '0.0000';
                 kCount++;
                 kSum += kVal;
-
                 if(!speciesK[d.sp]) speciesK[d.sp] = { sum: 0, count: 0, sci: d.sci };
                 speciesK[d.sp].sum += kVal;
                 speciesK[d.sp].count++;
@@ -2201,11 +2332,9 @@
 
             wsK.getRow(1).font = { bold: true };
 
-            // Add summary section below
             let gapRow = wsK.rowCount + 2;
             wsK.getRow(gapRow).getCell(1).value = 'CONDITION FACTOR SUMMARY';
             wsK.getRow(gapRow).getCell(1).font = { bold: true, color: { argb: 'FF0F4C81' } };
-
             wsK.getRow(gapRow + 1).values = ['', 'Species', 'Scientific Name', 'Avg K', 'Count', 'Rating'];
             wsK.getRow(gapRow + 1).font = { bold: true };
 
@@ -2213,7 +2342,11 @@
             Object.keys(speciesK).sort().forEach(sp => {
                 let avg = speciesK[sp].sum / speciesK[sp].count;
                 let rating = avg < 0.80 ? 'Poor' : avg <= 1.10 ? 'Average' : 'Excellent';
-                wsK.getRow(sumRow).values = ['', sp, speciesK[sp].sci, parseFloat(avg.toFixed(4)), speciesK[sp].count, rating];
+                const summaryRow = wsK.getRow(sumRow);
+                summaryRow.values = ['', sp, speciesK[sp].sci, '', speciesK[sp].count, rating];
+                // Live AVERAGEIF formula for species K average
+                summaryRow.getCell(4).value = { formula: `IFERROR(AVERAGEIF(B2:B${kRowNum},B${sumRow},F2:F${kRowNum}),"")`, result: parseFloat(avg.toFixed(4)) };
+                summaryRow.getCell(4).numFmt = '0.0000';
                 sumRow++;
             });
 
@@ -2221,8 +2354,12 @@
                 let overallAvg = kSum / kCount;
                 let overallRating = overallAvg < 0.80 ? 'Poor' : overallAvg <= 1.10 ? 'Average' : 'Excellent';
                 sumRow++;
-                wsK.getRow(sumRow).values = ['', 'ALL SPECIES', '', parseFloat(overallAvg.toFixed(4)), kCount, overallRating];
-                wsK.getRow(sumRow).font = { bold: true };
+                const allRow = wsK.getRow(sumRow);
+                allRow.values = ['', 'ALL SPECIES', '', '', kCount, overallRating];
+                allRow.getCell(4).value = { formula: `AVERAGE(F2:F${kRowNum})`, result: parseFloat(overallAvg.toFixed(4)) };
+                allRow.getCell(4).numFmt = '0.0000';
+                allRow.getCell(5).value = { formula: `COUNT(F2:F${kRowNum})`, result: kCount };
+                allRow.font = { bold: true };
             }
 
             if(kCount === 0) {
@@ -2230,23 +2367,50 @@
                 wsK.addRow(['No fish with both length and weight data were found.']);
             }
 
-            // Reference guide
             sumRow += 2;
             wsK.getRow(sumRow).getCell(1).value = 'REFERENCE: K = (Weight / Length³) × 100,000';
             wsK.getRow(sumRow).getCell(1).font = { bold: true, color: { argb: 'FF0F4C81' } };
             wsK.getRow(sumRow + 1).getCell(1).value = 'K < 0.80 = Poor  |  K 0.80–1.10 = Average  |  K > 1.10 = Excellent (general salmonid ranges)';
 
-            /* --- Per-Species MLE & CPUE Sheet --- */
-            const wsSp = wb.addWorksheet('Per-Species MLE & CPUE');
-
-            // Calculate total shock seconds for CPUE
+            /* --- Survey Parameters Sheet (referenced by formulas) --- */
+            // Calculate shared values used across sheets
             let xlTotalShockSecs = 0;
             passTimeLogs.forEach(pt => { xlTotalShockSecs += pt.elapsedSec || 0; });
             if(xlTotalShockSecs === 0) {
                 const seenP = new Set();
                 catchData.forEach(d => { const k = (d.site||'1') + '-' + d.pass; if(!seenP.has(k) && d.sec && d.sec !== 'UNK') { xlTotalShockSecs += parseInt(d.sec) || 0; seenP.add(k); } });
             }
+            const allSpecies = [...new Set(catchData.map(d => d.sp))];
+            const allPasses = [...new Set(catchData.map(d => d.pass))].sort((a,b) => a - b);
+            const xlNumPasses = allPasses.length;
 
+            const wsParams = wb.addWorksheet('Survey Parameters');
+            wsParams.columns = [
+                { header: 'Parameter', key: 'p', width: 32 },
+                { header: 'Value', key: 'v', width: 20 }
+            ];
+            const reachLen = parseFloat(document.getElementById('reachLen').value) || 0;
+            const reachArea = reachLen * (widths.avgWetted || 0);
+            wsParams.addRow({ p: 'Total Shock Seconds', v: xlTotalShockSecs || 0 });
+            wsParams.addRow({ p: 'Number of Passes', v: xlNumPasses });
+            wsParams.addRow({ p: 'Reach Length (m)', v: reachLen });
+            wsParams.addRow({ p: 'Avg Wetted Width (m)', v: widths.avgWetted || 0 });
+            wsParams.addRow({ p: 'Reach Area (m²)', v: reachArea });
+            wsParams.addRow({ p: 'DO (mg/L)', v: toNum(doVal) || 0 });
+            wsParams.addRow({ p: 'pH', v: toNum(phVal) || 0 });
+            wsParams.addRow({ p: 'Turbidity (NTU)', v: toNum(turbVal) || 0 });
+            wsParams.getRow(1).font = { bold: true };
+            wsParams.addRow([]);
+            wsParams.addRow(['NOTE: Edit values above; dependent formulas in other sheets recalculate automatically.']);
+            wsParams.getRow(wsParams.rowCount).font = { italic: true, color: { argb: 'FF0F4C81' } };
+
+            // Cell references for formulas
+            const PARAM_SHOCKSEC = "'Survey Parameters'!$B$2";
+            const PARAM_PASSES = "'Survey Parameters'!$B$3";
+            const PARAM_AREA = "'Survey Parameters'!$B$6";
+
+            /* --- Per-Species MLE & CPUE Sheet (LIVE FORMULAS) --- */
+            const wsSp = wb.addWorksheet('Per-Species MLE & CPUE');
             wsSp.columns = [
                 { header: 'Species', key: 'sp', width: 24 },
                 { header: 'Total Caught', key: 'caught', width: 14 },
@@ -2255,33 +2419,46 @@
                 { header: 'Std Error', key: 'se', width: 12 },
                 { header: '95% CI Lower', key: 'ciL', width: 14 },
                 { header: '95% CI Upper', key: 'ciH', width: 14 },
-                { header: 'CPUE/sec', key: 'cpueSec', width: 12 },
-                { header: 'CPUE/pass', key: 'cpuePass', width: 12 },
+                { header: 'CPUE/sec (=B/ShockSec)', key: 'cpueSec', width: 20 },
+                { header: 'CPUE/pass (=B/Passes)', key: 'cpuePass', width: 20 },
                 { header: 'Pattern', key: 'pattern', width: 20 }
             ];
 
-            const allSpecies = [...new Set(catchData.map(d => d.sp))];
-            const allPasses = [...new Set(catchData.map(d => d.pass))].sort((a,b) => a - b);
-            const xlNumPasses = allPasses.length;
-
-            allSpecies.forEach(sp => {
+            allSpecies.forEach((sp, idx) => {
+                const rowNum = idx + 2; // row 1 is header
                 const spData = catchData.filter(d => d.sp === sp);
                 const perPass = allPasses.map(p => spData.filter(d => d.pass === p).length);
                 const mleR = computeSpeciesMLE(perPass);
                 const totalCaught = spData.length;
                 let nonDesc = false;
                 for(let i = 1; i < perPass.length; i++) { if(perPass[i] > perPass[i-1]) { nonDesc = true; break; } }
-                wsSp.addRow({
+                const r = wsSp.addRow({
                     sp, caught: totalCaught, nHat: mleR.nHat,
                     pHat: mleR.pHat > 0 ? mleR.pHat : 'N/A',
                     se: !isNaN(mleR.se) ? mleR.se : 'N/A',
                     ciL: mleR.ciLow, ciH: mleR.ciHigh,
-                    cpueSec: xlTotalShockSecs > 0 ? parseFloat((totalCaught / xlTotalShockSecs).toFixed(4)) : 'N/A',
-                    cpuePass: xlNumPasses > 0 ? parseFloat((totalCaught / xlNumPasses).toFixed(2)) : 'N/A',
-                    pattern: nonDesc ? ' Non-descending' : 'Valid'
+                    pattern: nonDesc ? 'Non-descending' : 'Valid'
                 });
+                // Live formulas for CPUE
+                r.getCell(8).value = { formula: `IF(${PARAM_SHOCKSEC}=0,"N/A",B${rowNum}/${PARAM_SHOCKSEC})`, result: xlTotalShockSecs > 0 ? totalCaught / xlTotalShockSecs : 'N/A' };
+                r.getCell(8).numFmt = '0.0000';
+                r.getCell(9).value = { formula: `IF(${PARAM_PASSES}=0,"N/A",B${rowNum}/${PARAM_PASSES})`, result: xlNumPasses > 0 ? totalCaught / xlNumPasses : 'N/A' };
+                r.getCell(9).numFmt = '0.00';
             });
             wsSp.getRow(1).font = { bold: true };
+
+            // Totals row with SUM formulas
+            const totalRowIdx = wsSp.rowCount + 1;
+            const lastDataRow = wsSp.rowCount;
+            const totRow = wsSp.getRow(totalRowIdx);
+            totRow.getCell(1).value = 'TOTAL';
+            totRow.getCell(2).value = { formula: `SUM(B2:B${lastDataRow})` };
+            totRow.getCell(3).value = { formula: `SUM(C2:C${lastDataRow})` };
+            totRow.getCell(8).value = { formula: `IF(${PARAM_SHOCKSEC}=0,"N/A",B${totalRowIdx}/${PARAM_SHOCKSEC})` };
+            totRow.getCell(8).numFmt = '0.0000';
+            totRow.getCell(9).value = { formula: `IF(${PARAM_PASSES}=0,"N/A",B${totalRowIdx}/${PARAM_PASSES})` };
+            totRow.getCell(9).numFmt = '0.00';
+            totRow.font = { bold: true };
 
             // Add per-pass breakdown below
             let spGap = wsSp.rowCount + 2;
@@ -2298,27 +2475,26 @@
                 });
             });
 
-            /* --- Biomass & Density Sheet --- */
+            /* --- Biomass & Density Sheet (LIVE FORMULAS) --- */
             const wsBD = wb.addWorksheet('Biomass & Density');
-            const reachLen = parseFloat(document.getElementById('reachLen').value) || 0;
-            const reachArea = reachLen * (widths.avgWetted || 0);
 
             wsBD.columns = [
                 { header: 'Species', key: 'sp', width: 24 },
                 { header: 'Caught', key: 'caught', width: 10 },
                 { header: 'Est Pop (N̂)', key: 'nHat', width: 14 },
-                { header: 'CPUE/sec', key: 'cpueSec', width: 12 },
-                { header: 'CPUE/pass', key: 'cpuePass', width: 12 },
+                { header: 'CPUE/sec (=B/ShockSec)', key: 'cpueSec', width: 22 },
+                { header: 'CPUE/pass (=B/Passes)', key: 'cpuePass', width: 22 },
                 { header: 'Avg Weight (g)', key: 'avgWt', width: 14 },
-                { header: 'Est Biomass (g)', key: 'biomass', width: 16 },
-                { header: 'Biomass (kg)', key: 'biomassKg', width: 14 },
-                { header: 'Density (#/100m²)', key: 'numDens', width: 18 },
-                { header: 'Density (g/m²)', key: 'wtDens', width: 14 },
-                { header: 'Density (kg/ha)', key: 'kgHa', width: 14 }
+                { header: 'Est Biomass g (=C×F)', key: 'biomass', width: 20 },
+                { header: 'Biomass kg (=G/1000)', key: 'biomassKg', width: 20 },
+                { header: 'Density #/100m² (=C/Area×100)', key: 'numDens', width: 26 },
+                { header: 'Density g/m² (=G/Area)', key: 'wtDens', width: 22 },
+                { header: 'Density kg/ha (=G/Area×10)', key: 'kgHa', width: 22 }
             ];
 
             let totalNhat = 0, totalBiomass = 0, totalCaughtAll = 0;
-            allSpecies.forEach(sp => {
+            allSpecies.forEach((sp, idx) => {
+                const rn = idx + 2;
                 const spData = catchData.filter(d => d.sp === sp);
                 const perPass = allPasses.map(p => spData.filter(d => d.pass === p).length);
                 const mleR = computeSpeciesMLE(perPass);
@@ -2330,47 +2506,52 @@
                 totalBiomass += biomass;
                 totalCaughtAll += spCaught;
 
-                wsBD.addRow({
-                    sp, caught: spCaught, nHat: mleR.nHat,
-                    cpueSec: xlTotalShockSecs > 0 ? parseFloat((spCaught / xlTotalShockSecs).toFixed(4)) : 'N/A',
-                    cpuePass: xlNumPasses > 0 ? parseFloat((spCaught / xlNumPasses).toFixed(2)) : 'N/A',
-                    avgWt: avgWt > 0 ? parseFloat(avgWt.toFixed(1)) : 'N/A',
-                    biomass: biomass > 0 ? parseFloat(biomass.toFixed(0)) : 'N/A',
-                    biomassKg: biomass > 0 ? parseFloat((biomass / 1000).toFixed(3)) : 'N/A',
-                    numDens: reachArea > 0 ? parseFloat(((mleR.nHat / reachArea) * 100).toFixed(2)) : 'N/A',
-                    wtDens: reachArea > 0 && biomass > 0 ? parseFloat((biomass / reachArea).toFixed(2)) : 'N/A',
-                    kgHa: reachArea > 0 && biomass > 0 ? parseFloat(((biomass / reachArea) * 10).toFixed(2)) : 'N/A'
-                });
+                const r = wsBD.addRow({ sp, caught: spCaught, nHat: mleR.nHat, avgWt: avgWt > 0 ? parseFloat(avgWt.toFixed(1)) : 0 });
+                // Live formulas:
+                r.getCell(4).value = { formula: `IF(${PARAM_SHOCKSEC}=0,"N/A",B${rn}/${PARAM_SHOCKSEC})`, result: xlTotalShockSecs > 0 ? spCaught / xlTotalShockSecs : 'N/A' };
+                r.getCell(4).numFmt = '0.0000';
+                r.getCell(5).value = { formula: `IF(${PARAM_PASSES}=0,"N/A",B${rn}/${PARAM_PASSES})`, result: xlNumPasses > 0 ? spCaught / xlNumPasses : 'N/A' };
+                r.getCell(5).numFmt = '0.00';
+                r.getCell(7).value = { formula: `C${rn}*F${rn}`, result: biomass };
+                r.getCell(7).numFmt = '0';
+                r.getCell(8).value = { formula: `G${rn}/1000`, result: biomass / 1000 };
+                r.getCell(8).numFmt = '0.000';
+                r.getCell(9).value = { formula: `IF(${PARAM_AREA}=0,"N/A",C${rn}/${PARAM_AREA}*100)`, result: reachArea > 0 ? (mleR.nHat / reachArea) * 100 : 'N/A' };
+                r.getCell(9).numFmt = '0.00';
+                r.getCell(10).value = { formula: `IF(${PARAM_AREA}=0,"N/A",G${rn}/${PARAM_AREA})`, result: reachArea > 0 ? biomass / reachArea : 'N/A' };
+                r.getCell(10).numFmt = '0.00';
+                r.getCell(11).value = { formula: `IF(${PARAM_AREA}=0,"N/A",G${rn}/${PARAM_AREA}*10)`, result: reachArea > 0 ? (biomass / reachArea) * 10 : 'N/A' };
+                r.getCell(11).numFmt = '0.00';
             });
 
-            // Totals row
-            wsBD.addRow({
-                sp: 'ALL SPECIES', caught: totalCaughtAll, nHat: totalNhat,
-                cpueSec: xlTotalShockSecs > 0 ? parseFloat((totalCaughtAll / xlTotalShockSecs).toFixed(4)) : 'N/A',
-                cpuePass: xlNumPasses > 0 ? parseFloat((totalCaughtAll / xlNumPasses).toFixed(2)) : 'N/A',
-                avgWt: '',
-                biomass: totalBiomass > 0 ? parseFloat(totalBiomass.toFixed(0)) : 'N/A',
-                biomassKg: totalBiomass > 0 ? parseFloat((totalBiomass / 1000).toFixed(3)) : 'N/A',
-                numDens: reachArea > 0 ? parseFloat(((totalNhat / reachArea) * 100).toFixed(2)) : 'N/A',
-                wtDens: reachArea > 0 && totalBiomass > 0 ? parseFloat((totalBiomass / reachArea).toFixed(2)) : 'N/A',
-                kgHa: reachArea > 0 && totalBiomass > 0 ? parseFloat(((totalBiomass / reachArea) * 10).toFixed(2)) : 'N/A'
-            });
+            // Totals row with SUM formulas
+            const bdTotalRow = wsBD.rowCount + 1;
+            const bdLastData = wsBD.rowCount;
+            const totR = wsBD.getRow(bdTotalRow);
+            totR.getCell(1).value = 'ALL SPECIES';
+            totR.getCell(2).value = { formula: `SUM(B2:B${bdLastData})` };
+            totR.getCell(3).value = { formula: `SUM(C2:C${bdLastData})` };
+            totR.getCell(4).value = { formula: `IF(${PARAM_SHOCKSEC}=0,"N/A",B${bdTotalRow}/${PARAM_SHOCKSEC})` };
+            totR.getCell(4).numFmt = '0.0000';
+            totR.getCell(5).value = { formula: `IF(${PARAM_PASSES}=0,"N/A",B${bdTotalRow}/${PARAM_PASSES})` };
+            totR.getCell(5).numFmt = '0.00';
+            totR.getCell(7).value = { formula: `SUM(G2:G${bdLastData})` };
+            totR.getCell(7).numFmt = '0';
+            totR.getCell(8).value = { formula: `G${bdTotalRow}/1000` };
+            totR.getCell(8).numFmt = '0.000';
+            totR.getCell(9).value = { formula: `IF(${PARAM_AREA}=0,"N/A",C${bdTotalRow}/${PARAM_AREA}*100)` };
+            totR.getCell(9).numFmt = '0.00';
+            totR.getCell(10).value = { formula: `IF(${PARAM_AREA}=0,"N/A",G${bdTotalRow}/${PARAM_AREA})` };
+            totR.getCell(10).numFmt = '0.00';
+            totR.getCell(11).value = { formula: `IF(${PARAM_AREA}=0,"N/A",G${bdTotalRow}/${PARAM_AREA}*10)` };
+            totR.getCell(11).numFmt = '0.00';
             wsBD.getRow(1).font = { bold: true };
-            wsBD.getRow(wsBD.rowCount).font = { bold: true };
+            wsBD.getRow(bdTotalRow).font = { bold: true };
 
-            // Site info
+            // Info footer
             let bdInfo = wsBD.rowCount + 2;
-            wsBD.getRow(bdInfo).getCell(1).value = 'SITE PARAMETERS';
-            wsBD.getRow(bdInfo).getCell(1).font = { bold: true, color: { argb: 'FF0F4C81' } };
-            wsBD.getRow(bdInfo+1).values = ['Reach Length (m)', reachLen || 'Not entered'];
-            wsBD.getRow(bdInfo+2).values = ['Avg Wetted Width (m)', widths.avgWetted || 'Not entered'];
-            wsBD.getRow(bdInfo+3).values = ['Avg Bankfull Width (m)', widths.avgBankfull || 'Not entered'];
-            wsBD.getRow(bdInfo+4).values = ['Reach Area (m²)', reachArea > 0 ? parseFloat(reachArea.toFixed(1)) : 'Requires length + width'];
-            wsBD.getRow(bdInfo+5).values = ['Total Shock Seconds', xlTotalShockSecs > 0 ? xlTotalShockSecs : 'No timer data'];
-            wsBD.getRow(bdInfo+6).values = ['Number of Passes', xlNumPasses];
-            wsBD.getRow(bdInfo+7).values = ['DO (mg/L)', toNum(doVal) || 'Not entered'];
-            wsBD.getRow(bdInfo+8).values = ['pH', toNum(phVal) || 'Not entered'];
-            wsBD.getRow(bdInfo+9).values = ['Turbidity (NTU)', toNum(turbVal) || 'Not entered'];
+            wsBD.getRow(bdInfo).getCell(1).value = 'Edit values in "Survey Parameters" sheet to see all formulas recalculate.';
+            wsBD.getRow(bdInfo).getCell(1).font = { italic: true, color: { argb: 'FF0F4C81' } };
 
             /* --- Length-Frequency Sheet --- */
             const wsLF = wb.addWorksheet('Length-Frequency');
@@ -2432,6 +2613,409 @@
         function copyRawData() { const b = document.getElementById('rawDataBox'); if(!b.value) return alert("Generate export first."); b.select(); b.setSelectionRange(0, 99999); navigator.clipboard.writeText(b.value).then(() => alert("Copied!")).catch(() => alert("Copy failed.")); sfxClick(); }
 
         /* ===========================
+           AUTHOR PROFILE
+           =========================== */
+        function saveAuthorProfile() {
+            const p = {
+                name: document.getElementById('authName').value,
+                title: document.getElementById('authTitle').value,
+                affil: document.getElementById('authAffil').value,
+                email: document.getElementById('authEmail').value
+            };
+            localStorage.setItem('electrofry_author_profile_v1', JSON.stringify(p));
+        }
+        function loadAuthorProfile() {
+            try {
+                const s = localStorage.getItem('electrofry_author_profile_v1');
+                if(!s) return;
+                const p = JSON.parse(s);
+                if(document.getElementById('authName')) document.getElementById('authName').value = p.name || '';
+                if(document.getElementById('authTitle')) document.getElementById('authTitle').value = p.title || '';
+                if(document.getElementById('authAffil')) document.getElementById('authAffil').value = p.affil || '';
+                if(document.getElementById('authEmail')) document.getElementById('authEmail').value = p.email || '';
+            } catch(e) { console.error(e); }
+        }
+        function clearAuthorProfile() {
+            if(!confirm('Clear saved author profile?')) return;
+            localStorage.removeItem('electrofry_author_profile_v1');
+            ['authName','authTitle','authAffil','authEmail'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+        }
+
+        /* ===========================
+           WORD COUNT
+           =========================== */
+        function updateWordCount(inputId, spanId) {
+            const txt = document.getElementById(inputId).value.trim();
+            const count = txt.length === 0 ? 0 : txt.split(/\s+/).length;
+            const span = document.getElementById(spanId);
+            if(span) span.textContent = count;
+        }
+
+        /* ===========================
+           AUTO-DRAFT METHODS & RESULTS
+           =========================== */
+        function autoDraftMethods() {
+            if(catchData.length === 0) { alert('Log at least one specimen first.'); return; }
+            sfxClick();
+            const stream = document.getElementById('streamName').value || '[stream name]';
+            const crew = document.getElementById('crewNames').value || '[crew]';
+            const eq = document.getElementById('equipModel').value || 'Smith-Root LR-24';
+            const d0 = catchData[0];
+            const reachLen = d0.rLen || '[reach length]';
+            const widths = getWidthData();
+            const avgWetted = widths.avgWetted || '[width]';
+            const passes = [...new Set(catchData.map(d => d.pass))].sort((a,b) => a - b);
+            const nPasses = passes.length;
+            const date = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+            const gps = (siteLat !== 'UNK' && siteLon !== 'UNK') ? `${siteLat}°, ${siteLon}°` : '[GPS coordinates]';
+            const wTmp = d0.wTmp !== 'UNK' ? d0.wTmp : '[water temp]';
+            const cond = d0.cnd !== 'UNK' ? d0.cnd : '[conductivity]';
+            const v = d0.v !== 'UNK' ? d0.v : '[voltage]';
+            const hz = d0.hz !== 'UNK' ? d0.hz : '[Hz]';
+            const dty = d0.dty !== 'UNK' ? d0.dty : '[duty]';
+            let totalShockSecs = 0;
+            passTimeLogs.forEach(pt => { totalShockSecs += pt.elapsedSec || 0; });
+            const passText = nPasses >= 2 ? `${nPasses}-pass depletion removal` : 'single-pass';
+
+            const draft = `Study Sites. Sampling was conducted on ${date} along a ${reachLen}-m reach of ${stream} at ${gps}. Water temperature was ${wTmp}°C and specific conductance was ${cond} µS/cm at the time of sampling. The average wetted width of the reach was ${avgWetted} m.
+
+Equipment and Protocol. Fish were collected using a ${eq} backpack electrofisher operated by a ${crew} crew. Pulsed direct current was applied at ${v} V, ${hz} Hz, and ${dty}% duty cycle. A ${passText} approach was employed, with block nets installed at the upstream and downstream boundaries of the reach to prevent fish movement during sampling. Each pass was conducted in an upstream direction with consistent effort between passes. Total cumulative shocking effort was ${totalShockSecs || '[N]'} seconds across all passes.
+
+Fish Processing. All captured fish were transferred to aerated holding containers for processing. Individuals were identified to species, measured for total length (mm), and weighed (g) when practical. Fish were held in a recovery tank and released at the point of capture upon completion of sampling.
+
+Data Analysis. Population estimates were generated using maximum-likelihood estimation (MLE) for removal-depletion sampling (Zippin 1958). Capture probability (p̂) and population size (N̂) were estimated iteratively, and 95% confidence intervals were computed from the Zippin variance formula. Catch Per Unit Effort (CPUE) was calculated as total catch divided by total shocking seconds and as total catch divided by number of passes. Species diversity was quantified using Simpson's Diversity Index: D = 1 − Σ[nᵢ(nᵢ−1)] / [N(N−1)], where nᵢ is the count of species i and N is total individuals captured. Fish density was expressed as individuals per 100 m² using reach area (length × average wetted width), and biomass density was calculated as total estimated biomass (N̂ × mean weight) per unit area.`;
+            document.getElementById('trMethods').value = draft;
+            updateWordCount('trMethods','methodsWC');
+        }
+
+        function autoDraftResults() {
+            if(catchData.length === 0) { alert('Log at least one specimen first.'); return; }
+            sfxClick();
+            const passes = [...new Set(catchData.map(d => d.pass))].sort((a,b) => a - b);
+            const species = [...new Set(catchData.map(d => d.sp))];
+            const total = catchData.length;
+            const sdi = computeSDI(catchData);
+            const area = getReachArea();
+
+            let totalShockSecs = 0;
+            passTimeLogs.forEach(pt => { totalShockSecs += pt.elapsedSec || 0; });
+            const overallCPUE = totalShockSecs > 0 ? (total / totalShockSecs).toFixed(4) : null;
+
+            // Top species by abundance
+            const counts = {};
+            catchData.forEach(d => { counts[d.sp] = (counts[d.sp] || 0) + 1; });
+            const sortedSp = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+            const topSp = sortedSp.slice(0, 3);
+
+            // Per-pass totals
+            const perPass = passes.map(p => ({ p, n: catchData.filter(d => d.pass === p).length }));
+            const passStr = perPass.map(x => `Pass ${x.p}: ${x.n} fish`).join(', ');
+
+            // Size range
+            const lens = catchData.filter(d => d.len && d.len !== '---').map(d => parseInt(d.len)).filter(n => !isNaN(n));
+            const lenRange = lens.length > 0 ? `${Math.min(...lens)}–${Math.max(...lens)} mm (mean: ${(lens.reduce((a,b)=>a+b,0)/lens.length).toFixed(0)} mm)` : '[length data not collected]';
+
+            // MLE for total
+            const passTotals = passes.map(p => catchData.filter(d => d.pass === p).length);
+            const mleAll = computeSpeciesMLE(passTotals);
+
+            let draft = `Total Catch and Community Composition. A total of ${total} individual fish representing ${species.length} species were captured across ${passes.length} pass${passes.length !== 1 ? 'es' : ''} (Table 1). `;
+            if(topSp.length > 0) {
+                const dominantPct = ((topSp[0][1] / total) * 100).toFixed(1);
+                draft += `${topSp[0][0]} was the most abundant species (n = ${topSp[0][1]}, ${dominantPct}% of total catch)`;
+                if(topSp.length > 1) draft += `, followed by ${topSp[1][0]} (n = ${topSp[1][1]})`;
+                if(topSp.length > 2) draft += ` and ${topSp[2][0]} (n = ${topSp[2][1]})`;
+                draft += '. ';
+            }
+            draft += `Individual fish lengths ranged from ${lenRange}. Length-frequency distribution is shown in Figure 2.\n\n`;
+
+            draft += `Catch Per Pass. Catch declined across successive passes (${passStr})`;
+            if(perPass.length >= 2 && perPass[0].n > perPass[perPass.length-1].n) draft += `, consistent with a descending removal pattern appropriate for MLE depletion analysis`;
+            draft += `. The depletion curve is presented in Figure 1.\n\n`;
+
+            if(mleAll.nHat > 0) {
+                draft += `Population Estimates. The MLE total population estimate for the reach was N̂ = ${mleAll.nHat} fish`;
+                if(mleAll.ciLow && mleAll.ciHigh) draft += ` (95% CI: ${mleAll.ciLow}–${mleAll.ciHigh})`;
+                if(mleAll.pHat > 0) draft += ` with an estimated capture probability of p̂ = ${mleAll.pHat.toFixed(3)}`;
+                draft += `. Per-species population estimates are provided in Table 2.\n\n`;
+            }
+
+            if(overallCPUE) {
+                draft += `Effort and CPUE. Total shocking effort was ${totalShockSecs} seconds. Overall CPUE was ${overallCPUE} fish per shock-second (${(total/passes.length).toFixed(2)} fish per pass). `;
+            }
+            if(area > 0 && mleAll.nHat > 0) {
+                const density = ((mleAll.nHat / area) * 100).toFixed(2);
+                draft += `Based on a reach area of ${area.toFixed(1)} m², estimated fish density was ${density} individuals per 100 m². `;
+            }
+            draft += '\n\n';
+
+            if(sdi.D !== null) {
+                draft += `Community Diversity. Simpson's Diversity Index was D = ${sdi.D.toFixed(3)}, with ${sdi.S} species represented among ${sdi.N} total individuals. `;
+                if(sdi.D >= 0.7) draft += `This value reflects a diverse fish assemblage.`;
+                else if(sdi.D >= 0.4) draft += `This value reflects a moderately diverse assemblage.`;
+                else draft += `This value reflects a low-diversity assemblage dominated by few species.`;
+            }
+
+            document.getElementById('trResults').value = draft;
+            updateWordCount('trResults','resultsWC');
+        }
+
+        /* ===========================
+           DOCX TECHNICAL REPORT GENERATOR
+           =========================== */
+        async function generateTechReport() {
+            if(typeof docx === 'undefined') { alert('Document library not loaded. Check your internet connection and refresh.'); return; }
+            sfxClick();
+
+            const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, PageBreak, Table, TableRow, TableCell, WidthType, BorderStyle, ImageRun, Footer, PageNumber, Header } = docx;
+
+            // Gather fields
+            const title = document.getElementById('trTitle').value || 'Electrofishing Survey Report';
+            const project = document.getElementById('trProject').value || '';
+            const client = document.getElementById('trClient').value || '';
+            const rev = document.getElementById('trRev').value || 'Draft';
+            const dateVal = document.getElementById('trDate').value;
+            const reportDate = dateVal ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'}) : new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+            const authName = document.getElementById('authName').value || '[Author Name]';
+            const authTitle = document.getElementById('authTitle').value || '';
+            const authAffil = document.getElementById('authAffil').value || '';
+            const authEmail = document.getElementById('authEmail').value || '';
+            const abstract = document.getElementById('trAbstract').value;
+            const intro = document.getElementById('trIntro').value;
+            const methods = document.getElementById('trMethods').value;
+            const results = document.getElementById('trResults').value;
+            const discussion = document.getElementById('trDiscussion').value;
+            const references = document.getElementById('trReferences').value;
+            const stream = document.getElementById('streamName').value || 'Unnamed Stream';
+
+            // Helper for paragraphs
+            const P = (text, opts = {}) => new Paragraph({
+                children: [new TextRun({ text: text || '', font: 'Times New Roman', size: 24, ...opts.run })],
+                spacing: { before: 0, after: 120, line: 360 },
+                alignment: opts.align || AlignmentType.JUSTIFIED,
+                ...opts.para
+            });
+            const H = (text, level) => new Paragraph({
+                children: [new TextRun({ text, font: 'Times New Roman', size: level === 1 ? 28 : 26, bold: true })],
+                spacing: { before: 240, after: 120 },
+                heading: level === 1 ? HeadingLevel.HEADING_1 : HeadingLevel.HEADING_2
+            });
+            const blank = () => new Paragraph({ children: [new TextRun({ text: '', font: 'Times New Roman', size: 24 })] });
+
+            const splitParas = (txt) => {
+                if(!txt || !txt.trim()) return [P('[Section not yet written.]', { run: { italics: true, color: '888888' } })];
+                return txt.split(/\n\s*\n/).map(p => P(p.trim().replace(/\n/g, ' ')));
+            };
+
+            // Title page
+            const titlePage = [
+                new Paragraph({ children: [new TextRun({ text: '', font: 'Times New Roman', size: 24 })], spacing: { before: 2400 } }),
+                new Paragraph({
+                    children: [new TextRun({ text: title, font: 'Times New Roman', size: 40, bold: true })],
+                    alignment: AlignmentType.CENTER, spacing: { before: 0, after: 360 }
+                }),
+                new Paragraph({
+                    children: [new TextRun({ text: stream, font: 'Times New Roman', size: 28 })],
+                    alignment: AlignmentType.CENTER, spacing: { after: 720 }
+                }),
+                P(`Prepared by:`, { align: AlignmentType.CENTER, run: { bold: true } }),
+                P(authName + (authTitle ? `, ${authTitle}` : ''), { align: AlignmentType.CENTER }),
+                ...(authAffil ? [P(authAffil, { align: AlignmentType.CENTER })] : []),
+                ...(authEmail ? [P(authEmail, { align: AlignmentType.CENTER })] : []),
+                blank(),
+                ...(client ? [P(`Prepared for: ${client}`, { align: AlignmentType.CENTER })] : []),
+                ...(project ? [P(`Project/Report No.: ${project}`, { align: AlignmentType.CENTER })] : []),
+                blank(),
+                P(reportDate, { align: AlignmentType.CENTER }),
+                P(rev, { align: AlignmentType.CENTER, run: { italics: true } }),
+                new Paragraph({ children: [new PageBreak()] })
+            ];
+
+            // Abstract
+            const abstractSection = [
+                H('ABSTRACT', 1),
+                ...splitParas(abstract),
+                blank()
+            ];
+
+            // Introduction
+            const introSection = [
+                H('1. INTRODUCTION', 1),
+                ...splitParas(intro),
+                blank()
+            ];
+
+            // Methods
+            const methodsSection = [
+                H('2. METHODS', 1),
+                ...splitParas(methods),
+                blank()
+            ];
+
+            // Results + embedded figures
+            const resultsSection = [H('3. RESULTS', 1), ...splitParas(results), blank()];
+
+            // Embed depletion chart
+            try {
+                const depCvs = document.getElementById('depletionChart');
+                if(depCvs && catchData.length > 0) {
+                    const tCvs = document.createElement('canvas'); tCvs.width = depCvs.width; tCvs.height = depCvs.height;
+                    const ctx = tCvs.getContext('2d'); ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,tCvs.width,tCvs.height); ctx.drawImage(depCvs,0,0);
+                    const blob = await new Promise(res => tCvs.toBlob(res, 'image/png'));
+                    const buf = await blob.arrayBuffer();
+                    resultsSection.push(new Paragraph({
+                        children: [new ImageRun({ data: buf, transformation: { width: 480, height: 360 } })],
+                        alignment: AlignmentType.CENTER, spacing: { before: 120, after: 120 }
+                    }));
+                    resultsSection.push(P('Figure 1. Depletion curve for electrofishing survey, showing observed catch per pass and fitted exponential decay.', { run: { italics: true, size: 22 }, align: AlignmentType.CENTER }));
+                    resultsSection.push(blank());
+                }
+            } catch(e) { console.warn('Depletion chart embed failed:', e); }
+
+            // Embed length-freq chart
+            try {
+                const lfCvs = document.getElementById('lengthFreqChart');
+                if(lfCvs && catchData.filter(d => d.len && d.len !== '---').length > 0) {
+                    const tCvs = document.createElement('canvas'); tCvs.width = lfCvs.width; tCvs.height = lfCvs.height;
+                    const ctx = tCvs.getContext('2d'); ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,tCvs.width,tCvs.height); ctx.drawImage(lfCvs,0,0);
+                    const blob = await new Promise(res => tCvs.toBlob(res, 'image/png'));
+                    const buf = await blob.arrayBuffer();
+                    resultsSection.push(new Paragraph({
+                        children: [new ImageRun({ data: buf, transformation: { width: 480, height: 320 } })],
+                        alignment: AlignmentType.CENTER, spacing: { before: 120, after: 120 }
+                    }));
+                    resultsSection.push(P('Figure 2. Length-frequency distribution of captured fish by species (10-mm size classes).', { run: { italics: true, size: 22 }, align: AlignmentType.CENTER }));
+                    resultsSection.push(blank());
+                }
+            } catch(e) { console.warn('LF chart embed failed:', e); }
+
+            // Per-species results table
+            if(catchData.length > 0) {
+                const sppRows = [[
+                    'Species', 'Caught', 'N̂', 'p̂', 'CPUE/s', 'CPUE/pass', 'Biomass (g)', 'Density /100m²'
+                ]];
+                const allSp = [...new Set(catchData.map(d => d.sp))];
+                const allPassNums = [...new Set(catchData.map(d => d.pass))].sort((a,b) => a - b);
+                let tSS = 0; passTimeLogs.forEach(pt => { tSS += pt.elapsedSec || 0; });
+                const ar = getReachArea();
+                allSp.forEach(sp => {
+                    const spD = catchData.filter(d => d.sp === sp);
+                    const pP = allPassNums.map(p => spD.filter(d => d.pass === p).length);
+                    const m = computeSpeciesMLE(pP);
+                    const wW = spD.filter(d => d.wt && d.wt !== '---' && parseFloat(d.wt) > 0);
+                    const aW = wW.length > 0 ? wW.reduce((a,d) => a + parseFloat(d.wt), 0) / wW.length : 0;
+                    const bio = m.nHat * aW;
+                    sppRows.push([
+                        sp, String(spD.length), String(m.nHat), m.pHat > 0 ? m.pHat.toFixed(3) : '—',
+                        tSS > 0 ? (spD.length / tSS).toFixed(4) : '—',
+                        (spD.length / allPassNums.length).toFixed(2),
+                        bio > 0 ? bio.toFixed(0) : '—',
+                        (ar > 0 && m.nHat > 0) ? ((m.nHat / ar) * 100).toFixed(2) : '—'
+                    ]);
+                });
+
+                const tbl = new Table({
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                    rows: sppRows.map((row, idx) => new TableRow({
+                        children: row.map(cell => new TableCell({
+                            children: [new Paragraph({
+                                children: [new TextRun({ text: cell, font: 'Times New Roman', size: 20, bold: idx === 0 })],
+                                alignment: idx === 0 ? AlignmentType.CENTER : AlignmentType.LEFT
+                            })]
+                        }))
+                    }))
+                });
+
+                resultsSection.push(P('Table 1. Per-species catch, population estimates, effort metrics, biomass, and density.', { run: { italics: true, size: 22 }, align: AlignmentType.CENTER }));
+                resultsSection.push(tbl);
+                resultsSection.push(blank());
+            }
+
+            // Discussion
+            const discussionSection = [ H('4. DISCUSSION', 1), ...splitParas(discussion), blank() ];
+
+            // References
+            const refsSection = [ H('5. REFERENCES', 1) ];
+            if(references.trim()) {
+                references.split('\n').filter(l => l.trim()).forEach(line => {
+                    refsSection.push(new Paragraph({
+                        children: [new TextRun({ text: line.trim(), font: 'Times New Roman', size: 22 })],
+                        spacing: { before: 0, after: 120, line: 300 },
+                        indent: { left: 720, hanging: 720 }
+                    }));
+                });
+            } else {
+                refsSection.push(P('[No references cited.]', { run: { italics: true, color: '888888' } }));
+            }
+            refsSection.push(new Paragraph({ children: [new PageBreak()] }));
+
+            // Appendix: raw specimen log
+            const appendixSection = [ H('APPENDIX A. RAW SPECIMEN LOG', 1) ];
+            if(catchData.length > 0) {
+                const logRows = [['#','Time','Site','Pass','Species','Length (mm)','Weight (g)','Condition']];
+                catchData.forEach((d, i) => {
+                    logRows.push([
+                        String(i+1), d.t || '', String(d.site || '1'), String(d.pass || ''), d.sp || '',
+                        d.len && d.len !== '---' ? String(d.len) : (d.isGroup ? `Grp x${d.groupCount}` : '—'),
+                        d.wt && d.wt !== '---' ? String(d.wt) : '—',
+                        d.cond || ''
+                    ]);
+                });
+                const logTbl = new Table({
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                    rows: logRows.map((row, idx) => new TableRow({
+                        children: row.map(cell => new TableCell({
+                            children: [new Paragraph({
+                                children: [new TextRun({ text: cell, font: 'Times New Roman', size: 18, bold: idx === 0 })]
+                            })]
+                        }))
+                    }))
+                });
+                appendixSection.push(logTbl);
+            } else {
+                appendixSection.push(P('[No specimen data logged.]'));
+            }
+
+            // Build document
+            const doc = new Document({
+                creator: authName,
+                title: title,
+                styles: {
+                    paragraphStyles: [{
+                        id: 'Heading1', name: 'Heading 1', basedOn: 'Normal', next: 'Normal', quickFormat: true,
+                        run: { font: 'Times New Roman', size: 28, bold: true },
+                        paragraph: { spacing: { before: 240, after: 120 } }
+                    }]
+                },
+                sections: [{
+                    properties: { page: { margin: { top: 1440, bottom: 1440, left: 1440, right: 1440 } } },
+                    headers: { default: new Header({ children: [new Paragraph({
+                        children: [new TextRun({ text: title, font: 'Times New Roman', size: 18, color: '666666' })],
+                        alignment: AlignmentType.RIGHT
+                    })]})},
+                    footers: { default: new Footer({ children: [new Paragraph({
+                        children: [new TextRun({ text: 'Page ', font: 'Times New Roman', size: 18 }), new TextRun({ children: [PageNumber.CURRENT], font: 'Times New Roman', size: 18 })],
+                        alignment: AlignmentType.CENTER
+                    })]})},
+                    children: [
+                        ...titlePage,
+                        ...abstractSection,
+                        ...introSection,
+                        ...methodsSection,
+                        ...resultsSection,
+                        ...discussionSection,
+                        ...refsSection,
+                        ...appendixSection
+                    ]
+                }]
+            });
+
+            const blob = await Packer.toBlob(doc);
+            const safeTitle = title.replace(/[^a-z0-9]+/gi, '_').slice(0, 50) || 'Technical_Report';
+            saveAs(blob, `${safeTitle}.docx`);
+        }
+
+        /* ===========================
            SURVEY SAVE / LOAD
            =========================== */
         const SAVE_KEY = 'electrofry_survey_v1';
@@ -2459,13 +3043,8 @@
                     volts: document.getElementById('volts').value,
                     freq: document.getElementById('freq').value,
                     duty: document.getElementById('duty').value,
-                    rptWeather: document.getElementById('rptWeather').value,
-                    rptClarity: document.getElementById('rptClarity').value,
-                    rptFlow: document.getElementById('rptFlow').value,
-                    rptSubstrate: document.getElementById('rptSubstrate').value,
                     rptNets: document.getElementById('rptNets').value,
                     rptEfficiency: document.getElementById('rptEfficiency').value,
-                    habitatNotes: document.getElementById('habitatNotes').value,
                     surveyComments: document.getElementById('surveyComments').value,
                 },
                 widthTransects: {
@@ -2613,7 +3192,7 @@
             document.getElementById('logBody').innerHTML = '';
             document.getElementById('passTimeLog').innerHTML = ''; document.getElementById('passTimeLog').style.display = 'none';
             // Clear form fields
-            ['streamName','crewNames','reachLen','waterTemp','conductivity','dissolvedO2','phLevel','turbidity','equipModel','shockSecs','volts','freq','duty','habitatNotes','surveyComments'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+            ['streamName','crewNames','reachLen','waterTemp','conductivity','dissolvedO2','phLevel','turbidity','equipModel','shockSecs','volts','freq','duty','surveyComments'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
             document.getElementById('siteNum').value = '1'; document.getElementById('passNum').value = '1';
             document.querySelectorAll('.wettedW, .bankfullW').forEach(i => i.value = '');
             updateHUD(); updateSaveStatus();
@@ -2919,10 +3498,30 @@
             return { nHat: Math.round(nH), pHat: parseFloat(pH.toFixed(4)), se: isNaN(se) ? NaN : parseFloat(se.toFixed(2)), ciLow: ciL, ciHigh: ciH };
         }
 
+        function computeSDI(catchArr) {
+            // Simpson's Diversity: D = 1 - Σ[n(n-1)] / [N(N-1)]
+            if(!catchArr || catchArr.length === 0) return { D: null, S: 0, N: 0 };
+            const counts = {};
+            catchArr.forEach(d => { counts[d.sp] = (counts[d.sp] || 0) + 1; });
+            const S = Object.keys(counts).length;
+            const N = catchArr.length;
+            if(N < 2) return { D: null, S, N };
+            let sumNiNi = 0;
+            Object.values(counts).forEach(n => { sumNiNi += n * (n - 1); });
+            const D = 1 - (sumNiNi / (N * (N - 1)));
+            return { D: parseFloat(D.toFixed(3)), S, N };
+        }
+
         function calcSpeciesStats() {
             sfxClick();
             const body = document.getElementById('speciesBody');
             body.innerHTML = '';
+            // Update SDI always
+            const sdi = computeSDI(catchData);
+            const sdiV = document.getElementById('sdiValue'); const sdiR = document.getElementById('sdiRichness'); const sdiT = document.getElementById('sdiTotal');
+            if(sdiV) sdiV.textContent = sdi.D !== null ? sdi.D.toFixed(3) : '—';
+            if(sdiR) sdiR.textContent = sdi.S;
+            if(sdiT) sdiT.textContent = sdi.N;
             if(catchData.length === 0) return;
 
             const area = getReachArea(); // m²
