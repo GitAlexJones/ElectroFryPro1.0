@@ -32,16 +32,20 @@
             --lcd-highlight: #e8b840;
             --btn-blue: #2a5a8a;
             --btn-blue-light: #3a7ab0;
-            --housing: #8a9199;
-            --housing-light: #a0a8b0;
-            --housing-dark: #6a7178;
+            --housing: #1a4a6b;
+            --housing-light: #2d6a8f;
+            --housing-dark: #0d2e45;
         }
 
         * { box-sizing: border-box; }
 
         body {
-            background: var(--housing);
-            background-image: linear-gradient(180deg, var(--housing-light) 0%, var(--housing) 30%, var(--housing-dark) 100%);
+            background: var(--housing-dark);
+            background-image:
+                radial-gradient(ellipse at 20% -10%, rgba(125, 180, 220, 0.35) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% -20%, rgba(100, 160, 200, 0.25) 0%, transparent 40%),
+                linear-gradient(180deg, #2d6a8f 0%, #1a4a6b 25%, #0d2e45 70%, #061a2a 100%);
+            background-attachment: fixed;
             color: var(--text);
             font-family: 'Exo 2', sans-serif;
             font-size: 15px;
@@ -50,6 +54,37 @@
             padding: 70px 0 80px 0;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Underwater caustic light overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 20%, rgba(255,255,255,0.04) 0%, transparent 8%),
+                radial-gradient(circle at 75% 40%, rgba(255,255,255,0.03) 0%, transparent 10%),
+                radial-gradient(circle at 40% 70%, rgba(255,255,255,0.04) 0%, transparent 7%),
+                radial-gradient(circle at 85% 85%, rgba(255,255,255,0.03) 0%, transparent 8%);
+            pointer-events: none;
+            z-index: 0;
+            animation: causticDrift 20s ease-in-out infinite alternate;
+        }
+        @keyframes causticDrift {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+            50% { transform: translate(-10px, 5px) scale(1.02); opacity: 1; }
+            100% { transform: translate(8px, -4px) scale(0.99); opacity: 0.8; }
+        }
+
+        /* Bubble canvas */
+        #bubble-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.4;
         }
 
 
@@ -79,17 +114,19 @@
         }
         p { margin: 0 0 10px 0; }
 
-        .container { padding: 10px; max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+        .container { padding: 10px; max-width: 800px; margin: 0 auto; position: relative; z-index: 2; }
 
         .card {
-            background: var(--lcd-bg);
+            background: rgba(20, 26, 20, 0.92);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             border-radius: 6px;
             padding: 18px;
             margin-bottom: 12px;
             border: 2px solid #2a3028;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.08);
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.5), 0 2px 12px rgba(0,0,0,0.3);
         }
         .card::before {
             content: '';
@@ -211,13 +248,15 @@
         /* === TOP HEADER — LR-24 LABEL PANEL === */
         .top-header {
             position: fixed; top: 0; left: 0; width: 100%;
-            background: linear-gradient(180deg, #6a7178, #5a6168);
+            background: linear-gradient(180deg, rgba(13, 46, 69, 0.95), rgba(6, 26, 42, 0.95));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             color: white;
             padding: 10px 15px;
             box-sizing: border-box;
             z-index: 1000;
-            border-bottom: 2px solid #4a5158;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border-bottom: 2px solid #1a4a6b;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
         }
         .hud-row-1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .header-title {
@@ -259,18 +298,20 @@
             gap: 10px;
         }
 
-        /* === BOTTOM NAV — LR-24 BUTTON PANEL === */
+        /* === BOTTOM NAV === */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: linear-gradient(180deg, #2a5a8a, #1a4a7a);
-            border-top: 2px solid #3a7ab0;
+            background: linear-gradient(180deg, rgba(13, 46, 69, 0.95), rgba(6, 26, 42, 0.98));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 2px solid #1a4a6b;
             display: flex;
             justify-content: space-around;
             padding: 4px 4px;
             gap: 4px;
             z-index: 1000;
             padding-bottom: calc(4px + env(safe-area-inset-bottom));
-            box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.5);
         }
         .nav-item {
             text-align: center;
@@ -482,6 +523,21 @@
         .ref-dropdown[open] summary::after { transform: rotate(90deg); }
         .ref-dropdown[open] summary { margin-bottom: 16px; }
         .ref-dropdown .ref-body { animation: biodexSlide 0.3s ease-out; }
+
+        .ref-category {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--lcd-highlight);
+            letter-spacing: 3px;
+            padding: 12px 14px;
+            margin: 20px 0 8px 0;
+            border-left: 3px solid var(--lcd-highlight);
+            background: linear-gradient(90deg, rgba(232,184,64,0.08), transparent);
+            text-transform: uppercase;
+        }
+        .ref-category:first-child { margin-top: 0; }
+
         .ex-text { display: block; margin-top: 6px; font-size: 11.5px; color: var(--muted); font-style: italic; line-height: 1.5; border-left: 2px solid #2a3028; padding-left: 10px; margin-left: 4px; }
         .example-box {
             background: #121812;
@@ -717,6 +773,9 @@
 </head>
 <body>
 
+    <!-- Underwater bubble background -->
+    <canvas id="bubble-canvas"></canvas>
+
     <!-- MODALS -->
     <div id="photo-modal" class="modal-overlay dark" style="display: none;">
         <img id="modal-img" src="" alt="Specimen Photo">
@@ -900,6 +959,13 @@
                     <div class="col"><label>pH</label><input type="number" step="0.1" id="phLevel" placeholder="e.g. 7.2"></div>
                     <div class="col"><label>Turbidity (NTU)</label><input type="number" step="0.1" id="turbidity" placeholder="e.g. 3.4"></div>
                 </div>
+                <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
+                    <div style="font-size:10px; color:var(--muted); font-family:'Share Tech Mono',monospace; letter-spacing:1px; align-self:center; margin-right:4px;">QUICK FILL:</div>
+                    <button type="button" class="btn btn-outline" onclick="fillWaterDefaults('coldwater')" style="flex:1; min-width:110px; padding:6px 8px; font-size:10px;">COLDWATER STREAM</button>
+                    <button type="button" class="btn btn-outline" onclick="fillWaterDefaults('warmwater')" style="flex:1; min-width:110px; padding:6px 8px; font-size:10px;">WARMWATER POND</button>
+                    <button type="button" class="btn btn-outline" onclick="fillWaterDefaults('tidal')" style="flex:1; min-width:110px; padding:6px 8px; font-size:10px;">TIDAL / ESTUARY</button>
+                </div>
+                <div style="font-size:10px; color:var(--muted); margin-top:6px; font-style:italic;">Quick-fill values are typical seasonal averages. Replace with meter readings when available.</div>
             </div>
             <div class="card">
                 <h3>Channel Width Transects</h3>
@@ -921,18 +987,17 @@
                 <div class="row" style="margin-bottom: 5px;"><div class="col"><label>Equipment Model</label><input type="text" id="equipModel" placeholder="e.g. LR-24" style="margin-bottom:12px;"></div></div>
                 <div class="row"><div class="col"><label>Study Site #</label><input type="number" id="siteNum" value="1" min="1" placeholder="1"></div><div class="col"><label>Sweep (Pass)</label><input type="number" id="passNum" value="1" min="1"></div><div class="col"><label>Shock Seconds</label><input type="number" id="shockSecs" placeholder="Time"></div></div>
                 <div class="row"><div class="col"><label>Voltage (V)</label><input type="number" id="volts"></div><div class="col"><label>Freq (Hz)</label><input type="number" id="freq"></div><div class="col"><label>Duty (%)</label><input type="number" id="duty"></div></div>
-
-                <label style="margin-top: 10px;">Pass Timer</label>
+            </div>
+            <div class="card corner-marks">
+                <h3>Specimen Log</h3>
+                <label>Pass Timer</label>
                 <div class="timer-display" id="timerDisplay">0s</div>
                 <div class="timer-btns">
                     <button class="btn btn-success" id="timerStartBtn" onclick="startTimer()" style="font-size:11px;">START</button>
                     <button class="btn btn-outline" onclick="stopTimer()" style="font-size:11px;">STOP</button>
                     <button class="btn btn-outline" onclick="resetTimer()" style="font-size:11px;">RESET</button>
                 </div>
-                <div class="pass-time-log" id="passTimeLog" style="display:none;"></div>
-            </div>
-            <div class="card corner-marks">
-                <h3>Specimen Log</h3>
+                <div class="pass-time-log" id="passTimeLog" style="display:none; margin-bottom:14px;"></div>
                 <form id="catchForm">
                     <label>Species Identification</label>
                     <select id="species" required onchange="updateBioDex()"><option value="" disabled selected>Select species...</option></select>
@@ -982,6 +1047,14 @@
                     </div></div>
                     <button type="button" class="btn btn-success" id="logBtn" onclick="saveCatch()" style="margin-top: 10px;">LOG SPECIMEN</button>
                 </form>
+            </div>
+
+            <div class="card">
+                <h3>Recent Catches</h3>
+                <p style="font-size: 11px; color: var(--muted); margin-bottom: 10px;">Last 3 specimens logged. Full history available on the Stats tab.</p>
+                <div id="recentCatches" style="font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--text);">
+                    <div style="padding: 12px; text-align: center; color: var(--muted); font-style: italic;">No specimens logged yet.</div>
+                </div>
             </div>
         </div>
 
@@ -1098,8 +1171,10 @@
             </div>
         </div>
 
-        <!-- 4. REF / GEAR -->
+        <!-- 4. REFERENCE -->
         <div id="tab-gear" class="tab-content">
+
+            <div class="ref-category">Equipment &amp; Safety</div>
 
             <div class="card safety-section" style="border-left: 3px solid var(--danger);">
                 <h3 style="color: var(--danger); border-bottom-color: rgba(255,68,68,0.3);"> Backpack Safety Protocol</h3>
@@ -1114,7 +1189,7 @@
             </div>
 
             <div class="card manual-section">
-                <details class="ref-dropdown" open>
+                <details class="ref-dropdown">
                 <summary>Setting Up the LR-24 — Step by Step</summary>
                 <div class="ref-body">
 
@@ -1232,6 +1307,8 @@
                 </div>
                 </details>
             </div>
+
+            <div class="ref-category">Statistical Methods &amp; Field Protocols</div>
 
             <div class="card manual-section">
                 <details class="ref-dropdown">
@@ -1383,6 +1460,48 @@
 
             <div class="card manual-section">
                 <details class="ref-dropdown">
+                <summary>Simpson's Diversity Index (D)</summary>
+                <div class="ref-body">
+
+                <h5 style="margin-top:0;">What It Measures</h5>
+                <p>Simpson's Diversity Index answers a single question: <strong style="color:var(--primary);">how evenly distributed is your catch across species?</strong> A stream full of one dominant species has low diversity even if hundreds of fish were caught. A stream with many species represented in roughly equal numbers has high diversity.</p>
+                <p>D is bounded between 0 and 1. Higher values mean greater diversity. It combines two things at once — <em>richness</em> (how many species) and <em>evenness</em> (how balanced their counts are).</p>
+
+                <h5>The Formula</h5>
+                <p><strong style="color:var(--primary);">D = 1 − Σ [ n(n−1) ] / [ N(N−1) ]</strong></p>
+                <p>Where <strong>n</strong> is the number of individuals of each species and <strong>N</strong> is the total number of individuals across all species. The sum runs over every species in your catch.</p>
+                <div class="example-box">
+                    <strong style="color:var(--secondary);">Step-by-Step Example:</strong><br>
+                    Say you caught 10 Coho, 6 Steelhead, and 4 Cutthroat. Total N = 20.<br><br>
+                    <strong>Step 1:</strong> Compute n(n−1) for each species:<br>
+                    • Coho: 10 × 9 = 90<br>
+                    • Steelhead: 6 × 5 = 30<br>
+                    • Cutthroat: 4 × 3 = 12<br>
+                    <strong>Step 2:</strong> Sum them: 90 + 30 + 12 = 132.<br>
+                    <strong>Step 3:</strong> Compute N(N−1) = 20 × 19 = 380.<br>
+                    <strong>Step 4:</strong> Divide and subtract from 1: D = 1 − (132 / 380) = 1 − 0.347 = <strong style="color:var(--success);">0.653</strong><br><br>
+                    <em style="color:var(--muted);">Interpretation: Moderately diverse assemblage — some dominance by Coho, but other species are meaningfully present.</em>
+                </div>
+
+                <h5>Interpreting D Values</h5>
+                <p><strong style="color:var(--success);">D &gt; 0.70</strong> — High diversity. Multiple species present in balanced numbers. Typical of healthy, undisturbed reference reaches.</p>
+                <p><strong style="color:var(--warning);">D = 0.40 – 0.70</strong> — Moderate diversity. Some dominance but multiple species coexist. Common in most working streams.</p>
+                <p><strong style="color:var(--danger);">D &lt; 0.40</strong> — Low diversity. Community is dominated by one or two tolerant species. Often signals habitat degradation, thermal stress, non-native species pressure, or channelization.</p>
+
+                <h5>Why Fisheries Biologists Use It</h5>
+                <p>SDI is used in <strong>bioassessment</strong> programs because it responds predictably to human disturbance. A degraded stream might still have plenty of fish — but usually a handful of tolerant species (e.g., only Sculpin and Dace) that outcompete sensitive species under stress. SDI catches that shift even when total abundance looks healthy.</p>
+
+                <h5>Important Caveats</h5>
+                <p>SDI is sensitive to sample size. Ten fish in a reach will always give you a less reliable D than 300 fish — because rare species might simply be missed in a small sample. Always report N alongside D.</p>
+                <p>SDI treats every species equally. Catching three Bull Trout (a threatened species) is weighted the same as catching three Goldfish (an invasive). Use it as one metric among many, not in isolation.</p>
+                <p>SDI by itself doesn't tell you <em>which</em> species are present — only how evenness is distributed. A site with high D could still be missing sensitive species if it's dominated by tolerant introduced taxa. Always pair SDI with the species list.</p>
+
+                </div>
+                </details>
+            </div>
+
+            <div class="card manual-section">
+                <details class="ref-dropdown">
                 <summary>Abundance &amp; CPUE</summary>
                 <div class="ref-body">
 
@@ -1479,6 +1598,8 @@
                 </details>
             </div>
 
+            <div class="ref-category">Field Tools</div>
+
             <div class="card">
                 <h3>Field Calculator</h3>
                 <input type="text" id="calcDisplay" disabled style="font-size: 20px; text-align: right; background: #5a6168; margin-bottom:15px; color:var(--primary); border-color:var(--border); font-family:'Share Tech Mono',monospace;">
@@ -1514,16 +1635,6 @@
 
         <!-- 5. REPORT -->
         <div id="tab-save" class="tab-content">
-            <div class="card" style="border-top: 2px solid var(--primary);">
-                <h3>Sampling QA/QC</h3>
-                <p style="font-size: 11px; color: var(--muted); margin-bottom: 12px;">Metadata flags that get recorded in the data export and optionally appended to the technical report.</p>
-                <div class="row">
-                    <div class="col"><label>Net Integrity</label><select id="rptNets"><option>100% Secure</option><option>Minor Undercutting</option><option>Major Blowout</option><option>Not Used</option></select></div>
-                    <div class="col"><label>Capture Efficiency</label><select id="rptEfficiency"><option>Excellent</option><option selected>Good</option><option>Fair</option><option>Poor</option></select></div>
-                </div>
-                <label style="margin-top: 10px;">Incident / QA Notes</label>
-                <textarea id="surveyComments" placeholder="Gear malfunctions, mortalities, unusual events, data quality concerns..."></textarea>
-            </div>
             <div class="card" style="border-top: 2px solid var(--lcd-highlight);">
                 <h3>Author Profile</h3>
                 <p style="font-size: 11px; color: var(--muted); margin-bottom: 12px;">Saved to this device. Auto-fills every report you generate.</p>
@@ -1652,11 +1763,6 @@
                 </div>
                 <button class="btn btn-outline" onclick="confirmClearSurvey()" style="margin-top: 10px; color: var(--danger); border-color: rgba(255,68,68,0.3);">CLEAR ALL DATA</button>
             </div>
-            <div class="card" style="border-left: 3px solid var(--danger);">
-                <h3 style="color: var(--danger);">Emergency Text Fallback</h3>
-                <textarea id="rawDataBox" class="code-textarea" readonly placeholder="Text fallback will populate here..."></textarea>
-                <button class="btn btn-outline" onclick="copyRawData()" style="margin-top: 10px;">COPY TO CLIPBOARD</button>
-            </div>
         </div>
 
         <div class="app-footer">Created by Michael Stocklin 2026<br><a href="#" onclick="document.getElementById('terms-modal').style.display='flex'; return false;">Terms of Use &amp; Disclaimer</a></div>
@@ -1668,8 +1774,8 @@
         <div class="nav-item" onclick="switchTab('site', this)">Site</div>
         <div class="nav-item" onclick="switchTab('entry', this)">Log</div>
         <div class="nav-item" onclick="switchTab('stats', this)">Stats</div>
-        <div class="nav-item" onclick="switchTab('gear', this)">Reference</div>
         <div class="nav-item" onclick="switchTab('save', this)">Report</div>
+        <div class="nav-item" onclick="switchTab('gear', this)">Reference</div>
     </div>
 
     <script>
@@ -1696,6 +1802,67 @@
         function sfxClick() { playTone(880, 0.04, 'square', 0.04); }
         function sfxGPS() { playTone(440, 0.05, 'sine', 0.06); setTimeout(()=>playTone(660, 0.05, 'sine', 0.06), 120); setTimeout(()=>playTone(880, 0.1, 'sine', 0.06), 240); }
         function sfxBoot() { playTone(220, 0.3, 'sawtooth', 0.05); setTimeout(()=>playTone(440, 0.2, 'sine', 0.08), 300); setTimeout(()=>playTone(660, 0.3, 'sine', 0.06), 500); }
+
+        /* ===========================
+           UNDERWATER BUBBLE ANIMATION
+           =========================== */
+        (function initBubbles() {
+            const canvas = document.getElementById('bubble-canvas');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const BUBBLE_COUNT = 18;
+            const bubbles = [];
+            for(let i = 0; i < BUBBLE_COUNT; i++) {
+                bubbles.push({
+                    x: Math.random() * canvas.width,
+                    y: canvas.height + Math.random() * canvas.height,
+                    r: 1 + Math.random() * 4,
+                    speed: 0.2 + Math.random() * 0.8,
+                    drift: (Math.random() - 0.5) * 0.3,
+                    wobble: Math.random() * Math.PI * 2
+                });
+            }
+            let lastFrame = 0;
+            const TARGET_FPS = 24; // limit frames to save battery
+            const FRAME_MS = 1000 / TARGET_FPS;
+
+            function animate(ts) {
+                if(ts - lastFrame >= FRAME_MS) {
+                    lastFrame = ts;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    bubbles.forEach(b => {
+                        b.y -= b.speed;
+                        b.wobble += 0.02;
+                        const xOffset = Math.sin(b.wobble) * 8 + b.drift;
+                        const drawX = b.x + xOffset;
+                        // Bubble body
+                        ctx.beginPath();
+                        ctx.arc(drawX, b.y, b.r, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(200, 230, 255, 0.25)';
+                        ctx.fill();
+                        ctx.strokeStyle = 'rgba(200, 230, 255, 0.4)';
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                        // Highlight
+                        ctx.beginPath();
+                        ctx.arc(drawX - b.r * 0.3, b.y - b.r * 0.3, b.r * 0.3, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                        ctx.fill();
+                        // Reset if off top
+                        if(b.y + b.r < 0) {
+                            b.y = canvas.height + Math.random() * 50;
+                            b.x = Math.random() * canvas.width;
+                        }
+                    });
+                }
+                requestAnimationFrame(animate);
+            }
+            requestAnimationFrame(animate);
+        })();
 
         let uniqueSpecies = new Set();
 
@@ -1815,6 +1982,7 @@
             initLFChart();
             updateHUD();
             loadAuthorProfile();
+            updateRecentCatches();
             // Set today's date as default for report
             const trD = document.getElementById('trDate'); if(trD) trD.value = new Date().toISOString().split('T')[0];
         }
@@ -1946,12 +2114,52 @@
 
             sfxLog();
             updateHUD();
+            updateRecentCatches();
             autoSave();
 
             btn.style.opacity = '1';
             btn.style.background = 'linear-gradient(135deg, #1b5e20, #2e7d32)';
             btn.innerText = "✓ LOGGED SUCCESSFULLY";
             setTimeout(() => { btn.style.background = ''; btn.innerText = "LOG SPECIMEN"; }, 1200);
+        }
+
+        function fillWaterDefaults(type) {
+            const presets = {
+                coldwater: { do: 10.5, ph: 7.4, turb: 2.5 },
+                warmwater: { do: 7.0, ph: 7.8, turb: 8.0 },
+                tidal: { do: 6.5, ph: 7.6, turb: 15.0 }
+            };
+            const p = presets[type];
+            if(!p) return;
+            document.getElementById('dissolvedO2').value = p.do;
+            document.getElementById('phLevel').value = p.ph;
+            document.getElementById('turbidity').value = p.turb;
+            sfxClick();
+        }
+
+        function updateRecentCatches() {
+            const el = document.getElementById('recentCatches');
+            if(!el) return;
+            if(catchData.length === 0) {
+                el.innerHTML = '<div style="padding: 12px; text-align: center; color: var(--muted); font-style: italic;">No specimens logged yet.</div>';
+                return;
+            }
+            const recent = catchData.slice(-3).reverse();
+            el.innerHTML = recent.map((d, i) => {
+                const sizeStr = d.isGroup ? `GROUP x${d.groupCount}` : (d.len && d.len !== '---' ? `${d.len}mm` : '—');
+                const wtStr = d.isGroup ? (d.groupWeight && d.groupWeight !== '---' ? `${d.groupWeight}g total` : '') : (d.wt && d.wt !== '---' ? `${d.wt}g` : '');
+                return `<div style="padding:8px 10px; border-bottom:1px solid #1a2a1a; display:flex; align-items:center; gap:10px;">
+                    <div style="flex-shrink:0; color:var(--lcd-highlight); font-weight:bold; min-width:32px;">#${catchData.length - i}</div>
+                    <div style="flex:1;">
+                        <div style="color:var(--text-bright); font-weight:600;">${d.sp}</div>
+                        <div style="font-size:10px; color:var(--muted);">Site ${d.site||'1'} | Pass ${d.pass} | ${d.t}</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="color:var(--primary);">${sizeStr}</div>
+                        <div style="font-size:10px; color:var(--muted);">${wtStr}</div>
+                    </div>
+                </div>`;
+            }).join('');
         }
 
         function openPhoto(u) { document.getElementById('modal-img').src = u; document.getElementById('photo-modal').style.display = 'flex'; }
@@ -2089,18 +2297,97 @@
             if(catchData.length === 0) return alert("No database records to export.");
             sfxClick();
 
-            let csv = `"Time","Site","Stream","Crew","Lat","Lon","AirTempC","WaterTempC","Cond_uS","Reach_m","BlockNets","Net_Integrity","Capture_Efficiency","Sweep","Secs","Model","Volts","Hz","Duty%","Common_Name","Scientific","Length_mm","Weight_g","Condition","Photo"\n`;
+            let csv = `"Time","Site","Stream","Crew","Lat","Lon","AirTempC","WaterTempC","Cond_uS","Reach_m","BlockNets","Sweep","Secs","Model","Volts","Hz","Duty%","Common_Name","Scientific","Length_mm","Weight_g","Condition","Photo"\n`;
             const strm = (document.getElementById('streamName').value||"Unk").replace(/"/g, '""'); const crw = (document.getElementById('crewNames').value||"Unk").replace(/"/g, '""'); const eq = (document.getElementById('equipModel').value||"Unk").replace(/"/g, '""');
-            const netI = document.getElementById('rptNets').value; const eff = document.getElementById('rptEfficiency').value;
 
-            catchData.forEach(d => { csv += `"${d.t}","${d.site||'1'}","${strm}","${crw}","${siteLat}","${siteLon}","${airTemp}","${d.wTmp}","${d.cnd}","${d.rLen}","${d.nets}","${netI}","${eff}","${d.pass}","${d.sec}","${eq}","${d.v}","${d.hz}","${d.dty}","${d.sp}","${d.sci}","${d.len}","${d.wt}","${d.cond}","${d.pStat}"\n`; });
-            document.getElementById('rawDataBox').value = csv;
+            catchData.forEach(d => { csv += `"${d.t}","${d.site||'1'}","${strm}","${crw}","${siteLat}","${siteLon}","${airTemp}","${d.wTmp}","${d.cnd}","${d.rLen}","${d.nets}","${d.pass}","${d.sec}","${eq}","${d.v}","${d.hz}","${d.dty}","${d.sp}","${d.sci}","${d.len}","${d.wt}","${d.cond}","${d.pStat}"\n`; });
 
             const wb = new ExcelJS.Workbook();
             const widths = getWidthData();
             const doVal = document.getElementById('dissolvedO2').value || '';
             const phVal = document.getElementById('phLevel').value || '';
             const turbVal = document.getElementById('turbidity').value || '';
+
+            /* --- SUMMARY DASHBOARD (first sheet) --- */
+            const wsDash = wb.addWorksheet('Summary Dashboard');
+            wsDash.columns = [{ width: 30 }, { width: 22 }, { width: 30 }];
+
+            // Compute headline numbers
+            let dashShockSecs = 0;
+            passTimeLogs.forEach(pt => { dashShockSecs += pt.elapsedSec || 0; });
+            const dashPasses = [...new Set(catchData.map(d => d.pass))].length;
+            const dashSpecies = [...new Set(catchData.map(d => d.sp))].length;
+            const dashSDI = computeSDI(catchData);
+            const dashReachLen = parseFloat(document.getElementById('reachLen').value) || 0;
+            const dashArea = dashReachLen * (widths.avgWetted || 0);
+            const dashPassTotals = [...new Set(catchData.map(d => d.pass))].sort((a,b) => a - b).map(p => catchData.filter(d => d.pass === p).length);
+            const dashMLE = computeSpeciesMLE(dashPassTotals);
+            const dashDensity = (dashArea > 0 && dashMLE.nHat > 0) ? (dashMLE.nHat / dashArea) * 100 : 0;
+            const dashCPUEsec = dashShockSecs > 0 ? catchData.length / dashShockSecs : 0;
+
+            // Top species
+            const dashCounts = {};
+            catchData.forEach(d => { dashCounts[d.sp] = (dashCounts[d.sp] || 0) + 1; });
+            const dashTopSpecies = Object.entries(dashCounts).sort((a,b) => b[1] - a[1]).slice(0, 3);
+
+            const hdrStyle = { font: { bold: true, size: 14, color: { argb: 'FF0F4C81' } } };
+            const labelStyle = { font: { bold: true } };
+
+            wsDash.addRow(['ELECTROFISHING SURVEY — SUMMARY DASHBOARD']);
+            wsDash.getRow(1).font = { bold: true, size: 16, color: { argb: 'FF0F4C81' } };
+            wsDash.addRow([]);
+            wsDash.addRow(['Survey Metadata']);
+            wsDash.getRow(3).font = { bold: true, size: 13, color: { argb: 'FF0F4C81' } };
+            wsDash.addRow(['Stream / Waterbody', strm]);
+            wsDash.addRow(['Crew', crw]);
+            wsDash.addRow(['Equipment', eq]);
+            wsDash.addRow(['Date Exported', new Date().toLocaleDateString()]);
+            wsDash.addRow(['GPS Coordinates', `${siteLat}, ${siteLon}`]);
+            wsDash.addRow([]);
+
+            wsDash.addRow(['Headline Metrics']);
+            wsDash.getRow(wsDash.rowCount).font = { bold: true, size: 13, color: { argb: 'FF0F4C81' } };
+            wsDash.addRow(['Total Specimens Caught', catchData.length]);
+            wsDash.addRow(['Number of Passes', dashPasses]);
+            wsDash.addRow(['Species Richness (S)', dashSpecies]);
+            wsDash.addRow(['Simpson\'s Diversity (D)', dashSDI.D !== null ? dashSDI.D : 'N/A']);
+            wsDash.addRow(['Total Shock Seconds', dashShockSecs || 'Not timed']);
+            wsDash.addRow(['Overall CPUE (fish/sec)', dashCPUEsec > 0 ? parseFloat(dashCPUEsec.toFixed(4)) : 'N/A']);
+            wsDash.addRow([]);
+
+            wsDash.addRow(['Population Estimate (All Species Combined)']);
+            wsDash.getRow(wsDash.rowCount).font = { bold: true, size: 13, color: { argb: 'FF0F4C81' } };
+            wsDash.addRow(['MLE Population (N-hat)', dashMLE.nHat || 'Insufficient data']);
+            wsDash.addRow(['Capture Probability (p-hat)', dashMLE.pHat > 0 ? dashMLE.pHat : 'N/A']);
+            wsDash.addRow(['95% CI Low', dashMLE.ciLow || 'N/A']);
+            wsDash.addRow(['95% CI High', dashMLE.ciHigh || 'N/A']);
+            wsDash.addRow(['Reach Area (m²)', dashArea > 0 ? parseFloat(dashArea.toFixed(1)) : 'Missing length or width']);
+            wsDash.addRow(['Density (fish / 100 m²)', dashDensity > 0 ? parseFloat(dashDensity.toFixed(2)) : 'N/A']);
+            wsDash.addRow([]);
+
+            wsDash.addRow(['Top 3 Species by Catch']);
+            wsDash.getRow(wsDash.rowCount).font = { bold: true, size: 13, color: { argb: 'FF0F4C81' } };
+            if(dashTopSpecies.length === 0) {
+                wsDash.addRow(['No data']);
+            } else {
+                wsDash.addRow(['Rank', 'Species', 'Count']);
+                wsDash.getRow(wsDash.rowCount).font = { bold: true };
+                dashTopSpecies.forEach((entry, i) => {
+                    wsDash.addRow([`#${i+1}`, entry[0], entry[1]]);
+                });
+            }
+            wsDash.addRow([]);
+
+            wsDash.addRow(['Water Quality']);
+            wsDash.getRow(wsDash.rowCount).font = { bold: true, size: 13, color: { argb: 'FF0F4C81' } };
+            wsDash.addRow(['Dissolved Oxygen (mg/L)', toNum(doVal) || 'Not recorded']);
+            wsDash.addRow(['pH', toNum(phVal) || 'Not recorded']);
+            wsDash.addRow(['Turbidity (NTU)', toNum(turbVal) || 'Not recorded']);
+            wsDash.addRow([]);
+
+            wsDash.addRow(['NOTE: This dashboard is a snapshot. For the live recalculating model, edit values in the "Survey Parameters" sheet and see the "Per-Species" and "Biomass & Density" sheets.']);
+            wsDash.getRow(wsDash.rowCount).font = { italic: true, color: { argb: 'FF777777' } };
+            wsDash.getRow(wsDash.rowCount).getCell(1).alignment = { wrapText: true };
 
             const ws = wb.addWorksheet('Raw Data Log');
             ws.columns =[
@@ -2610,7 +2897,6 @@
             document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url);
         }
 
-        function copyRawData() { const b = document.getElementById('rawDataBox'); if(!b.value) return alert("Generate export first."); b.select(); b.setSelectionRange(0, 99999); navigator.clipboard.writeText(b.value).then(() => alert("Copied!")).catch(() => alert("Copy failed.")); sfxClick(); }
 
         /* ===========================
            AUTHOR PROFILE
@@ -3043,9 +3329,6 @@ Data Analysis. Population estimates were generated using maximum-likelihood esti
                     volts: document.getElementById('volts').value,
                     freq: document.getElementById('freq').value,
                     duty: document.getElementById('duty').value,
-                    rptNets: document.getElementById('rptNets').value,
-                    rptEfficiency: document.getElementById('rptEfficiency').value,
-                    surveyComments: document.getElementById('surveyComments').value,
                 },
                 widthTransects: {
                     wetted: [...document.querySelectorAll('.wettedW')].map(i => i.value),
@@ -3192,10 +3475,10 @@ Data Analysis. Population estimates were generated using maximum-likelihood esti
             document.getElementById('logBody').innerHTML = '';
             document.getElementById('passTimeLog').innerHTML = ''; document.getElementById('passTimeLog').style.display = 'none';
             // Clear form fields
-            ['streamName','crewNames','reachLen','waterTemp','conductivity','dissolvedO2','phLevel','turbidity','equipModel','shockSecs','volts','freq','duty','surveyComments'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+            ['streamName','crewNames','reachLen','waterTemp','conductivity','dissolvedO2','phLevel','turbidity','equipModel','shockSecs','volts','freq','duty'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
             document.getElementById('siteNum').value = '1'; document.getElementById('passNum').value = '1';
             document.querySelectorAll('.wettedW, .bankfullW').forEach(i => i.value = '');
-            updateHUD(); updateSaveStatus();
+            updateHUD(); updateSaveStatus(); updateRecentCatches();
             alert("✓ All data cleared.");
             sfxClick();
         }
