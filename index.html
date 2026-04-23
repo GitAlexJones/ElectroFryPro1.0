@@ -2336,8 +2336,12 @@
             wsDash.addRow(['ELECTROFISHING SURVEY — SUMMARY DASHBOARD']);
             wsDash.getRow(1).font = { bold: true, size: 16, color: { argb: 'FF0F4C81' } };
             wsDash.addRow([]);
+            wsDash.addRow(['LIVE FORMULAS: This sheet shows static values. For recalculating formulas, see "Per-Species MLE & CPUE", "Biomass & Density", and "Condition Factor (K)" sheets. Edit the "Survey Parameters" sheet to recalculate.']);
+            wsDash.getRow(wsDash.rowCount).font = { italic: true, color: { argb: 'FF0F4C81' }, size: 10 };
+            wsDash.getRow(wsDash.rowCount).getCell(1).alignment = { wrapText: true };
+            wsDash.addRow([]);
             wsDash.addRow(['Survey Metadata']);
-            wsDash.getRow(3).font = { bold: true, size: 13, color: { argb: 'FF0F4C81' } };
+            wsDash.getRow(wsDash.rowCount).font = { bold: true, size: 13, color: { argb: 'FF0F4C81' } };
             wsDash.addRow(['Stream / Waterbody', strm]);
             wsDash.addRow(['Crew', crw]);
             wsDash.addRow(['Equipment', eq]);
@@ -2727,9 +2731,9 @@
                     pattern: nonDesc ? 'Non-descending' : 'Valid'
                 });
                 // Live formulas for CPUE
-                r.getCell(8).value = { formula: `IF(${PARAM_SHOCKSEC}=0,"N/A",B${rowNum}/${PARAM_SHOCKSEC})`, result: xlTotalShockSecs > 0 ? totalCaught / xlTotalShockSecs : 'N/A' };
+                r.getCell(8).value = { formula: `IF(${PARAM_SHOCKSEC}=0,"N/A",B${rowNum}/${PARAM_SHOCKSEC})`, result: xlTotalShockSecs > 0 ? totalCaught / xlTotalShockSecs : 0 };
                 r.getCell(8).numFmt = '0.0000';
-                r.getCell(9).value = { formula: `IF(${PARAM_PASSES}=0,"N/A",B${rowNum}/${PARAM_PASSES})`, result: xlNumPasses > 0 ? totalCaught / xlNumPasses : 'N/A' };
+                r.getCell(9).value = { formula: `IF(${PARAM_PASSES}=0,"N/A",B${rowNum}/${PARAM_PASSES})`, result: xlNumPasses > 0 ? totalCaught / xlNumPasses : 0 };
                 r.getCell(9).numFmt = '0.00';
             });
             wsSp.getRow(1).font = { bold: true };
@@ -2738,14 +2742,25 @@
             const totalRowIdx = wsSp.rowCount + 1;
             const lastDataRow = wsSp.rowCount;
             const totRow = wsSp.getRow(totalRowIdx);
+            const totCaught = catchData.length;
+            const totNhat = allSpecies.reduce((a, sp) => a + computeSpeciesMLE(allPasses.map(p => catchData.filter(d => d.sp === sp && d.pass === p).length)).nHat, 0);
             totRow.getCell(1).value = 'TOTAL';
-            totRow.getCell(2).value = { formula: `SUM(B2:B${lastDataRow})` };
-            totRow.getCell(3).value = { formula: `SUM(C2:C${lastDataRow})` };
-            totRow.getCell(8).value = { formula: `IF(${PARAM_SHOCKSEC}=0,"N/A",B${totalRowIdx}/${PARAM_SHOCKSEC})` };
+            totRow.getCell(2).value = { formula: `SUM(B2:B${lastDataRow})`, result: totCaught };
+            totRow.getCell(3).value = { formula: `SUM(C2:C${lastDataRow})`, result: totNhat };
+            totRow.getCell(8).value = { formula: `IF(${PARAM_SHOCKSEC}=0,"N/A",B${totalRowIdx}/${PARAM_SHOCKSEC})`, result: xlTotalShockSecs > 0 ? totCaught / xlTotalShockSecs : 0 };
             totRow.getCell(8).numFmt = '0.0000';
-            totRow.getCell(9).value = { formula: `IF(${PARAM_PASSES}=0,"N/A",B${totalRowIdx}/${PARAM_PASSES})` };
+            totRow.getCell(9).value = { formula: `IF(${PARAM_PASSES}=0,"N/A",B${totalRowIdx}/${PARAM_PASSES})`, result: xlNumPasses > 0 ? totCaught / xlNumPasses : 0 };
             totRow.getCell(9).numFmt = '0.00';
             totRow.font = { bold: true };
+
+            // Add formula reference banner at top
+            let bannerRow = wsSp.rowCount + 2;
+            wsSp.getRow(bannerRow).getCell(1).value = 'LIVE FORMULAS:';
+            wsSp.getRow(bannerRow).getCell(1).font = { bold: true, color: { argb: 'FF0F4C81' } };
+            wsSp.getRow(bannerRow+1).getCell(1).value = 'CPUE/sec = Total Caught / Total Shock Seconds (from Survey Parameters sheet)';
+            wsSp.getRow(bannerRow+2).getCell(1).value = 'CPUE/pass = Total Caught / Number of Passes';
+            wsSp.getRow(bannerRow+3).getCell(1).value = 'Click any cell in columns H or I to see the formula. Edit Survey Parameters values to recalculate.';
+            wsSp.getRow(bannerRow+3).getCell(1).font = { italic: true, color: { argb: 'FF777777' } };
 
             // Add per-pass breakdown below
             let spGap = wsSp.rowCount + 2;
@@ -2795,19 +2810,19 @@
 
                 const r = wsBD.addRow({ sp, caught: spCaught, nHat: mleR.nHat, avgWt: avgWt > 0 ? parseFloat(avgWt.toFixed(1)) : 0 });
                 // Live formulas:
-                r.getCell(4).value = { formula: `IF(${PARAM_SHOCKSEC}=0,"N/A",B${rn}/${PARAM_SHOCKSEC})`, result: xlTotalShockSecs > 0 ? spCaught / xlTotalShockSecs : 'N/A' };
+                r.getCell(4).value = { formula: `IF(${PARAM_SHOCKSEC}=0,"N/A",B${rn}/${PARAM_SHOCKSEC})`, result: xlTotalShockSecs > 0 ? spCaught / xlTotalShockSecs : 0 };
                 r.getCell(4).numFmt = '0.0000';
-                r.getCell(5).value = { formula: `IF(${PARAM_PASSES}=0,"N/A",B${rn}/${PARAM_PASSES})`, result: xlNumPasses > 0 ? spCaught / xlNumPasses : 'N/A' };
+                r.getCell(5).value = { formula: `IF(${PARAM_PASSES}=0,"N/A",B${rn}/${PARAM_PASSES})`, result: xlNumPasses > 0 ? spCaught / xlNumPasses : 0 };
                 r.getCell(5).numFmt = '0.00';
                 r.getCell(7).value = { formula: `C${rn}*F${rn}`, result: biomass };
                 r.getCell(7).numFmt = '0';
                 r.getCell(8).value = { formula: `G${rn}/1000`, result: biomass / 1000 };
                 r.getCell(8).numFmt = '0.000';
-                r.getCell(9).value = { formula: `IF(${PARAM_AREA}=0,"N/A",C${rn}/${PARAM_AREA}*100)`, result: reachArea > 0 ? (mleR.nHat / reachArea) * 100 : 'N/A' };
+                r.getCell(9).value = { formula: `IF(${PARAM_AREA}=0,"N/A",C${rn}/${PARAM_AREA}*100)`, result: reachArea > 0 ? (mleR.nHat / reachArea) * 100 : 0 };
                 r.getCell(9).numFmt = '0.00';
-                r.getCell(10).value = { formula: `IF(${PARAM_AREA}=0,"N/A",G${rn}/${PARAM_AREA})`, result: reachArea > 0 ? biomass / reachArea : 'N/A' };
+                r.getCell(10).value = { formula: `IF(${PARAM_AREA}=0,"N/A",G${rn}/${PARAM_AREA})`, result: reachArea > 0 ? biomass / reachArea : 0 };
                 r.getCell(10).numFmt = '0.00';
-                r.getCell(11).value = { formula: `IF(${PARAM_AREA}=0,"N/A",G${rn}/${PARAM_AREA}*10)`, result: reachArea > 0 ? (biomass / reachArea) * 10 : 'N/A' };
+                r.getCell(11).value = { formula: `IF(${PARAM_AREA}=0,"N/A",G${rn}/${PARAM_AREA}*10)`, result: reachArea > 0 ? (biomass / reachArea) * 10 : 0 };
                 r.getCell(11).numFmt = '0.00';
             });
 
@@ -2815,30 +2830,35 @@
             const bdTotalRow = wsBD.rowCount + 1;
             const bdLastData = wsBD.rowCount;
             const totR = wsBD.getRow(bdTotalRow);
+            const bdTotCaught = catchData.length;
             totR.getCell(1).value = 'ALL SPECIES';
-            totR.getCell(2).value = { formula: `SUM(B2:B${bdLastData})` };
-            totR.getCell(3).value = { formula: `SUM(C2:C${bdLastData})` };
-            totR.getCell(4).value = { formula: `IF(${PARAM_SHOCKSEC}=0,"N/A",B${bdTotalRow}/${PARAM_SHOCKSEC})` };
+            totR.getCell(2).value = { formula: `SUM(B2:B${bdLastData})`, result: bdTotCaught };
+            totR.getCell(3).value = { formula: `SUM(C2:C${bdLastData})`, result: totalNhat };
+            totR.getCell(4).value = { formula: `IF(${PARAM_SHOCKSEC}=0,"N/A",B${bdTotalRow}/${PARAM_SHOCKSEC})`, result: xlTotalShockSecs > 0 ? bdTotCaught / xlTotalShockSecs : 0 };
             totR.getCell(4).numFmt = '0.0000';
-            totR.getCell(5).value = { formula: `IF(${PARAM_PASSES}=0,"N/A",B${bdTotalRow}/${PARAM_PASSES})` };
+            totR.getCell(5).value = { formula: `IF(${PARAM_PASSES}=0,"N/A",B${bdTotalRow}/${PARAM_PASSES})`, result: xlNumPasses > 0 ? bdTotCaught / xlNumPasses : 0 };
             totR.getCell(5).numFmt = '0.00';
-            totR.getCell(7).value = { formula: `SUM(G2:G${bdLastData})` };
+            totR.getCell(7).value = { formula: `SUM(G2:G${bdLastData})`, result: totalBiomass };
             totR.getCell(7).numFmt = '0';
-            totR.getCell(8).value = { formula: `G${bdTotalRow}/1000` };
+            totR.getCell(8).value = { formula: `G${bdTotalRow}/1000`, result: totalBiomass / 1000 };
             totR.getCell(8).numFmt = '0.000';
-            totR.getCell(9).value = { formula: `IF(${PARAM_AREA}=0,"N/A",C${bdTotalRow}/${PARAM_AREA}*100)` };
+            totR.getCell(9).value = { formula: `IF(${PARAM_AREA}=0,"N/A",C${bdTotalRow}/${PARAM_AREA}*100)`, result: reachArea > 0 ? (totalNhat / reachArea) * 100 : 0 };
             totR.getCell(9).numFmt = '0.00';
-            totR.getCell(10).value = { formula: `IF(${PARAM_AREA}=0,"N/A",G${bdTotalRow}/${PARAM_AREA})` };
+            totR.getCell(10).value = { formula: `IF(${PARAM_AREA}=0,"N/A",G${bdTotalRow}/${PARAM_AREA})`, result: reachArea > 0 ? totalBiomass / reachArea : 0 };
             totR.getCell(10).numFmt = '0.00';
-            totR.getCell(11).value = { formula: `IF(${PARAM_AREA}=0,"N/A",G${bdTotalRow}/${PARAM_AREA}*10)` };
+            totR.getCell(11).value = { formula: `IF(${PARAM_AREA}=0,"N/A",G${bdTotalRow}/${PARAM_AREA}*10)`, result: reachArea > 0 ? (totalBiomass / reachArea) * 10 : 0 };
             totR.getCell(11).numFmt = '0.00';
             wsBD.getRow(1).font = { bold: true };
             wsBD.getRow(bdTotalRow).font = { bold: true };
 
-            // Info footer
+            // Formula reference banner
             let bdInfo = wsBD.rowCount + 2;
-            wsBD.getRow(bdInfo).getCell(1).value = 'Edit values in "Survey Parameters" sheet to see all formulas recalculate.';
-            wsBD.getRow(bdInfo).getCell(1).font = { italic: true, color: { argb: 'FF0F4C81' } };
+            wsBD.getRow(bdInfo).getCell(1).value = 'LIVE FORMULAS:';
+            wsBD.getRow(bdInfo).getCell(1).font = { bold: true, color: { argb: 'FF0F4C81' } };
+            wsBD.getRow(bdInfo+1).getCell(1).value = 'Biomass (g) = N-hat × Avg Weight   |   Density (#/100m²) = N-hat / Reach Area × 100';
+            wsBD.getRow(bdInfo+2).getCell(1).value = 'Density (g/m²) = Biomass / Reach Area   |   Density (kg/ha) = Biomass / Reach Area × 10';
+            wsBD.getRow(bdInfo+3).getCell(1).value = 'Click cells in columns D, E, G, H, I, J, or K to see the formula. Edit Survey Parameters values to recalculate all sheets.';
+            wsBD.getRow(bdInfo+3).getCell(1).font = { italic: true, color: { argb: 'FF777777' } };
 
             /* --- Length-Frequency Sheet --- */
             const wsLF = wb.addWorksheet('Length-Frequency');
