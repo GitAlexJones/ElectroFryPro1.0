@@ -114,7 +114,7 @@
         }
         p { margin: 0 0 10px 0; }
 
-        .container { padding: 10px; max-width: 800px; margin: 0 auto; position: relative; z-index: 2; }
+        .container { padding: 10px; max-width: min(95vw, 980px); margin: 0 auto; position: relative; z-index: 2; }
 
         .card {
             background: rgba(20, 26, 20, 0.92);
@@ -382,47 +382,371 @@
             background: linear-gradient(90deg, var(--btn-blue), var(--btn-blue-light));
         }
 
-        /* SPLASH SPECIAL */
-        .splash-title {
+        /* ===========================
+           LR-24 HARDWARE SPLASH SCREEN
+           =========================== */
+        .lr24-unit {
+            width: min(92vw, 540px);
+            max-height: 95vh;
+            animation: lr24PowerUp 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 900px) {
+            .lr24-unit { width: min(85vw, 640px); }
+        }
+        @media (min-height: 800px) and (min-width: 500px) {
+            .lr24-unit { width: min(90vw, 560px); }
+        }
+        @keyframes lr24PowerUp {
+            0% { opacity: 0; transform: translateY(20px) scale(0.96); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Strap mount at top */
+        .lr24-strap-mount {
+            width: 70%;
+            height: 18px;
+            margin: 0 auto -6px auto;
+            background: linear-gradient(180deg, #3a3530 0%, #2a2520 100%);
+            border-radius: 8px 8px 2px 2px;
+            border: 1px solid #1a1510;
+            position: relative;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: inset 0 -2px 4px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .lr24-strap-bolt {
+            width: 8px; height: 8px;
+            background: radial-gradient(circle at 30% 30%, #888, #444 60%, #222);
+            border-radius: 50%;
+            box-shadow: inset -1px -1px 2px rgba(0,0,0,0.6), 0 1px 1px rgba(255,255,255,0.1);
+        }
+
+        /* Main housing */
+        .lr24-body {
+            background: linear-gradient(180deg, #c4b896 0%, #a89878 50%, #8a7a58 100%);
+            border-radius: clamp(14px, 2.5vw, 22px);
+            padding: clamp(18px, 3vw, 28px) clamp(16px, 3vw, 26px) clamp(22px, 3.5vw, 32px) clamp(16px, 3vw, 26px);
+            position: relative;
+            box-shadow:
+                inset 0 2px 4px rgba(255,255,255,0.25),
+                inset 0 -3px 6px rgba(0,0,0,0.3),
+                0 6px 20px rgba(0,0,0,0.5),
+                0 2px 4px rgba(0,0,0,0.3);
+            border: 2px solid #6a5a3a;
+        }
+        /* Rivets in corners */
+        .lr24-body::before, .lr24-body::after {
+            content: '';
+            position: absolute;
+            width: 10px; height: 10px;
+            background: radial-gradient(circle at 30% 30%, #b8a080, #6a5838 60%, #3a2a18);
+            border-radius: 50%;
+            box-shadow: inset -1px -1px 2px rgba(0,0,0,0.5);
+        }
+        .lr24-body::before { top: 8px; left: 8px; }
+        .lr24-body::after { top: 8px; right: 8px; }
+
+        /* Brand plate */
+        .lr24-brand-plate {
+            background: linear-gradient(180deg, #1a1f1a 0%, #0d120d 100%);
+            border: 1.5px solid #3a3530;
+            border-radius: 4px;
+            padding: 10px 12px;
+            margin-bottom: 14px;
+            text-align: center;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .lr24-brand-plate::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -50%;
+            width: 200%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(232,184,64,0.06), transparent);
+            animation: lr24Shimmer 4s ease-in-out infinite;
+        }
+        @keyframes lr24Shimmer {
+            0%, 100% { transform: translateX(-50%); }
+            50% { transform: translateX(50%); }
+        }
+        .lr24-brand-text {
             font-family: 'Orbitron', sans-serif;
             font-weight: 900;
-            font-size: 28px;
-            color: var(--primary);
-            text-shadow: 0 0 12px rgba(232,184,64,0.3);
+            font-size: clamp(20px, 4.8vw, 34px);
+            color: #e8b840;
             letter-spacing: 4px;
-            margin-bottom: 8px;
+            text-shadow: 0 0 8px rgba(232,184,64,0.4), 0 1px 0 #000;
+            position: relative;
         }
-        .splash-sub {
+        .lr24-model-text {
             font-family: 'Share Tech Mono', monospace;
-            font-size: 11px;
-            color: var(--muted);
-            letter-spacing: 3px;
-            margin-bottom: 30px;
+            font-size: clamp(9px, 1.6vw, 12px);
+            color: #908878;
+            letter-spacing: 1.5px;
+            margin-top: 4px;
+            position: relative;
         }
-        .splash-features {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 25px 0;
+
+        /* LCD Screen */
+        .lr24-lcd-housing {
+            background: linear-gradient(180deg, #1a1f1a 0%, #0a0f0a 100%);
+            border-radius: 4px;
+            padding: 3px;
+            border: 1.5px solid #3a3530;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.25);
+            margin-bottom: 14px;
         }
-        .splash-features li {
-            font-size: 13px;
-            padding: 8px 0;
-            border-bottom: 1px solid #2a3028;
-            color: var(--text);
+        .lr24-lcd-screen {
+            background:
+                radial-gradient(ellipse at top, rgba(180, 220, 140, 0.08), transparent 60%),
+                linear-gradient(180deg, #1a2315 0%, #0d1508 100%);
+            padding: clamp(12px, 2.5vw, 20px) clamp(14px, 3vw, 24px);
+            border-radius: 2px;
+            font-family: 'Share Tech Mono', monospace;
+            color: #c8d8a8;
+            text-shadow: 0 0 6px rgba(200, 216, 168, 0.6);
+            min-height: clamp(180px, 30vh, 260px);
+            position: relative;
+        }
+        /* Subtle LCD scanlines */
+        .lr24-lcd-screen::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.08) 2px,
+                rgba(0,0,0,0.08) 3px
+            );
+            pointer-events: none;
+            border-radius: 2px;
+        }
+        .lr24-lcd-top {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            font-size: clamp(10px, 1.8vw, 13px);
+            letter-spacing: 1.5px;
+            font-weight: 600;
         }
-        .splash-features li:last-child { border: none; }
-        .feat-icon {
-            width: 28px; height: 28px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--border);
+        .lr24-lcd-dot {
+            width: clamp(6px, 1vw, 9px); height: clamp(6px, 1vw, 9px);
+            background: #c8d8a8;
+            border-radius: 50%;
+            box-shadow: 0 0 6px rgba(200, 216, 168, 0.8);
+            animation: lr24Blink 1.5s infinite;
+        }
+        @keyframes lr24Blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .lr24-lcd-label { flex: 1; }
+        .lr24-lcd-status {
+            background: rgba(200, 216, 168, 0.15);
+            border: 1px solid rgba(200, 216, 168, 0.3);
+            padding: 2px 6px;
+            font-size: clamp(9px, 1.5vw, 11px);
+            border-radius: 2px;
+        }
+        .lr24-lcd-divider {
+            height: 1px;
+            background: rgba(200, 216, 168, 0.3);
+            margin: 8px 0 10px 0;
+        }
+        .lr24-lcd-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: clamp(11px, 1.9vw, 15px);
+            line-height: 2;
+        }
+        .lr24-lcd-list li { display: flex; gap: 8px; }
+        .lr24-lcd-bullet {
+            color: #e8b840;
+            text-shadow: 0 0 4px rgba(232,184,64,0.5);
+        }
+
+        /* Status LED bar */
+        .lr24-status-bar {
+            display: flex;
+            justify-content: space-around;
+            background: linear-gradient(180deg, #2a2520, #1a1510);
+            border: 1.5px solid #3a3530;
             border-radius: 4px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px;
-            flex-shrink: 0;
+            padding: 6px 8px;
+            margin-bottom: 14px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
         }
+        .lr24-led-group { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .lr24-led {
+            width: clamp(10px, 2vw, 16px); height: clamp(10px, 2vw, 16px);
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.6);
+        }
+        .lr24-led-green {
+            background: radial-gradient(circle at 30% 30%, #6fff6f, #00c800 60%, #006400);
+            box-shadow: 0 0 8px rgba(111, 255, 111, 0.8), inset 0 0 2px rgba(255,255,255,0.5);
+            animation: lr24Pulse 2s infinite;
+        }
+        .lr24-led-amber {
+            background: radial-gradient(circle at 30% 30%, #ffe880, #e8b840 60%, #a07830);
+            box-shadow: 0 0 8px rgba(232, 184, 64, 0.7), inset 0 0 2px rgba(255,255,255,0.5);
+        }
+        .lr24-led-red {
+            background: radial-gradient(circle at 30% 30%, #ff9090, #cc0000 60%, #660000);
+            box-shadow: inset 0 0 2px rgba(255,255,255,0.3);
+            opacity: 0.5;
+        }
+        .lr24-led-blue {
+            background: radial-gradient(circle at 30% 30%, #90d0ff, #0080c0 60%, #004060);
+            box-shadow: 0 0 6px rgba(0, 128, 192, 0.5), inset 0 0 2px rgba(255,255,255,0.5);
+        }
+        @keyframes lr24Pulse {
+            0%, 100% { box-shadow: 0 0 8px rgba(111, 255, 111, 0.8), inset 0 0 2px rgba(255,255,255,0.5); }
+            50% { box-shadow: 0 0 14px rgba(111, 255, 111, 1), inset 0 0 2px rgba(255,255,255,0.5); }
+        }
+        .lr24-led-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: clamp(8px, 1.4vw, 11px);
+            color: #4a4035;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        /* Controls (knobs + power button) */
+        .lr24-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .lr24-knob-pair { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .lr24-knob {
+            width: clamp(44px, 9vw, 72px); height: clamp(44px, 9vw, 72px);
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 30% 25%, #4a4035, #2a2520 50%, #1a1510);
+            border: 2px solid #0d0a08;
+            box-shadow:
+                inset 0 2px 4px rgba(255,255,255,0.15),
+                inset 0 -2px 4px rgba(0,0,0,0.5),
+                0 2px 4px rgba(0,0,0,0.4);
+            position: relative;
+        }
+        .lr24-knob-indicator {
+            position: absolute;
+            top: 4px; left: 50%;
+            transform: translateX(-50%);
+            width: clamp(3px, 0.7vw, 5px); height: clamp(12px, 2.5vw, 18px);
+            background: #e8b840;
+            border-radius: 2px;
+            box-shadow: 0 0 4px rgba(232,184,64,0.6);
+        }
+        .lr24-knob-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: clamp(9px, 1.6vw, 12px);
+            color: #3a2f25;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        /* Big illuminated power button */
+        .lr24-power-btn {
+            flex: 1;
+            background: linear-gradient(180deg, #2a5a8a 0%, #1a4a7a 50%, #0d3560 100%);
+            border: 2px solid #0d2040;
+            border-radius: 8px;
+            padding: clamp(14px, 2.5vw, 22px) 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            box-shadow:
+                inset 0 2px 4px rgba(255,255,255,0.25),
+                inset 0 -3px 6px rgba(0,0,0,0.4),
+                0 3px 8px rgba(0,0,0,0.4),
+                0 0 16px rgba(74, 144, 224, 0.3);
+            transition: all 0.15s;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+        .lr24-power-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -50%;
+            width: 200%; height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent);
+            border-radius: 8px 8px 0 0;
+        }
+        .lr24-power-btn:hover {
+            box-shadow:
+                inset 0 2px 4px rgba(255,255,255,0.3),
+                inset 0 -3px 6px rgba(0,0,0,0.4),
+                0 3px 10px rgba(0,0,0,0.5),
+                0 0 24px rgba(74, 144, 224, 0.6);
+        }
+        .lr24-power-btn:active {
+            transform: translateY(2px);
+            box-shadow:
+                inset 0 3px 6px rgba(0,0,0,0.5),
+                inset 0 -1px 2px rgba(255,255,255,0.1),
+                0 1px 2px rgba(0,0,0,0.3),
+                0 0 12px rgba(74, 144, 224, 0.4);
+        }
+        .lr24-power-icon {
+            font-size: clamp(28px, 5.5vw, 44px);
+            color: #e0f0ff;
+            text-shadow: 0 0 12px rgba(144, 208, 255, 0.8), 0 1px 2px rgba(0,0,0,0.5);
+            line-height: 1;
+            position: relative;
+        }
+        .lr24-power-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(10px, 1.9vw, 14px);
+            font-weight: 800;
+            color: #e0f0ff;
+            letter-spacing: 2px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        /* Bottom vent grille */
+        .lr24-vent {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            background: #1a1510;
+            padding: 5px 40px;
+            border-radius: 3px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+        }
+        .lr24-vent-slat {
+            height: 2px;
+            background: linear-gradient(180deg, #0a0805, #2a2520);
+            border-radius: 1px;
+        }
+
+        /* Terms link */
+        .lr24-terms-link {
+            text-align: center;
+            margin-top: 16px;
+        }
+        .lr24-terms-link a {
+            color: #908878;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(144, 136, 120, 0.3);
+            padding-bottom: 2px;
+        }
+        .lr24-terms-link a:hover { color: #e8b840; border-color: rgba(232,184,64,0.4); }
 
         /* BIODEX */
         #biodex-box {
@@ -802,22 +1126,92 @@
     </div>
 
     <div id="splash-screen" class="modal-overlay">
-        <div class="splash-title">ELECTROFRY</div>
-        <div class="splash-sub">VERSION 1.0</div>
-        <div class="modal-card">
-            <h3 style="margin-top:0; font-size: 12px;">System Modules</h3>
-            <ul class="splash-features">
-                <li>— Comprehensive PNW Species Codex</li>
-                <li>— Camera &amp; Gallery Photo Documentation</li>
-                <li>— Per-Species MLE, Biomass &amp; Density</li>
-                <li>— Depletion Curves &amp; Length-Frequency</li>
-                <li>— Pass Timer w/ Start/End Logging</li>
-                <li>— Full Excel Report (8 Sheets)</li>
-                <li>— Auto-Save &amp; JSON Backup</li>
-            </ul>
-            <button class="btn btn-primary" onclick="startGame()" style="font-size: 14px; padding: 16px;">INITIALIZE SYSTEM</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 11px;">
-                <a href="#" onclick="document.getElementById('terms-modal').style.display='flex'; return false;" style="color: var(--muted); font-family:'Share Tech Mono',monospace; letter-spacing:1px;">VIEW TERMS OF USE</a>
+        <div class="lr24-unit">
+            <!-- Top carrying handle strap mount -->
+            <div class="lr24-strap-mount">
+                <div class="lr24-strap-bolt"></div>
+                <div class="lr24-strap-bolt"></div>
+            </div>
+
+            <!-- Main housing -->
+            <div class="lr24-body">
+                <!-- Brand / Model plate -->
+                <div class="lr24-brand-plate">
+                    <div class="lr24-brand-text">ELECTROFRY 1.0</div>
+                    <div class="lr24-model-text">MODEL LR-24 | BACKPACK ELECTROFISHER</div>
+                </div>
+
+                <!-- LCD display -->
+                <div class="lr24-lcd-housing">
+                    <div class="lr24-lcd-screen">
+                        <div class="lr24-lcd-top">
+                            <span class="lr24-lcd-dot"></span>
+                            <span class="lr24-lcd-label">SYSTEM MODULES</span>
+                            <span class="lr24-lcd-status">READY</span>
+                        </div>
+                        <div class="lr24-lcd-divider"></div>
+                        <ul class="lr24-lcd-list">
+                            <li><span class="lr24-lcd-bullet">&gt;</span> PNW Species Codex</li>
+                            <li><span class="lr24-lcd-bullet">&gt;</span> Photo Documentation</li>
+                            <li><span class="lr24-lcd-bullet">&gt;</span> MLE Population Estimation</li>
+                            <li><span class="lr24-lcd-bullet">&gt;</span> Depletion + Length-Frequency</li>
+                            <li><span class="lr24-lcd-bullet">&gt;</span> Pass Timer w/ Shock Logging</li>
+                            <li><span class="lr24-lcd-bullet">&gt;</span> Live Excel Workbook Export</li>
+                            <li><span class="lr24-lcd-bullet">&gt;</span> Technical Report Generator</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Status LED bar -->
+                <div class="lr24-status-bar">
+                    <div class="lr24-led-group">
+                        <div class="lr24-led lr24-led-green"></div>
+                        <div class="lr24-led-label">PWR</div>
+                    </div>
+                    <div class="lr24-led-group">
+                        <div class="lr24-led lr24-led-amber"></div>
+                        <div class="lr24-led-label">GPS</div>
+                    </div>
+                    <div class="lr24-led-group">
+                        <div class="lr24-led lr24-led-red"></div>
+                        <div class="lr24-led-label">HV</div>
+                    </div>
+                    <div class="lr24-led-group">
+                        <div class="lr24-led lr24-led-blue"></div>
+                        <div class="lr24-led-label">LOG</div>
+                    </div>
+                </div>
+
+                <!-- Control knobs + power button -->
+                <div class="lr24-controls">
+                    <div class="lr24-knob-pair">
+                        <div class="lr24-knob"><div class="lr24-knob-indicator"></div></div>
+                        <div class="lr24-knob-label">VOLT</div>
+                    </div>
+                    <button class="lr24-power-btn" onclick="startGame()">
+                        <div class="lr24-power-icon">⏻</div>
+                        <div class="lr24-power-text">POWER ON</div>
+                    </button>
+                    <div class="lr24-knob-pair">
+                        <div class="lr24-knob"><div class="lr24-knob-indicator"></div></div>
+                        <div class="lr24-knob-label">FREQ</div>
+                    </div>
+                </div>
+
+                <!-- Bottom vent grille -->
+                <div class="lr24-vent">
+                    <div class="lr24-vent-slat"></div>
+                    <div class="lr24-vent-slat"></div>
+                    <div class="lr24-vent-slat"></div>
+                    <div class="lr24-vent-slat"></div>
+                    <div class="lr24-vent-slat"></div>
+                </div>
+            </div>
+
+            <!-- Terms link outside unit -->
+            <div class="lr24-terms-link">
+                <a href="#" onclick="document.getElementById('terms-modal').style.display='flex'; return false;">VIEW TERMS OF USE</a>
+                <div style="margin-top: 10px; color: #706858; font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 1.5px;">CREATED BY MICHAEL STOCKLIN &middot; 2026</div>
             </div>
         </div>
     </div>
@@ -1156,16 +1550,16 @@
 
             <div class="card">
                 <h3>Depletion Curve Modeling</h3>
-                <div style="background: #121812; border: 1px solid var(--border); border-radius: 4px; padding: 8px; margin-bottom: 10px;">
-                    <canvas id="depletionChart" width="400" height="320"></canvas>
+                <div style="background: #121812; border: 1px solid var(--border); border-radius: 4px; padding: 8px; margin-bottom: 10px; position: relative; width: 100%; height: clamp(280px, 45vh, 520px);">
+                    <canvas id="depletionChart"></canvas>
                 </div>
                 <button class="btn btn-outline" onclick="downloadChartImage()">DOWNLOAD CHART</button>
             </div>
 
             <div class="card">
                 <h3>Length-Frequency Distribution</h3>
-                <div style="background: #121812; border: 1px solid var(--border); border-radius: 4px; padding: 8px; margin-bottom: 10px;">
-                    <canvas id="lengthFreqChart" width="400" height="280"></canvas>
+                <div style="background: #121812; border: 1px solid var(--border); border-radius: 4px; padding: 8px; margin-bottom: 10px; position: relative; width: 100%; height: clamp(260px, 40vh, 480px);">
+                    <canvas id="lengthFreqChart"></canvas>
                 </div>
                 <button class="btn btn-outline" onclick="downloadLFChart()">DOWNLOAD LENGTH-FREQ CHART</button>
             </div>
@@ -2236,6 +2630,8 @@
                     ]
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     layout: { padding: { top: 30, right: 15, left: 10, bottom: 10 } },
                     scales: {
                         x: {
@@ -3709,6 +4105,8 @@ Data Analysis. Population estimates were generated using maximum-likelihood esti
                 type: 'bar',
                 data: { labels: [], datasets: [] },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     layout: { padding: { top: 10, right: 10 } },
                     scales: {
                         x: { title: { display: true, text: 'LENGTH CLASS (mm)', font: { weight: 'bold', size: 10, family: "'Orbitron', sans-serif" }, color: '#908878' }, grid: { color: 'rgba(42, 48, 40, 0.5)' }, border: { color: '#2a3028' } },
